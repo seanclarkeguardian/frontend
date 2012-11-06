@@ -4,29 +4,38 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
+import junit.framework.TestResult;
 
+import org.junit.AfterClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.saucelabs.saucerest.SauceREST;
+
+import cucumber.annotation.After;
 import cucumber.annotation.Before;
 
 public class SharedDriver extends EventFiringWebDriver {
 
-	private static WebDriver REAL_DRIVER;
+	public static WebDriver REAL_DRIVER;
 
 	private static final Thread CLOSE_THREAD = new Thread() {
 		@Override
@@ -38,27 +47,62 @@ public class SharedDriver extends EventFiringWebDriver {
 	protected EventListener eventListener;
 
 	static {
-		FirefoxProfile profile = new FirefoxProfile();
-		// if http_proxy system variable, set proxy in profile
-		if (System.getProperty("http_proxy") != null
-				&& !System.getProperty("http_proxy").isEmpty()) {
-			try {
-				URL proxyUrl = new URL(System.getProperty("http_proxy"));
-				profile.setPreference("network.proxy.type", 1);
-				// set the proxy's url
-				profile.setPreference("network.proxy.http", proxyUrl.getHost());
-				// extract the port, or use the default
-				int port = (proxyUrl.getPort() != -1) ? proxyUrl.getPort()
-						: proxyUrl.getDefaultPort();
-				profile.setPreference("network.proxy.http_port", port);
-			} catch (MalformedURLException e) {
-				System.out.println("Unable to parse `http_proxy`: "
-						+ e.getMessage());
+		//if running tests through sauce labs
+		if (System.getProperty("slusernameurl") != null && !System.getProperty("slusernameurl").isEmpty()) {
+			//DesiredCapabilities[] browsers = {DesiredCapabilities.firefox(),DesiredCapabilities.android(),DesiredCapabilities.iphone(), DesiredCapabilities.chrome()};
+			DesiredCapabilities[] browsers = { DesiredCapabilities.android()};
+			for(DesiredCapabilities browser : browsers)
+			{
+				try{
+					System.out.println("Testing in Browser: "+browser.getBrowserName());
+					REAL_DRIVER = new RemoteWebDriver(new URL(System.getProperty("slusernameurl")), browser);
+
+					if (browser.getBrowserName().contains("android")) {
+						browser.setCapability("platform", "Linux");
+						browser.setCapability("version", "4");
+					}
+
+					if (browser.getBrowserName().contains("iphone")) {
+						browser.setCapability("platform", "Mac 10.6");
+						browser.setCapability("version", "5");
+					}
+
+					if (browser.getBrowserName().contains("firefox")) {
+						browser.setCapability("platform", "Linux");
+						browser.setCapability("version", "17");
+					}
+
+					if (browser.getBrowserName().contains("chome")) {
+						browser.setCapability("platform", "Windows 2008");
+					}
+
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}			    
 			}
 		}
+		else {
+			FirefoxProfile profile = new FirefoxProfile();
+			// if http_proxy system variable, set proxy in profile
+			if (System.getProperty("http_proxy") != null
+					&& !System.getProperty("http_proxy").isEmpty()) {
+				try {
+					URL proxyUrl = new URL(System.getProperty("http_proxy"));
+					profile.setPreference("network.proxy.type", 1);
+					// set the proxy's url
+					profile.setPreference("network.proxy.http", proxyUrl.getHost());
+					// extract the port, or use the default
+					int port = (proxyUrl.getPort() != -1) ? proxyUrl.getPort()
+							: proxyUrl.getDefaultPort();
+					profile.setPreference("network.proxy.http_port", port);
+				} catch (MalformedURLException e) {
+					System.out.println("Unable to parse `http_proxy`: "
+							+ e.getMessage());
+				}
+			}
 
-		REAL_DRIVER = new FirefoxDriver(profile);
-
+			REAL_DRIVER = new FirefoxDriver(profile);
+		}
 		Runtime.getRuntime().addShutdownHook(CLOSE_THREAD);
 	}
 
@@ -80,12 +124,37 @@ public class SharedDriver extends EventFiringWebDriver {
 		// manage().window().setSize(new Dimension(320, 480));
 	}
 
+	@After
+	public static void shutDownDriver() throws IOException {
+
+		if (System.getProperty("slusernameurl") != null && !System.getProperty("slusernameurl").isEmpty()) {
+			SauceREST client = new SauceREST("sbukhari", "08a5e7d7-50b5-47a2-a1e7-b2ba8f221522");
+			TestResult result = new TestResult();
+
+			String jobID = ((RemoteWebDriver)SharedDriver.REAL_DRIVER).getSessionId().toString();
+
+			Map<String, Object>sauceJob = new HashMap<String, Object>();
+
+			sauceJob.put("name", "Article tests");
+
+			if(result.wasSuccessful()) {
+				client.jobPassed(jobID);
+				sauceJob.put("passed", true);
+			} else {
+				client.jobFailed(jobID);
+				sauceJob.put("fail", true);
+			}
+			client.updateJobInfo(jobID, sauceJob); 
+		}
+
+	}
+
 	public void deleteCookieNamed(String cookieName) {
 		manage().deleteCookieNamed(cookieName);
 	}
 
 	public void clearLocalStorag() {
-		executeScript("window.localStorage.clear();");
+		//executeScript("window.localStorage.clear();");
 	}
 
 	public void open(String url) {
@@ -122,6 +191,10 @@ public class SharedDriver extends EventFiringWebDriver {
 
 	public boolean isTextPresent(String textToSearch) {
 		return findElement(By.tagName("body")).getText().contains(textToSearch);
+	}
+
+	public String getTextBySelector(By selectorName) {		
+		return findElementWait(selectorName).getText();
 	}
 
 	public void waitForTextPresent(String textToSearch) {

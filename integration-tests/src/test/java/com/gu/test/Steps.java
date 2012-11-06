@@ -58,7 +58,8 @@ public class Steps {
 		String frontendRoot = (System.getProperty("frontend.root.dir") != null) 
 			? System.getProperty("frontend.root.dir")
 			: System.getProperty("user.dir");
-			
+		
+			System.out.println("file:///" + frontendRoot + "/" + project + "/test/assets/javascripts/runner.html");
 		// open the appropriate runner
 		webDriver.get(
 			"file:///" + frontendRoot + "/" + project + "/test/assets/javascripts/runner.html"
@@ -74,12 +75,10 @@ public class Steps {
 		boolean testFailure = false;
 		// run each test
 		for (int i = 0; i < numOfTests; i++) {
-			WebElement test = webDriver.findElements(By.cssSelector("#tests a")).get(i);
-			String testName = test.getText();
-			test.click();
+			webDriver.findElements(By.cssSelector("#tests a")).get(i).click();
 			List<WebElement> alertBar = webDriver.findElements(By.cssSelector("span.failingAlert.bar"));
 			if (alertBar.size() != 0) {
-				System.out.println(testName + " - " + alertBar.get(0).getText());
+				System.out.println(webDriver.findElements(By.cssSelector("#tests a")).get(i).getText() + " - " + alertBar.get(0).getText());
 				for (WebElement error : webDriver.findElements(By.className("specDetail"))) {
 					System.out.println("  " + error.findElement(By.className("description")).getText());
 					for (WebElement errorMsg : error.findElements(By.className("resultMessage"))) {

@@ -13,16 +13,16 @@ Feature: Article page
 	Scenario: Article has no story package
 	    Given I am on an article without a story package
         Then "Related content" is displayed
-	
+	@saucelabs
 	Scenario: Most read
 		When I open a "sport" article
 		Then "most read" section tab show read "sport"
-
+	@saucelabs
 	Scenario: Most read (per section)
 		Given I am on an article
 		When I select the sectional "Most read"
 		Then I can see a list of the most popular stories on guardian.co.uk for the section I am in
-    
+    @saucelabs
 	Scenario: Most read (pan-site)
         Given I am on an article
 		When I select the pan-site "Most read"

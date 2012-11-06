@@ -1,6 +1,7 @@
 @typography
 Feature: Typography
 
+    #@saucelabs
     Scenario: Setting the typeface
         Given I visit a page
         Then the typeface should be rendered as "webegyptian"

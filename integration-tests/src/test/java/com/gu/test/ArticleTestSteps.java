@@ -102,22 +102,6 @@ public class ArticleTestSteps {
 		Assert.assertTrue(webDriver.isTextPresentByElement(By.className("tabs-selected"), arg2));
 	}
 
-	@When("^I click \"([^\"]*)\" tab at the top of the page$")
-	public void I_click_tab_at_the_top_of_the_page(String arg1) throws Throwable {
-		webDriver.clickLink(arg1);
-	}
-
-	@Then("^a list of \"([^\"]*)\" opens$")
-	public void a_list_of_opens(String arg1) throws Throwable {
-		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("topstories-header"), "display"));
-	}
-
-	@Then("^another click on \"([^\"]*)\" closes the list.$")
-	public void another_click_on_closes_the_list(String arg1) throws Throwable {
-		webDriver.clickLink(arg1);
-		Assert.assertEquals("none", webDriver.getelementCssValue(By.id("topstories-header"), "display"));
-	}
-
 	@When("^I click \"([^\"]*)\" tab at the foot of the page$")
 	public void I_click_tab_at_the_foot_of_the_page(String arg1) throws Throwable {
 		webDriver.findElement(By.id("topstories-control-footer")).click();
@@ -126,22 +110,6 @@ public class ArticleTestSteps {
 	@Then("^a list of the footer \"([^\"]*)\" opens$")
 	public void a_list_of_the_footer_opens(String arg1) throws Throwable {
 		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("topstories-footer"), "display"));
-	}
-
-	@Then("^another click on the footer \"([^\"]*)\" closes the list.$")
-	public void another_click_on_the_footer_closes_the_list(String arg1) throws Throwable {
-		webDriver.click(By.id("topstories-control-footer"));
-		Assert.assertEquals("none", webDriver.getelementCssValue(By.id("topstories-footer"), "display"));
-	}
-
-	@When("^I select the sections navigation button$")
-	public void I_select_the_sections_navigation_button( ) throws Throwable {
-		webDriver.click(By.id("sections-control-header"));
-	}
-
-	@Then("^it should show me a list of sections$")
-	public void it_should_show_a_list_of_sections() throws Throwable {
-		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("sections-header"), "display"));
 	}
 
 	@Then("^another click on the \"([^\"]*)\" \"([^\"]*)\" tab closes the list$")
@@ -160,7 +128,6 @@ public class ArticleTestSteps {
 		webDriver.waitFor(1000);
 		Assert.assertTrue(webDriver.isElementPresent(By.className("image-high")));
 	}
-
 
 	@Then("^I can expand and collapse expanders$")
 	public void I_can_expand_and_collapse_expanders() throws Throwable {

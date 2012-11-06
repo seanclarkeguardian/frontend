@@ -1,5 +1,7 @@
 package com.gu.test;
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.openqa.selenium.By;
@@ -71,24 +73,17 @@ public class ArticleTestSteps {
 	public void displayed(String arg1, String arg2) throws Throwable {
 		webDriver.isTextPresentByElement(By.id("related-trails"), arg1);
 	}
+	
+	@When("^I select the sectional or the pan-site \"([^\"]*)\"$")
+	public void I_select_the_sectional_or_the_pan_site(String arg1) throws Throwable {
 
-	@When("^I select the sectional \"([^\"]*)\"$")
-	public void I_select_sectional(String arg1) throws Throwable {
-		webDriver.clickLink("the guardian");
 	}
 
-	@When("^I select the pan-site \"([^\"]*)\"$")
-	public void I_select_pan_site(String arg1) throws Throwable {
-		webDriver.click(By.cssSelector("#js-popular-tabs > li > a"));
-	}
-
-	@Then("^I can see a list of the most popular stories on guardian.co.uk for the section I am in$")
-	public void I_can_see_list_popular_stories_on_guardian_for_the_section_i_am_in() throws Throwable {
+	@Then("^I can see either a list of the most popular stories for the section I am in or for the whole guardian site$")
+	public void I_can_see_either_a_list_of_the_most_popular_stories_for_the_section_I_am_in_or_for_the_whole_guardian_site() throws Throwable {
+		webDriver.findElements(By.cssSelector("#js-popular-tabs a")).get(1).click();
 		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-2"), "display"));
-	}
-
-	@Then("^I can see a list of the most popular stories on guardian.co.uk for the whole guardian site$")
-	public void I_can_see_a_list_of_the_most_popular_stories_on_guardian_co_uk_for_the_whole_guardian_site() throws Throwable {
+		webDriver.findElements(By.cssSelector("#js-popular-tabs a")).get(0).click();
 		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-1"), "display"));
 	}
 	

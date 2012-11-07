@@ -88,6 +88,26 @@ public class ArticleTestSteps {
 		webDriver.isVisibleWait(By.id("tabs-popular-1"));
 		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-1"), "display"));
 	}
+		
+	@When("^I select the sectional \"([^\"]*)\"$")
+	public void I_select_sectional(String arg1) throws Throwable {
+		webDriver.clickLink("the guardian");
+	}
+
+	@When("^I select the pan-site \"([^\"]*)\"$")
+	public void I_select_pan_site(String arg1) throws Throwable {
+		webDriver.click(By.cssSelector("#js-popular-tabs > li > a"));
+	}
+
+	@Then("^I can see a list of the most popular stories on guardian.co.uk for the section I am in$")
+	public void I_can_see_list_popular_stories_on_guardian_for_the_section_i_am_in() throws Throwable {
+		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-2"), "display"));
+	}
+
+	@Then("^I can see a list of the most popular stories on guardian.co.uk for the whole guardian site$")
+	public void I_can_see_a_list_of_the_most_popular_stories_on_guardian_co_uk_for_the_whole_guardian_site() throws Throwable {
+		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-1"), "display"));
+	}
 	
 	@When("^\"([^\"]*)\" is unavailable$")
 	public void is_unavailable(String arg1) throws Throwable {

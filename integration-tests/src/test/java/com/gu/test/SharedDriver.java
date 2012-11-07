@@ -49,7 +49,7 @@ public class SharedDriver extends EventFiringWebDriver {
 		//if running tests through sauce labs
 		if (System.getProperty("slusernameurl") != null && !System.getProperty("slusernameurl").isEmpty()) {
 			//DesiredCapabilities[] browsers = {DesiredCapabilities.firefox(),DesiredCapabilities.android(),DesiredCapabilities.iphone(), DesiredCapabilities.chrome()};
-			DesiredCapabilities[] browsers = { DesiredCapabilities.android()};
+			DesiredCapabilities[] browsers = { DesiredCapabilities.firefox()};
 			for(DesiredCapabilities browser : browsers)
 			{
 				try{

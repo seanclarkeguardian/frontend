@@ -81,9 +81,11 @@ public class ArticleTestSteps {
 
 	@Then("^I can see either a list of the most popular stories for the section I am in or for the whole guardian site$")
 	public void I_can_see_either_a_list_of_the_most_popular_stories_for_the_section_I_am_in_or_for_the_whole_guardian_site() throws Throwable {
-		webDriver.findElements(By.cssSelector("#js-popular-tabs a")).get(1).click();
+		webDriver.findElement(By.xpath(".//*[@id='js-popular-tabs']//a[@href='#tabs-popular-2']")).click();
+		webDriver.isVisibleWait(By.id("tabs-popular-2"));
 		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-2"), "display"));
-		webDriver.findElements(By.cssSelector("#js-popular-tabs a")).get(0).click();
+		webDriver.findElement(By.xpath(".//*[@id='js-popular-tabs']//a[@href='#tabs-popular-1']")).click();
+		webDriver.isVisibleWait(By.id("tabs-popular-1"));
 		Assert.assertEquals("block", webDriver.getelementCssValue(By.id("tabs-popular-1"), "display"));
 	}
 	

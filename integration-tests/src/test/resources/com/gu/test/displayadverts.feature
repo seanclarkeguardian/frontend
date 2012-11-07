@@ -1,13 +1,9 @@
-@ignore
 @displayadvertstest
 
 Feature: Display Adverts
 	As a guardian reader 
 	I want to see adverts on all pages I visit on the guardian site
 	So I can interact with the adverts and link to the advertised brand site
-
-  	Background:
-    	Given I am on the article page 
     	
     Scenario: Adverts will appear at top of all pages
         Given I visit a page

@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.openqa.selenium.By;
 
+import cucumber.annotation.en.Given;
 import cucumber.annotation.en.Then;
 
 
@@ -16,6 +17,7 @@ public class DisplayAdvertsTestSteps {
         this.webDriver = webDriver;
     }
 	
+
 	@Then("^an advert will be at the top of the page$")
 	public void an_Advert_will_be_at_the_top_of_the_page() throws Throwable {
 		webDriver.waitFor(1000);

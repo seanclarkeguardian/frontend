@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.Assert;
 import junit.framework.TestResult;
 
-import org.junit.AfterClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

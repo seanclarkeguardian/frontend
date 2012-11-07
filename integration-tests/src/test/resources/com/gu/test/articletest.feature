@@ -25,20 +25,6 @@ Feature: Article page
 		When I select the sectional or the pan-site "Most read"
 		Then I can see either a list of the most popular stories for the section I am in or for the whole guardian site
 		
-	#@saucelabs	
-		Scenario: Most read (per section)
-		Given I am on an article
-		When I select the sectional "Most read"
-		Then I can see a list of the most popular stories on guardian.co.uk for the section I am in
-    
-    #@saucelabs	
-	Scenario: Most read (pan-site)
-        Given I am on an article
-		When I select the pan-site "Most read"
-		Then I can see a list of the most popular stories on guardian.co.uk for the whole guardian site
-		
-		
-		
 	Scenario: High resolution image and caption is displayed
         Given I am on an article with an image
     		And I have a fast connection speed

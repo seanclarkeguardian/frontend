@@ -48,7 +48,7 @@ public class SharedDriver extends EventFiringWebDriver {
 	static {
 		//if running tests through sauce labs
 		if (System.getProperty("slusernameurl") != null && !System.getProperty("slusernameurl").isEmpty()) {
-			//DesiredCapabilities[] browsers = {DesiredCapabilities.firefox(),DesiredCapabilities.android(),DesiredCapabilities.iphone(), DesiredCapabilities.chrome()};
+			//DesiredCapabilities[] browsers = {DesiredCapabilities.firefox(), DesiredCapabilities.chrome(), DesiredCapabilities.android()};
 			DesiredCapabilities[] browsers = { DesiredCapabilities.firefox()};
 			for(DesiredCapabilities browser : browsers)
 			{
@@ -62,8 +62,8 @@ public class SharedDriver extends EventFiringWebDriver {
 					}
 
 					if (browser.getBrowserName().contains("iphone")) {
-						browser.setCapability("platform", "Mac 10.6");
-						browser.setCapability("version", "5");
+						browser.setCapability("platform", "Mac 10.8");
+						browser.setCapability("version", "6");
 					}
 
 					if (browser.getBrowserName().contains("firefox")) {
@@ -117,10 +117,11 @@ public class SharedDriver extends EventFiringWebDriver {
 	public void initaliseDriver() {
 		// delete cookies
 		manage().deleteAllCookies();
-		// clear local storage
-		clearLocalStorag();
-		// change size (iphone)
-		// manage().window().setSize(new Dimension(320, 480));
+		//don't clear storage if using sauce labs
+		if (System.getProperty("slusernameurl") == null && System.getProperty("slusernameurl").isEmpty()) {
+			// clear local storage
+			clearLocalStorag();
+		}
 	}
 
 	@After
@@ -138,11 +139,10 @@ public class SharedDriver extends EventFiringWebDriver {
 
 			if(result.wasSuccessful()) {
 				client.jobPassed(jobID);
-				sauceJob.put("passed", true);
 			} else {
-				client.jobFailed(jobID);
-				sauceJob.put("fail", true);
-			}
+				client.jobFailed(jobID);				
+			}	
+
 			client.updateJobInfo(jobID, sauceJob); 
 		}
 
@@ -153,11 +153,12 @@ public class SharedDriver extends EventFiringWebDriver {
 	}
 
 	public void clearLocalStorag() {
-		//executeScript("window.localStorage.clear();");
+		executeScript("window.localStorage.clear();");
 	}
 
 	public void open(String url) {
 		get(this.getHost() + url);
+		waitFor(1000); //increased wait time for page to load in some OS
 	}
 
 	public String getHost() {

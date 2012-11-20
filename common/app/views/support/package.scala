@@ -173,9 +173,9 @@ object TweetCleaner extends HtmlCleaner {
 
 // beta.guardian.co.uk goes in A group
 // test.guardian.co.uk goes in B group
-object ABTest {
+object ABTest extends Implicits {
   def apply(implicit request: RequestHeader) = new {
-    val isB = request.getQueryString("host").map(_ == "test").getOrElse(request.host.contains("frontend-router-prod"))
+    val isB = request.getParameter("host").map(_ == "test").getOrElse(request.host.contains("frontend-router-prod"))
     val isA = !isB
   }
 }

@@ -10,7 +10,7 @@ import model.Page
 import scala.Some
 import play.api.templates.Html
 
-trait FixtureRenderer extends Controller with CompetitionFixtureFilters {
+trait FixtureRenderer extends Controller with CompetitionFixtureFilters with Implicits {
 
   val daysToDisplay = 3
   val datePattern = DateTimeFormat.forPattern("yyyyMMMdd")
@@ -45,7 +45,7 @@ trait FixtureRenderer extends Controller with CompetitionFixtureFilters {
     )
 
     Cached(page) {
-      request.getQueryString("callback").map { callback =>
+      request.getParameter("callback").map { callback =>
         JsonComponent(
           "html" -> views.html.fragments.matchesList(fixturesPage),
           "more" -> Html(nextPage.getOrElse("")))

@@ -2,6 +2,7 @@ package common
 
 import com.gu.openplatform.contentapi.ApiError
 import play.api.Logger
+import play.api.mvc.{ Request, AnyContent, RequestHeader }
 
 object `package` {
 
@@ -53,4 +54,12 @@ object Reference {
     val parts = s.split("/")
     parts(0) -> parts(1)
   }
+}
+
+trait Implicits {
+
+  implicit def request2param(request: RequestHeader) = new {
+    def getParameter(name: String): Option[String] = request.queryString.get(name).flatMap(_.headOption)
+  }
+
 }

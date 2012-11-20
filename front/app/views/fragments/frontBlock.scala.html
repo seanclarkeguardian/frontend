@@ -24,9 +24,9 @@
         data-link-name="Front | block | @block.description.name">
 
         @block.description.style match {
-            case Some(Thumbnail) => { @trailblocks.thumbnail(block.trails, block.description.numItemsVisible) } 
-            case Some(Headline)  => { @trailblocks.headline(block.trails, block.description.numItemsVisible) } 
-            case _               => { @trailblocks.featured(block.trails, block.description.numItemsVisible) }
+            case Some(Thumbnail) => @trailblocks.thumbnail(block.trails, block.description.numItemsVisible)
+            case Some(Headline)  => @trailblocks.headline(block.trails, block.description.numItemsVisible)
+            case _               => @trailblocks.featured(block.trails, block.description.numItemsVisible)
         }
     </div>
 

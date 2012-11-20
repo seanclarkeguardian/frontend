@@ -3,8 +3,8 @@ package conf
 import play.api.{ Application => PlayApp }
 import common._
 import com.gu.management._
+import com.gu.management.play.Management
 import logback.LogbackLevelPage
-import play.Management
 
 object Configuration extends GuardianConfiguration("frontend-core-navigation", webappConfDirectory = "env")
 

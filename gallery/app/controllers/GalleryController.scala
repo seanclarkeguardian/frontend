@@ -1,10 +1,10 @@
 package controllers
 
+import conf._
 import com.gu.openplatform.contentapi.model.ItemResponse
 import common._
-import conf._
 import model._
-import play.api.mvc.{ RequestHeader, Controller, Action }
+import play.api.mvc.{ AsyncResult, RequestHeader, Controller, Action }
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
@@ -14,12 +14,12 @@ case class GalleryPage(
   index: Int,
   trail: Boolean)
 
-object GalleryController extends Controller with Logging {
+object GalleryController extends Controller with Logging with Implicits {
 
   def render(path: String) = Action { implicit request =>
 
-    val index = request.getQueryString("index") map (_.toInt) getOrElse 1
-    val isTrail = request.getQueryString("trail") map (_.toBoolean) getOrElse false
+    val index = request.getParameter("index") map (_.toInt) getOrElse 1
+    val isTrail = request.getParameter("trail") map (_.toBoolean) getOrElse false
 
     val promiseOfGalleryPage = Akka.future(lookup(path, index, isTrail))
 

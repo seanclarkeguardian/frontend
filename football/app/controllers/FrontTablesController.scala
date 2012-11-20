@@ -7,7 +7,7 @@ import model._
 import play.api.templates.Html
 import pa.{ Round, LeagueTableEntry }
 
-object FrontTablesController extends Controller with Logging with CompetitionTableFilters {
+object FrontTablesController extends Controller with Logging with CompetitionTableFilters with Implicits {
 
   private def loadTables: Seq[Table] = Competitions.competitions.filter(_.hasLeagueTable).map { comp =>
     val groups = comp.leagueTable
@@ -31,7 +31,7 @@ object FrontTablesController extends Controller with Logging with CompetitionTab
 
       Cached(60) {
         val html = views.html.fragments.frontTableBlock(table)
-        request.getQueryString("callback").map { callback =>
+        request.getParameter("callback").map { callback =>
           JsonComponent(html)
         } getOrElse {
           Cached(60) {

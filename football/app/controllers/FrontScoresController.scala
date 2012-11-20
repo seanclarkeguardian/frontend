@@ -7,7 +7,7 @@ import model._
 import model.Page
 import play.api.templates.Html
 
-object FrontScoresController extends Controller with Logging {
+object FrontScoresController extends Controller with Logging with Implicits {
 
   /*
    * Finds the first competition with matches on today in a list of competition ids passed in
@@ -21,7 +21,7 @@ object FrontScoresController extends Controller with Logging {
     competition.map { comp =>
       Cached(60) {
         val html = views.html.fragments.frontMatchBlock(comp)
-        request.getQueryString("callback").map { callback =>
+        request.getParameter("callback").map { callback =>
           JsonComponent(html)
         } getOrElse {
           Cached(60) {

@@ -5,7 +5,7 @@ import conf.CommonSwitches.AutoRefreshSwitch
 import play.api.mvc.{ RequestHeader, Results }
 import play.api.templates.Html
 
-object JsonComponent extends Results {
+object JsonComponent extends Results with Implicits {
 
   private val ValidCallback = """([a-zA-Z0-9_]+)""".r
 
@@ -28,7 +28,7 @@ object JsonComponent extends Results {
   }
 
   private def resultFor(request: RequestHeader, json: String) = {
-    request.getQueryString("callback").map {
+    request.getParameter("callback").map {
       case ValidCallback(callback) => Ok("%s(%s);" format (callback, json)).as("application/javascript")
       case badCallback => Forbidden("bad callback name")
     }

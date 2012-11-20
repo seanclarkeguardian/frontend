@@ -7,7 +7,7 @@ resolvers ++= Seq(
   Classpaths.typesafeResolver
 )
 
-addSbtPlugin("play" % "sbt-plugin" % "2.1-06142012")
+addSbtPlugin("play" % "sbt-plugin" % "play-2.1-RC1")
 
 addSbtPlugin("com.typesafe.sbtscalariform" % "sbtscalariform" % "0.4.0")
 

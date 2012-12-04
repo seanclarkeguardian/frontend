@@ -15,7 +15,7 @@ object FrontPage extends MetaData {
   override val canonicalUrl = "http://www.guardian.co.uk"
   override val id = ""
   override val section = ""
-  override val webTitle = "The Guardian"
+  override val webTitle = buildTitleTag(useUrl = false, "Latest news, sport and comment from the Guardian")
   override lazy val analyticsName = "GFE:Network Front"
 
   override lazy val metaData: Map[String, Any] = super.metaData ++ Map(

@@ -30,6 +30,24 @@ trait MetaData {
   )
 
   def cacheSeconds = 60
+
+  implicit def string2NonEmpties(str: String) = new {
+    lazy val nonEmpties: Array[String] = Array(str) filter { !_.isEmpty }
+  }
+
+  def buildTitleTag(useUrl: Boolean, parts: String*) = {
+    val lastPart = useUrl match {
+      case true => "guardian.co.uk"
+      case false => "The Guardian"
+    }
+
+    (parts + lastPart).nonEmpties.mkString(" | ")
+  }
+
+  def buildTitleTag2() = {
+    "foo"
+  }
+
 }
 
 class Page(

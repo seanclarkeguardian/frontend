@@ -9,7 +9,7 @@ case class Section(private val delegate: ApiSection) extends MetaData {
   lazy val id: String = delegate.id
   lazy val apiUrl: String = delegate.apiUrl
   lazy val webUrl: String = delegate.webUrl
-  lazy val webTitle: String = delegate.webTitle
+  lazy val webTitle: String = buildTitleTag(useUrl = false, delegate.webTitle)
 
   lazy val canonicalUrl: String = webUrl
 

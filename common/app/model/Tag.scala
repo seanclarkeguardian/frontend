@@ -4,7 +4,7 @@ import com.gu.openplatform.contentapi.model.{ Tag => ApiTag }
 import common.Reference
 
 case class Tag(private val delegate: ApiTag) extends MetaData {
-  lazy val name: String = webTitle
+  lazy val name: String = delegate.webTitle
   lazy val tagType: String = delegate.`type`
 
   lazy val id: String = delegate.id

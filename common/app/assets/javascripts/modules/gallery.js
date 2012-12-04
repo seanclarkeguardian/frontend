@@ -148,6 +148,21 @@ define(["reqwest", "bean", "swipe", "common", "modules/detect", "modules/url", "
                 }
             },
 
+            // currently unused
+            showFullscreenImage: function (elm) {
+                view.galleryConfig.inFullScreenMode = true;
+                var li = elm.parentNode;
+                var body = document.body;
+                bonzo(body).toggleClass('gallery-fullscreen');
+
+                // bit hacky, this effectively fires a resize event
+                // which in turns causes the swipe gallery to resize itself to fit
+                // todo: use bean.fire() here
+                var evt = document.createEvent('UIEvents');
+                evt.initUIEvent('resize', true, false,window,0);
+                window.dispatchEvent(evt);
+            },
+
             advanceGallery: function (direction, customItemIndexToShow) {
 
                 // set up variables
@@ -248,18 +263,18 @@ define(["reqwest", "bean", "swipe", "common", "modules/detect", "modules/url", "
                 total = parseInt(total, 10);
 
                 if (index === 1) { // we've gone back to the start, hide prev
-                    prevLink.style.display = 'none';
+                    prevLink.style.visibility = 'hidden';
                     nextLink.setAttribute('href', '?index=2');
                 } else if (index === 2) { // we can now go back, show prev
-                    prevLink.style.display = 'inline';
+                    prevLink.style.visibility = 'visible';
                     prevLink.setAttribute('href', '?index=1');
                     nextLink.setAttribute('href', '?index=3');
                 } else if (index === total-1) { // show next again...?
-                    nextLink.style.display = 'inline';
+                    nextLink.style.visibility = 'visible';
                     prevLink.setAttribute('href', '?index=' + (index - 1));
                     nextLink.setAttribute('href', '?index=' + total);
                 } else if (index === total) { //we're at the end, hide next
-                    nextLink.style.display = 'none';
+                    nextLink.style.visibility = 'hidden';
                     prevLink.setAttribute('href', '?index=' + (total -1));
                 } else { // it's in the middle
                     prevLink.setAttribute('href', '?index=' + (index - 1));

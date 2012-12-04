@@ -13,14 +13,14 @@
             @fragments.headline(gallery.headline)
             @fragments.standfirst(gallery)
         </header>
-        
+
         @fragments.byline(gallery.byline, gallery)
-        
+
         <p class="box-indent gallery-nav type-8" id="js-gallery-nav">
             @if(index > 1) {
                 <a id="js-gallery-prev" data-link-name="Gallery Previous" data-is-ajax="true" href="?index=@(index - 1)" class="gallery-prev">Previous</a>
             } else {
-                <a id="js-gallery-prev" data-link-name="Gallery Previous" data-is-ajax="true" class="gallery-prev initially-off" href="javascript://">Previous</a>
+                <a id="js-gallery-prev" data-link-name="Gallery Previous" data-is-ajax="true" class="gallery-prev invisible" href="javascript://">Previous</a>
             }
 
             Image <span id="js-gallery-index">@index</span> of @gallery.size
@@ -30,7 +30,7 @@
             @if(index < gallery.size) {
                 <a id="js-gallery-next" data-link-name="Gallery Next" data-is-ajax="true" href="?index=@(index + 1)" class="gallery-next">Next</a>
             } else {
-                <a id="js-gallery-next" data-link-name="Gallery Next" data-is-ajax="true" data-next="trail" href="?trail=true" class="gallery-next">Next</a>
+                <a id="js-gallery-next" data-link-name="Gallery Next" data-is-ajax="true" data-next="trail" href="?trail=true" class="gallery-next invisible">Next</a>
             }
         </p>
 

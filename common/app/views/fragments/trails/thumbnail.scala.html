@@ -4,19 +4,30 @@
 
 <div class="media">
     @if(showThumbnail) {
-        @trail.thumbnail.map{ thumbnailUrl =>
-            <a href="@trail.url" class="media-img" data-link-name="@rowNum | image">
-                <img class="maxed" src="@thumbnailUrl"
-                    data-thumb-width="140"
-                    @trail.mainPicture(width=220).map { largeCrop =>
-                        data-fullsrc="@largeCrop.url"
-                        data-full-width="@largeCrop.width"
-	                    alt="@StripHtmlTags(largeCrop.altText.getOrElse(""))" 
-	                    title="@StripHtmlTags(largeCrop.caption.getOrElse(""))"
-                    }
-                    itemprop="contentURL"
-                />
-            </a>
+
+        @if(SquareImagesSwitch.isSwitchedOn) {
+            @trail.squareImage.map{ thumbnail =>
+                <a href="@trail.url" class="media-img" data-link-name="@rowNum | image">
+                    <img class="maxed" src="@thumbnail.url"
+                        itemprop="contentURL"
+                    />
+                </a>
+            }
+        } else {
+            @trail.thumbnail.map{ thumbnailUrl =>
+                <a href="@trail.url" class="media-img" data-link-name="@rowNum | image">
+                    <img class="maxed" src="@thumbnailUrl"
+                        data-thumb-width="140"
+                        @trail.mainPicture(width=220).map { largeCrop =>
+                            data-fullsrc="@largeCrop.url"
+                            data-full-width="@largeCrop.width"
+    	                    alt="@StripHtmlTags(largeCrop.altText.getOrElse(""))" 
+    	                    title="@StripHtmlTags(largeCrop.caption.getOrElse(""))"
+                        }
+                        itemprop="contentURL"
+                    />
+                </a>
+            }
         }
     }
 

@@ -36,9 +36,13 @@ object CommonSwitches {
     "If this switch is turned on then a separate call to Omniture will be made to help verify our tracking.",
     initiallyOn = false)
 
+  val SquareImagesSwitch = DefaultSwitch("square-images",
+    "If this switch is turned on then square images willl be used for trailblock thumbnails.",
+    initiallyOn = true)
+
   val all: Seq[Switchable] = Seq(
     FontSwitch, AutoRefreshSwitch, AudienceScienceSwitch, DoubleCacheTimesSwitch,
-    RelatedContentSwitch, OmnitureVerificationSwitch
+    RelatedContentSwitch, OmnitureVerificationSwitch, SquareImagesSwitch
   )
 }
 

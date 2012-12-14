@@ -81,6 +81,7 @@ trait Prototypes extends Testing {
       staticFilesPackage := "frontend-static",
 
       templatesImport ++= Seq(
+        "conf.CommonSwitches._",
         "common._",
         "model._",
         "views._",

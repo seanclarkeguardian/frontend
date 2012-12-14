@@ -52,6 +52,12 @@ trait Images {
   def images: Seq[Image]
   def videoImages: Seq[Image]
 
+  lazy val squareImage: Option[Image] = images.filter { i =>
+    val widthRange = (i.width - 10) to (i.width + 10)
+    i.height in widthRange
+  }.lastOption
+  //images.find(i => i.width == i.height)
+
   def imageOfWidth(desiredWidth: Int, tolerance: Int = 0): Option[Image] = {
     val widthRange = (desiredWidth - tolerance) to (desiredWidth + tolerance)
     val imagesInWidthRange = images filter { _.width in widthRange }

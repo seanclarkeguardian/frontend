@@ -38,7 +38,7 @@ object CommonSwitches {
 
   val SquareImagesSwitch = DefaultSwitch("square-images",
     "If this switch is turned on then square images willl be used for trailblock thumbnails.",
-    initiallyOn = true)
+    initiallyOn = false)
 
   val all: Seq[Switchable] = Seq(
     FontSwitch, AutoRefreshSwitch, AudienceScienceSwitch, DoubleCacheTimesSwitch,

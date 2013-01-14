@@ -9,30 +9,48 @@
   <link rel="stylesheet" type="text/css" href="vendor/jasmine-1.2.0/jasmine.css">
   <script type="text/javascript" src="vendor/jasmine-1.2.0/jasmine.js"></script>
   <script type="text/javascript" src="vendor/jasmine-1.2.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="../../../app/assets/javascripts/vendor/curl-0.7.2.js"></script>
+  <script type="text/javascript" src="../../../app/assets/javascripts/components/curl/dist/curl-with-js-and-domReady/curl.js"></script>
   <script>
       curl({
         baseUrl: "../../../app/assets/javascripts/",
         apiName: 'require',
         paths: {
                 common:       'common',
-                bonzo:        'vendor/bonzo-1.2.1',
-                qwery:        'vendor/qwery-mobile-3.3.11',
-                bean:         'vendor/bean-1.0.1',
-                reqwest:      'vendor/reqwest-0.4.5',
-                domwrite:     'vendor/bezen.domwrite-2012-08-15',
+                bonzo:        'components/bonzo/src/bonzo',
+                qwery:        'components/qwery/mobile/qwery-mobile',
+                bean:         'components/bean/bean',
+                reqwest:      'components/reqwest/src/reqwest',
+                domwrite:     'components/dom-write/dom-write',
                 analytics:    'modules/analytics',
-                EventEmitter: 'vendor/EventEmitter-3.1.5',
-                swipe:        'vendor/swipe-1.0',
-                omniture:     '../../../app/public/javascripts/vendor/omniture'
+                EventEmitter: 'components/eventEmitter/src/EventEmitter',
+                swipe:        'components/swipe/swipe',
+                omniture:     '../../../app/public/javascripts/vendor/omniture',
+                fixtures:     '../../../test/assets/javascripts/helpers/fixtures'
             }
       });
   </script>
   <style>
     ul ul { margin-left: 0; padding: 0; }
     ul ul li { margin-left: 40px; }
-    .initially-off:after { content: " -- (hidden)"; }
-    .on:after { content: " -- (visible)"; }
+    .is-off:after { content: " -- (hidden)"; }
+    .is-on:after { content: " -- (visible)"; }
+    .ad-slot {
+        display: block;
+        width: 100%;
+        padding: 0;
+        text-align: center;
+        min-height: 70px;
+        background-color: #f8f8f2;
+        //For expandables
+        position: relative;
+        z-index: 1000;
+    }
+
+    .ad-container {
+        display: inline-block;
+        width: auto;
+        margin: 0 auto !important;
+    }
   </style>
   <script type="text/javascript" src="vendor/sinon-1.3.4/sinon.js"></script>
   <script type="text/javascript" src="vendor/sinon-1.3.4/jasmine-sinon.js"></script>
@@ -82,10 +100,11 @@
 
     <!-- Adverts.spec, keeping these here so they stay on screen. :/ -->
     <div id="ad-slot-top-banner-ad" data-link-name="ad slot top-banner-ad" data-base="Top2" data-median="Top" data-extended="x54" class="ad-slot">
-        advert-top
+      <div class="ad-container"></div>
     </div>
+
     <div id="ad-slot-bottom-banner-ad" data-link-name="ad slot bottom-banner-ad" data-base="Bottom2" data-median="Bottom" data-extended="x54" class="ad-slot">
-        advert-bottom
+       <div class="ad-container"></div>
     </div>
 
     <ul id="tests">
@@ -103,7 +122,7 @@
                 <li><a href="#DocumentWrite">DocumentWrite</a></li>
                 <li><a href="#AudienceScience">AudienceScience</a>
                 <li><a href="#Adverts">Adverts</a>
-            </ul>        
+            </ul>
         </li>
         <li><a href="#Common">Common</a></li>
         <li><a href="#Detect">Detect</a></li>
@@ -114,8 +133,9 @@
         <li>
             Navigation
             <ul>
-                <li><a href="#Navigation">Navigation</a></li>
-                <li><a href="#NavigationControls">Navigation Controls</a></li>
+                <li><a href="#Control">Control</a></li>
+                <li><a href="#Sections">Sections</a></li>
+                <li><a href="#TopStories">Top Stories</a></li>
             </ul>
         </li>
         <li><a href="#Popular">Popular</a></li>
@@ -124,27 +144,20 @@
         <li><a href="#RelativeDates">Relative Dates</a></li>
         <li><a href="#Tabs">Tabs</a></li>
         <li><a href="#TrailblockToggle">Trailblock Toggle</a></li>
+        <li><a href="#TrailblockShowMore">Trailblock Show More</a></li>
         <li><a href="#Autoupdate">Auto update</a></li>
         <li><a href="#MoreMatches">More Matches</a></li>
+        <li><a href="#MatchNav">Football Match Nav</a></li>
+        <li><a href="#FootballTables">Football Tables</a></li>
         <li><a href="#FootballFixtures">Football Fixtures</a></li>
+        <li><a href="#FootballTables">Football Tables</a></li>
         <li><a href="#Gallery">Gallery</a></li>
         <li><a href="#GallerySwipe">Gallery (Swipe)</a></li>
-        <li><a href="#FootballTables">Football Tables</a></li>
+
         <li><a href="#Router">Router</a></li>
     </ul>
 
     <div id="test-cases">
-
-        <!-- UpgradeImages.spec -->
-        <img data-upgrade="true" 
-              data-fullsrc="http://placekitten.com/1/1"
-              src="http://placekitten.com/2/2"
-              data-thumb-width="5"
-              data-full-width="100"
-              id="upgradeImages"
-              class="visible" />
-
-        <img data-svgsrc="http://x.y.z/b.svg" id="upgradeSvgImages" class="visible" src="http://x.y.z/c.svg"/>
 
         <!-- Related.spec -->
         <div id="related-1"></div>
@@ -215,9 +228,24 @@
         <div id="relative-dates">
           <p><strong>Test dates</strong> (should be replaced with timestamps)</p>
           <ul>
-            <li id="relative-date-test-item" class="js-timestamp" data-timestamp="1334339016">Friday 13th Apr. 2012, 6.43pm</li>
-            <li class="js-timestamp" data-timestamp="1344859200">Monday 13th Aug. 2012, 12pm</li>
-            <li id="relative-date-invalid-item" class="js-timestamp" data-timestamp="last tuesday">(deliberate invalid timestamp)</li>
+            <li>
+                <time id="relative-date-test-item"
+                      class="js-timestamp"
+                      datetime="2012-08-12T18:43:00.000Z"
+                      data-expected-output='<span title="12th Aug, 2012">Yesterday, 7:43pm</span>'>12th Aug, 2012</time>
+            </li>
+            <li class="block-time">
+                <time id="relative-date-test-item-block"
+                      class="js-timestamp"
+                      datetime="2012-08-11T18:43:00.000Z"
+                      data-expected-output='<span title="11th Aug, 2012">Saturday 11 Aug 2012, 7:43pm</span>'>11th Aug, 2012</time>
+            </li>
+            <li>
+                <time id="relative-date-invalid-item"
+                      class="js-timestamp"
+                      datetime="last tuesday"
+                      data-expected-output="Last Tuesday">Last Tuesday</time>
+            </li>
           </ul>
         </div>
 
@@ -225,14 +253,14 @@
         <!-- Tabs.spec -->
         <p id="tabs-test">
 
-          <ol class="tabs">
+          <ol class="tabs js-tabs">
               <li class="tabs-selected"><a id="tab1" href="#tab1panel">Foo</a></li>
               <li><a id="tab2" href="#tab2panel">Bar</a></li>
           </ol>
 
           <div class="tabs-content">
                <div class="tabs-pane" id="tab1panel">foo</div>
-               <div class="tabs-pane initially-off" id="tab2panel">bar</div>
+               <div class="tabs-pane js-hidden" id="tab2panel">bar</div>
           </div>
 
 
@@ -244,7 +272,7 @@
 
           <div class="tabs-content">
                <div class="tabs-pane" id="tab1panel_2">foo</div>
-               <div class="tabs-pane initially-off" id="tab2panel_2">bar</div>
+               <div class="tabs-pane js-hidden" id="tab2panel_2">bar</div>
           </div>
 
         </p>
@@ -265,19 +293,6 @@
             <button id="click-me-button" data-link-name="the button">Span Link</button>
             <p href="#hello" id="click-me-slow" data-link-name="paragraph">Paragraph 'Link'</p>
         </p>
-    </div>
-
-    <!-- Navigation.spec -->
-    <div>
-        <a id="sections-control-header" href="#">sections (header)</a>
-        <a id="topstories-control-header" href="#">top stories (header)</a>
-        <a id="sections-control-footer" href="#">sections (footer)</a>
-        <a id="topstories-control-footer" href="#">top stories (footer)</a>
-
-        <div id="sections-header" class="initially-off">sections popup (header)</div>
-        <div id="topstories-header" class="initially-off">top stories popup (header)</div>
-        <div id="sections-footer" class="">sections popup (footer)</div> <!-- should be auto-hidden -->
-        <div id="topstories-footer" class="initially-off">top stories popup (footer)</div>
     </div>
 
     <!-- TrailblockToggle.spec -->
@@ -308,7 +323,11 @@
         <li></li>
       </ul>
     </div>
-    
+
+    <!-- MatchNav.spec.js -->
+    <div id="js-related"></div>
+    <div class="after-header"></div>
+
 
     <!--  FootballTables.spec -->
     <div id="football-tables">
@@ -318,15 +337,15 @@
     </div>
 
     <!-- Gallery.spec -->
-    <div style="display: none">
-      <p class="box-indent"><a class="initially-off" data-is-ajax="true"
+    <div style="display: none" id="js-gallery">
+      <p class="box-indent"><a class="is-off" data-is-ajax="true"
       data-link-name="Gallery Previous" href="javascript://" id="js-gallery-prev"
       name="js-gallery-prev">Previous</a> Image <span id=
       "js-gallery-index">1</span> of 16 <a data-is-ajax="true" data-link-name=
       "Gallery Next" href="?index=2" id="js-gallery-next" name=
       "js-gallery-next">Next</a></p>
 
-      <div class="gallery-container" id="js-gallery">
+      <div class="gallery-container" id="js-gallery-holder">
           <ul class="unstyled">
               <li class="js-current-gallery-slide" data-image="true" data-index=
               "1" data-total="16" id="js-gallery-item-1">
@@ -342,7 +361,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352701113/Tour-of-Britain-007.jpg'
               data-image="false" data-index="2" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352701113/Tour-of-Britain-007.jpg"
@@ -354,7 +373,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352694197/Tour-of-Britain-001.jpg'
               data-image="false" data-index="3" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352694197/Tour-of-Britain-001.jpg"
@@ -369,7 +388,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352702441/Tour-of-Britain-008.jpg'
               data-image="false" data-index="4" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352702441/Tour-of-Britain-008.jpg"
@@ -383,7 +402,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352698761/Tour-of-Britain-005.jpg'
               data-image="false" data-index="5" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352698761/Tour-of-Britain-005.jpg"
@@ -396,7 +415,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352697669/Tour-of-Britain-004.jpg'
               data-image="false" data-index="6" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352697669/Tour-of-Britain-004.jpg"
@@ -408,7 +427,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352695566/Tour-of-Britain-002.jpg'
               data-image="false" data-index="7" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352695566/Tour-of-Britain-002.jpg"
@@ -420,7 +439,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352696597/Tour-of-Britain-003.jpg'
               data-image="false" data-index="8" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316352696597/Tour-of-Britain-003.jpg"
@@ -437,7 +456,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371064041/Tour-of-Britain-008.jpg'
               data-image="false" data-index="9" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371064041/Tour-of-Britain-008.jpg"
@@ -451,7 +470,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371062832/Tour-of-Britain-007.jpg'
               data-image="false" data-index="10" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371062832/Tour-of-Britain-007.jpg"
@@ -463,7 +482,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371061677/Tour-of-Britain-006.jpg'
               data-image="false" data-index="11" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371061677/Tour-of-Britain-006.jpg"
@@ -475,7 +494,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371058942/Tour-of-Britain-004.jpg'
               data-image="false" data-index="12" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371058942/Tour-of-Britain-004.jpg"
@@ -486,7 +505,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371060335/Tour-of-Britain-005.jpg'
               data-image="false" data-index="13" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371060335/Tour-of-Britain-005.jpg"
@@ -498,7 +517,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371057644/Tour-of-Britain-003.jpg'
               data-image="false" data-index="14" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371057644/Tour-of-Britain-003.jpg"
@@ -511,7 +530,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371055090/Tour-of-Britain-001.jpg'
               data-image="false" data-index="15" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371055090/Tour-of-Britain-001.jpg"
@@ -523,7 +542,7 @@
                   The Guardian</strong></p>
               </li>
 
-              <li class="initially-off" data-fullsrc=
+              <li class="is-off" data-fullsrc=
               'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371056378/Tour-of-Britain-002.jpg'
               data-image="false" data-index="16" data-src=
               "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/9/18/1316371056378/Tour-of-Britain-002.jpg"
@@ -544,8 +563,8 @@
 
 <!-- Fonts.spec -->
 
-<style data-cache-name="guardian-font1" data-cache-file-woff="font1.woff.js" data-cache-file-ttf="font1.ttf.js"></style>
-<style data-cache-name="guardian-font2" data-cache-file-woff="font2.woff.js" data-cache-file-ttf="font2.ttf.js"></style>
+<style data-cache-name="font1" data-cache-file-woff="fonts/font1.woff.12345.js" data-cache-file-ttf="fonts/font1.ttf.12345.js"></style>
+<style data-cache-name="font2" data-cache-file-woff="fonts/font2.woff.12345.js" data-cache-file-ttf="fonts/font2.ttf.12345.js"></style>
 
 </body>
 </html>

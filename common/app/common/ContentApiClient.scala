@@ -1,15 +1,18 @@
 package common
 
 import com.gu.openplatform.contentapi.Api
-import com.gu.openplatform.contentapi.connection.{ DispatchHttp, Proxy => ContentApiProxy }
+import com.gu.openplatform.contentapi.connection.{ Proxy => ContentApiProxy, Http, DispatchHttp }
 import com.gu.management.{ Metric, TimingMetric }
+import conf.Configuration
 
 trait ApiQueryDefaults { self: Api =>
 
   val supportedTypes = "type/gallery|type/article|type/video"
 
   //NOTE - do NOT add body to this list
-  val trailFields = "headline,trail-text,liveBloggingNow,thumbnail,showInRelatedContent"
+  val trailFields = "headline,trail-text,liveBloggingNow,thumbnail,showInRelatedContent,wordcount"
+
+  val references = "pa-football-competition,pa-football-team"
 
   //common fileds that we use across most queries.
   def item(id: String, edition: String): ItemQuery = item.itemId(id)
@@ -18,7 +21,7 @@ trait ApiQueryDefaults { self: Api =>
     .showFields(trailFields)
     .showInlineElements("picture")
     .showMedia("all")
-    .showReferences("pa-football-competition,pa-football-team")
+    .showReferences(references)
     .showStoryPackage(true)
     .tag(supportedTypes)
 
@@ -26,28 +29,41 @@ trait ApiQueryDefaults { self: Api =>
   def search(edition: String): SearchQuery = search
     .edition(edition)
     .showTags("all")
-    .showReferences("pa-football-competition")
+    .showInlineElements("picture")
+    .showReferences(references)
     .showFields(trailFields)
+    .showMedia("all")
     .tag(supportedTypes)
 }
 
-class ContentApiClient(configuration: GuardianConfiguration) extends Api with ApiQueryDefaults with DispatchHttp
+trait DelegateHttp extends Http {
+
+  private val dispatch = new DispatchHttp with Logging {
+    import Configuration.{ proxy => proxyConfig, _ }
+
+    override lazy val maxConnections = 100
+    override lazy val connectionTimeoutInMs = 200
+    override lazy val requestTimeoutInMs = 2000
+    override lazy val compressionEnabled = true
+
+    override lazy val proxy: Option[ContentApiProxy] = if (proxyConfig.isDefined) {
+      log.info("Setting HTTP proxy to: %s:%s".format(proxyConfig.host, proxyConfig.port))
+      Some(ContentApiProxy(proxyConfig.host, proxyConfig.port))
+    } else None
+  }
+
+  private var _http: Http = dispatch
+  def http = _http
+  def http_=(delegateHttp: Http) = _http = delegateHttp
+
+  def GET(url: String, headers: scala.Iterable[scala.Tuple2[String, String]]) = _http.GET(url, headers)
+}
+
+class ContentApiClient(configuration: GuardianConfiguration) extends Api with ApiQueryDefaults with DelegateHttp
     with Logging {
-
-  import configuration.{ proxy => proxyConfig, _ }
-
+  import Configuration.contentApi
   override val targetUrl = contentApi.host
   apiKey = Some(contentApi.key)
-
-  override lazy val maxConnections = 100
-  override lazy val connectionTimeoutInMs = 200
-  override lazy val requestTimeoutInMs = 2000
-  override lazy val compressionEnabled = true
-
-  override lazy val proxy: Option[ContentApiProxy] = if (proxyConfig.isDefined) {
-    log.info("Setting HTTP proxy to: %s:%s".format(proxyConfig.host, proxyConfig.port))
-    Some(ContentApiProxy(proxyConfig.host, proxyConfig.port))
-  } else None
 
   override protected def fetch(url: String, parameters: Map[String, Any]) = {
 

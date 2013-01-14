@@ -1,11 +1,22 @@
+/*
+    Module: footballfixtures.js
+    Description: Used to load a list of football fixtures of a given competition and append to DOM
+*/
 define(['common', 'reqwest', 'bonzo'], function (common, Reqwest, bonzo) {
-
+    /*
+        @param {Object} options hash of configuration options:
+            prependTo   : {DOMElement}  DOM element to prepend component to
+            competitions: {Array}       Ordered list of competetions to query
+            path        : {String}      Used to overide endpoint path
+            contextual  : {Boolean}     Whether or not component links should be contextual
+            numVisible  : {Number}  Number of items to show when contracted
+    */
     function FootballFixtures(options) {
         var reqwest = Reqwest;
 
         //Full list of competitions from CM, in priority order.
         //Mappings can be found here: http://cms.guprod.gnl/tools/mappings/pafootballtournament
-        this.competitions = ['500', '510', '100', '101', '120', '127', '301', '213', '320', '701', '650', '102', '103', '121', '122', '123'];
+        this.competitions = ['500', '510', '100', '300', '301', '101', '120', '127', '301', '213', '320', '701', '650', '102', '103', '121', '122', '123'];
 
         this.path =  "/football/api/frontscores?";
         this.queryString = "&competitionId=";
@@ -52,10 +63,13 @@ define(['common', 'reqwest', 'bonzo'], function (common, Reqwest, bonzo) {
                 competitions = options.competitions;
 
             if(options.competitions) {
-                query += (competitions.length > 1) ? competitions.join(this.queryString) : competitions[0];
+                query += (competitions.length > 1) ? competitions.join(this.queryString) :  competitions[0];
             } else {
                 query += this.competitions.join(this.queryString);
             }
+
+            query += (options.contextual) ? '&competitionPage=true' : '&competitionPage=false';
+            query += (options.expandable && options.numVisible) ? '&numVisible=' + options.numVisible : '';
 
             return this.path + query;
         };

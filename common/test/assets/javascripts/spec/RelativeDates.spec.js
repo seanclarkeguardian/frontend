@@ -1,14 +1,29 @@
-define(['modules/relativedates', 'bonzo'], function(RelativeDates, bonzo) {
+define(['modules/relativedates', 
+        'bonzo', 
+        'fixtures',
+        'qwery'], function(RelativeDates, bonzo, fixtures, qwery) {
+    
+    var conf =  {
+            id: 'relative-dates',
+            fixtures: [
+                        '<time id="time-valid" class="js-timestamp" datetime="2012-08-12T18:43:00.000Z">12th August</time>',
+                        '<time id="time-invalid" class="js-timestamp" datetime="201-08-12agd18:43:00.000Z">Last Tuesday</time>'
+                       ]
+                }
 
     describe("Relative dates", function() {
-      
+       
+        beforeEach(function() {
+            fixtures.render(conf);
+        })
+
         // make the date static so tests are stable
     	var fakeNow = Date.parse('2012-08-13T12:00:00+01:00');
         sinon.useFakeTimers(fakeNow, "Date");
 
         var epochBug = '2038-01-19T03:14:07';
 
-        it('should show relative dates for timestamps formatted YYYY-MM-DD HH:MM:SS', function(){
+        it('Show relative dates for timestamps formatted as YYYY-MM-DD HH:MM:SS', function(){
 	   	
 	    	var datesToTest = {
 	        	'lessThanAMinuteAgo': {
@@ -64,33 +79,29 @@ define(['modules/relativedates', 'bonzo'], function(RelativeDates, bonzo) {
 			}
 		});
 
-		it("should just return the input date if said date is in the future", function(){
+		it("Return the input date if said date is in the future", function(){
 			expect(RelativeDates.makeRelativeDate(Date.parse(epochBug))).toBeFalsy();
 		});
 
-		it("should fail politely if given non-date / invalid input for either argument", function(){
+		it("Fail politely if given non-date / invalid input for either argument", function(){
 			expect(RelativeDates.makeRelativeDate('foo')).toBeFalsy();
 		});
+		
+        it("Convert valid timestamps in the HTML document into their expected output", function(){
+            RelativeDates.init();
+            expect(document.getElementById('time-valid').innerHTML).toBe('<span title="12th August">Yesterday, 7:43pm</span>');
+        });
+        
+        // each XHR load event fires replaceValidTimestamps(), so we want to avoid replacing date twice
+        it("Once converted remove the need to convert them again", function(){
+            RelativeDates.init();
+            expect(document.getElementById('time-valid').className).not.toContain('js-timestamp');
+        });
 
-		it("should convert valid timestamps into their expected output", function(){
-
-			// this item has a custom relativeTo value to ensure expected output is consistent
-			var testTimestamp = document.getElementById('relative-date-test-item');
-			var expectedTestOutput = RelativeDates.makeRelativeDate(testTimestamp.getAttribute('data-timestamp')); 
-			var invalidItem = document.getElementById('relative-date-invalid-item')
-			var invalidItemTextBefore = bonzo(invalidItem).text();
-
-			runs(function() {
-	   			RelativeDates.init(); 
-            });
-
-            waits(1);
-
-            runs(function(){
-            	expect(bonzo(testTimestamp).text()).toBe(expectedTestOutput);
-            	expect(bonzo(invalidItem).text()).toBe(invalidItemTextBefore);
-            });
-		});
+        it("Ignore invalid timestamps", function(){
+            RelativeDates.init();
+            expect(document.getElementById('time-invalid').innerHTML).toBe('Last Tuesday');
+        });
 
     });
 

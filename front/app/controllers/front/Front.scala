@@ -6,8 +6,11 @@ import model.TrailblockDescription
 import model.Trailblock
 import akka.actor.Cancellable
 import common.{ Logging, AkkaSupport }
+import conf.CommonSwitches._
 import akka.util.Duration
+import org.joda.time.DateTime
 import views.support.{ Featured, Thumbnail, Headline }
+import com.gu.openplatform.contentapi.model.{ Content => ApiContent }
 
 //Responsible for holding the definition of the two editions
 //and bootstrapping the front (setting up the refresh schedule)
@@ -20,19 +23,20 @@ class Front extends AkkaSupport with Logging {
   val ukEditions = Map(
 
     "front" -> new ConfiguredEdition("UK", Seq(
-      TrailblockDescription("", "News", numItemsVisible = 5, numLargeImages = 2, style = Some(Featured)),
-      TrailblockDescription("sport", "Sport", numItemsVisible = 5, numLargeImages = 1, style = Some(Featured)),
-      TrailblockDescription("commentisfree", "Comment is free", numItemsVisible = 3, style = Some(Featured)),
-      TrailblockDescription("culture", "Culture", numItemsVisible = 1, style = Some(Thumbnail)),
+      TrailblockDescription("", "News", numItemsVisible = 5, style = Some(Featured), showMore = true),
+      TrailblockDescription("sport", "Sport", numItemsVisible = 5, style = Some(Featured), showMore = true),
+      TrailblockDescription("commentisfree", "Comment is free", numItemsVisible = 3, style = Some(Featured), showMore = true),
+      TrailblockDescription("culture", "Culture", numItemsVisible = 3, style = Some(Thumbnail), showMore = true),
       TrailblockDescription("business", "Business", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("lifeandstyle", "Life and style", numItemsVisible = 1, style = Some(Thumbnail)),
+      TrailblockDescription("technology", "Technology", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("money", "Money", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("travel", "Travel", numItemsVisible = 1, style = Some(Thumbnail))
     )),
 
     "sport" -> new FrontEdition("UK", Seq(
-      TrailblockDescription("sport", "Sport", numItemsVisible = 5, style = Some(Featured)),
-      TrailblockDescription("football", "Football", numItemsVisible = 3, style = Some(Featured)),
+      TrailblockDescription("sport", "Sport", numItemsVisible = 5, style = Some(Featured), showMore = true),
+      TrailblockDescription("football", "Football", numItemsVisible = 3, style = Some(Featured), showMore = true),
       TrailblockDescription("sport/cricket", "Cricket", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("sport/rugby-union", "Rugby Union", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("sport/motorsports", "Motor Sport", numItemsVisible = 1, style = Some(Thumbnail)),
@@ -46,7 +50,7 @@ class Front extends AkkaSupport with Logging {
     )),
 
     "culture" -> new FrontEdition("UK", Seq(
-      TrailblockDescription("culture", "Culture", numItemsVisible = 5, style = Some(Featured)),
+      TrailblockDescription("culture", "Culture", numItemsVisible = 5, style = Some(Featured), showMore = true),
       TrailblockDescription("tv-and-radio", "TV & Radio", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("film", "Film", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("music", "Music", numItemsVisible = 1, style = Some(Thumbnail)),
@@ -60,17 +64,18 @@ class Front extends AkkaSupport with Logging {
   val usEditions = Map(
 
     "front" -> new ConfiguredEdition("US", Seq(
-      TrailblockDescription("", "News", numItemsVisible = 5, numLargeImages = 2, style = Some(Featured)),
-      TrailblockDescription("sport", "Sports", numItemsVisible = 5, numLargeImages = 1, style = Some(Featured)),
-      TrailblockDescription("commentisfree", "Comment is free", numItemsVisible = 3, style = Some(Featured)),
-      TrailblockDescription("culture", "Culture", numItemsVisible = 1, style = Some(Thumbnail)),
+      TrailblockDescription("", "News", numItemsVisible = 5, style = Some(Featured), showMore = true),
+      TrailblockDescription("sport", "Sports", numItemsVisible = 5, style = Some(Featured), showMore = true),
+      TrailblockDescription("commentisfree", "Comment is free", numItemsVisible = 3, style = Some(Featured), showMore = true),
+      TrailblockDescription("culture", "Culture", numItemsVisible = 3, style = Some(Thumbnail), showMore = true),
       TrailblockDescription("business", "Business", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("lifeandstyle", "Life and style", numItemsVisible = 1, style = Some(Thumbnail)),
+      TrailblockDescription("technology", "Technology", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("travel", "Travel", numItemsVisible = 1, style = Some(Thumbnail))
     )),
 
     "sport" -> new FrontEdition("US", Seq(
-      TrailblockDescription("sport", "Sports", numItemsVisible = 5, style = Some(Featured)),
+      TrailblockDescription("sport", "Sports", numItemsVisible = 5, style = Some(Featured), showMore = true),
       TrailblockDescription("sport/nfl", "NFL", numItemsVisible = 3, style = Some(Featured)),
       TrailblockDescription("sport/mlb", "MLB", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("sport/nba", "NBA", numItemsVisible = 1, style = Some(Thumbnail)),
@@ -79,7 +84,7 @@ class Front extends AkkaSupport with Logging {
     )),
 
     "culture" -> new FrontEdition("US", Seq(
-      TrailblockDescription("culture", "Culture", numItemsVisible = 5, style = Some(Featured)),
+      TrailblockDescription("culture", "Culture", numItemsVisible = 5, style = Some(Featured), showMore = true),
       TrailblockDescription("film", "Film", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("music", "Music", numItemsVisible = 1, style = Some(Thumbnail)),
       TrailblockDescription("stage", "Stage", numItemsVisible = 1, style = Some(Thumbnail)),
@@ -121,5 +126,43 @@ class Front extends AkkaSupport with Logging {
 }
 
 object Front extends Front
+
+object FrontCharity {
+
+  def apply(): Option[Trailblock] = {
+
+    if (NetworkFrontAppealSwitch.isSwitchedOn) {
+
+      val donateContent = ApiContent(
+        "https://guardian.paythru.com", None, None, new DateTime,
+        "SocietyGuardian - news, comment and analysis on the public and voluntary sectors | Society | guardian.co.uk",
+        "https://guardian.paythru.com",
+        "https://guardian.paythru.com", fields = Option(
+          Map(
+            "liveBloggingNow" -> "false",
+            "headline" -> "Donate now"
+          )
+        )
+      )
+      val appealContent = ApiContent(
+        "society/christmas-charity-appeal-2012", None, None, new DateTime,
+        "Christmas charity appeal 2012", "/society/christmas-charity-appeal-2012",
+        "http://content.guardianapis.com/society/christmas-charity-appeal-2012", fields = Option(Map(
+          "liveBloggingNow" -> "false",
+          "headline" -> "Read more about our Christmas charity appeal"
+        ))
+      )
+      val description = new TrailblockDescription(
+        "society/christmas-charity-appeal-2012", "Christmas charity appeal", 2, style = Some(Thumbnail)
+      )
+      Option(new Trailblock(description, Seq(new model.Content(donateContent), new model.Content(appealContent))))
+
+    } else {
+      None
+    }
+
+  }
+
+}
 
 case class FrontStats(nukUkTrails: Int, numUsTrails: Int)

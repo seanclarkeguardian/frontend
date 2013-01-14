@@ -1,20 +1,37 @@
 package test
 
+import conf.{ ContentApi, Configuration }
 import play.api.test._
 import play.api.test.Helpers._
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import common.GuardianConfiguration
 import java.net.{ HttpURLConnection, URL }
+import java.io.File
+import com.gu.openplatform.contentapi.connection.Http
+import recorder.HttpRecorder
 
 /**
  * Executes a block of code in a running server, with a test HtmlUnit browser.
  */
-class EditionalisedHtmlUnit(config: GuardianConfiguration) {
+class EditionalisedHtmlUnit {
+
+  val recorder = new HttpRecorder {
+    override lazy val baseDir = new File(System.getProperty("user.dir"), "data/database")
+  }
+
+  val originalHttp = ContentApi.http
+
+  ContentApi.http = new Http {
+    override def GET(url: String, headers: scala.Iterable[scala.Tuple2[java.lang.String, java.lang.String]]) = {
+      recorder.load(url, headers.toMap) {
+        originalHttp.GET(url, headers)
+      }
+    }
+  }
+
+  import Configuration.edition._
 
   val testPlugins: Seq[String] = Nil
   val disabledPlugins: Seq[String] = Nil
-
-  import config.edition._
 
   val Port = """.*:(\d*)$""".r
 
@@ -56,7 +73,6 @@ class EditionalisedHtmlUnit(config: GuardianConfiguration) {
       case Port(p) => p.toInt
       case _ => 9000
     }
-
     running(TestServer(port, FakeApplication(additionalPlugins = testPlugins, withoutPlugins = disabledPlugins)), HTMLUNIT) { browser =>
 
       // http://stackoverflow.com/questions/7628243/intrincate-sites-using-htmlunit
@@ -69,9 +85,9 @@ class EditionalisedHtmlUnit(config: GuardianConfiguration) {
 }
 
 object WithHost {
-  def apply(path: String)(implicit config: GuardianConfiguration): String = UK(path)(config)
-  def UK(path: String)(implicit config: GuardianConfiguration): String = "http://" + config.edition.ukHost + path
-  def US(path: String)(implicit config: GuardianConfiguration): String = "http://" + config.edition.usHost + path
+  def apply(path: String): String = UK(path)
+  def UK(path: String): String = "http://" + Configuration.edition.ukHost + path
+  def US(path: String): String = "http://" + Configuration.edition.usHost + path
 }
 
 /**

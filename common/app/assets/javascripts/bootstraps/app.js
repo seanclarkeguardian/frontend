@@ -5,7 +5,8 @@ define('bootstraps/app', [
     "bootstraps/front",
     "bootstraps/football",
     "bootstraps/article",
-    "bootstraps/gallery"
+    "bootstraps/gallery",
+    "modules/pageconfig"
 ], function (
     domReady,
     Router,
@@ -13,12 +14,18 @@ define('bootstraps/app', [
     Front,
     Football,
     Article,
-    Gallery
+    Gallery,
+    pageConfig
 ) {
 
-    var routes = function(config) {
+    var routes = function(rawConfig) {
+
+        var config = pageConfig(rawConfig);
+
         domReady(function() {
             var r = new Router();
+
+
 
             //Init all common modules first
             Common.init(config);
@@ -43,7 +50,6 @@ define('bootstraps/app', [
             if (config.page.contentType === "Gallery") {
                 Gallery.init();
             }
-
 
             //Kick it all off
             r.init();

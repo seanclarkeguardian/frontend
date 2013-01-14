@@ -1,3 +1,7 @@
+/*
+    Module: autoupdate.js
+    Description: Used to load update fragments of the DOM from specfied endpoint
+*/
 define([
     'common',
     'reqwest',
@@ -13,30 +17,49 @@ define([
     qwery,
     userPrefs
 ) {
-
+    /*
+        @param {Object} options hash of configuration options:
+            path    : {String}              Endpoint path to ajax request,
+            delay   : {Number}              Timeout in milliseconds to query endpoint,
+            attachTo: {DOMElement|Object}   DOMElement or list of elements insert response into
+            switches: {Object}              Global swicthes object
+    */
     function Autoupdate(config) {
 
         var options = common.extend({
             'activeClass': 'is-active',
             'btnClass' : '.update-btn',
             'prefName': 'auto-update',
-            'iconClass' : 'i-update'
+            'iconClass' : 'is-updating'
         }, config);
 
         this.template =
-            '<p class="update-text type-4">Auto update</p>' +
-            '<i class="i '+ options.iconClass + '"/></i>' +
-            '<button class="update-btn type-6" data-action="off" data-link-name="autoupdate off">Off</button>' +
-            '<button class="update-btn type-6" data-action="on" data-link-name="autoupdate on">On</button>';
+            '<p class="update-text type-6">Auto update</p>' +
+            '<i class="'+ options.iconClass + '"/></i>' +
+            '<button class="update-btn type-8" data-action="off" data-link-name="autoupdate off">Off</button>' +
+            '<button class="update-btn type-8" data-action="on" data-link-name="autoupdate on">On</button>';
 
         // View
         this.view = {
-            render: function (html) {
-                var attachTo = options.attachTo;
-                attachTo.innerHTML = html;
+            render: function (res) {
+                var attachTo = options.attachTo,
+                    date = new Date().toString();
 
-                // add a timestamp to the attacher
-                bonzo(attachTo).attr('data-last-updated', new Date().toString());
+                //Check if we are handling single fragment
+                if(attachTo.nodeType) {
+                    attachTo.innerHTML = res.html;
+
+                    // add a timestamp to the attacher
+                    bonzo(attachTo).attr('data-last-updated', date);
+                //Multiple frgamnets to update
+                } else {
+                    for (var view in attachTo) {
+                        if(attachTo.hasOwnProperty(view)) {
+                            attachTo[view].innerHTML = res[view];
+                            bonzo(attachTo[view]).attr('data-last-updated', date);
+                        }
+                    }
+                }
                 common.mediator.emit('modules:autoupdate:render');
             },
 
@@ -62,7 +85,7 @@ define([
                 common.mediator.emit('modules:autoupdate:destroyed');
             }
         };
-        
+
         // Model
         this.load = function (url) {
             var path = options.path,
@@ -78,7 +101,7 @@ define([
                         that.off();
                         that.view.destroy();
                     } else {
-                        common.mediator.emit('modules:autoupdate:loaded', [response.html]);
+                        common.mediator.emit('modules:autoupdate:loaded', response);
                     }
                 },
                 error: function () {
@@ -116,13 +139,13 @@ define([
             if (options.switches && options.switches.autoRefresh !== true) {
                 return;
             }
-            
+
             var that = this,
                 pref = this.getPref();
-            
-            // add the component to the page
-            qwery('.update')[0].innerHTML = this.template;
-            
+
+            // add the component to the page, and show it
+            common.$g('.update').html(this.template).removeClass('hidden');
+
             this.icon = common.$g('.' + options.iconClass);
             this.btns = common.$g(options.btnClass);
 
@@ -145,7 +168,7 @@ define([
         };
 
     }
-    
+
     return Autoupdate;
 
 });

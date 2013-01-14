@@ -3,6 +3,7 @@ package model
 import com.gu.openplatform.contentapi.model.{ Content => ApiContent, MediaAsset }
 import org.joda.time.DateTime
 import org.scala_tools.time.Imports._
+import common.Reference
 
 class Content(delegate: ApiContent) extends Trail with Tags with MetaData {
   private lazy val fields = delegate.safeFields
@@ -14,6 +15,10 @@ class Content(delegate: ApiContent) extends Trail with Tags with MetaData {
 
   lazy val images: Seq[Image] = delegate.mediaAssets.filter { _.`type` == "picture" } map { Image(_) }
 
+  lazy val videoImages: Seq[Image] = delegate.mediaAssets.filter(_.`type` == "video")
+    .filter(_.safeFields.isDefinedAt("stillImageUrl"))
+    .map { videoAsset => Image(videoAsset.copy(file = videoAsset.safeFields.get("stillImageUrl"))) }
+
   lazy val id: String = delegate.id
   lazy val sectionName: String = delegate.sectionName.getOrElse("")
   lazy val section: String = delegate.sectionId.getOrElse("")
@@ -21,10 +26,10 @@ class Content(delegate: ApiContent) extends Trail with Tags with MetaData {
   lazy val webPublicationDate: DateTime = delegate.webPublicationDate
   lazy val lastModified: DateTime = fields("lastModified").parseISODateTimeNoMillis
   lazy val shortUrl: String = delegate.safeFields("shortUrl")
-  lazy val apiUrl: String = delegate.apiUrl
   lazy val webUrl: String = delegate.webUrl
   lazy val headline: String = fields("headline")
   lazy val webTitle: String = buildTitleTag(useUrl = true, delegate.webTitle, delegate.sectionName.getOrElse(""))
+  lazy val wordCount: String = fields.get("wordcount").getOrElse("")
 
   lazy val standfirst: Option[String] = fields.get("standfirst")
   lazy val starRating: Option[String] = fields.get("starRating")
@@ -32,7 +37,7 @@ class Content(delegate: ApiContent) extends Trail with Tags with MetaData {
   lazy val byline: Option[String] = fields.get("byline")
   lazy val shortUrlPath: String = shortUrl.replace("http://gu.com", "")
 
-  lazy val canonicalUrl: String = webUrl
+  override lazy val canonicalUrl = Some(webUrl)
 
   lazy val isLive: Boolean = fields("liveBloggingNow").toBoolean
 
@@ -54,8 +59,9 @@ class Content(delegate: ApiContent) extends Trail with Tags with MetaData {
     "commentable" -> fields.get("commentable").map(_ == "true").getOrElse(false),
     "show-in-related" -> fields.get("showInRelatedContent").map(_.toBoolean).getOrElse(true),
     "page-code" -> fields("internalPageCode"),
-    "isLive" -> isLive
-  )
+    "isLive" -> isLive,
+    "wordCount" -> wordCount
+  ) ++ Map("references" -> delegate.references.map(r => Reference(r.id)))
 
   override lazy val cacheSeconds = {
     if (isLive) 5

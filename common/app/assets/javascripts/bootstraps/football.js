@@ -1,3 +1,4 @@
+/*global guardian:false */
 define([
     //Common libraries
     "common",
@@ -9,30 +10,46 @@ define([
     "modules/footballfixtures",
     "modules/footballtables",
     "modules/more-matches",
-    "modules/autoupdate"
+    "modules/autoupdate",
+    "modules/pad",
+    "modules/matchnav"
 ], function (
     common,
     qwery,
-
     Router,
     TogglePanel,
     Expandable,
     FootballFixtures,
     FootballTable,
     MoreMatches,
-    AutoUpdate
+    AutoUpdate,
+    Pad,
+    MatchNav
 ) {
 
     var modules = {
+        matchNav: function(config){
+            if (config.page.footballMatch) {
+                var url =  "/football/api/match-nav/" + config.page.footballMatch.id;
+                    url += "?currentPage=" + encodeURIComponent(config.page.pageId);
+                new MatchNav().load(url);
+            }
+        },
 
         initTogglePanels: function () {
             TogglePanel.init();
         },
 
         showFrontFixtures: function() {
+            common.mediator.on('modules:footballfixtures:expand', function(id) {
+                var expandable = new Expandable({ id: id, expanded: false });
+                expandable.init();
+            });
             var table = new FootballFixtures({
-                    prependTo: qwery('ul > li', '.trailblock')[1],
-                    expandable: false
+                prependTo: qwery('ul > li', '.trailblock')[1],
+                contextual: false,
+                expandable: true,
+                numVisible: 10
             }).init();
         },
 
@@ -47,9 +64,10 @@ define([
                 if(title) { title.className = "js-hidden"; }
             });
 
-            var fixtures = new FootballFixtures({
+            var todaysFixtures = new FootballFixtures({
                 prependTo: document.querySelector('.t2'),
                 competitions: [competition],
+                contextual: true,
                 expandable: false
             }).init();
 
@@ -72,15 +90,13 @@ define([
             }).init();
         },
 
-        initAutoUpdate: function(switches) {
-            if (qwery('.match.live-match').length > 0) {
-                var a = new AutoUpdate({
-                    path: window.location.pathname,
-                    delay: 10000,
-                    attachTo: qwery(".matches-container")[0],
-                    switches: switches
-                }).init();
-            }
+        initAutoUpdate: function(container, switches) {
+            var a = new AutoUpdate({
+                path: window.location.pathname,
+                delay: 10000,
+                attachTo: container,
+                switches: switches
+            }).init();
         }
     };
 
@@ -110,7 +126,9 @@ define([
             case 'live':
                 modules.showMoreMatches();
                 modules.initTogglePanels();
-                modules.initAutoUpdate(config.switches);
+                if (qwery('.match.live-match').length > 0) {
+                    modules.initAutoUpdate(qwery(".matches-container")[0], config.switches);
+                }
                 break;
             case 'table':
                 modules.showMoreMatches();
@@ -121,8 +139,8 @@ define([
                 modules.initTogglePanels();
                 break;
             default:
-                var comp = config.page.paFootballCompetition,
-                    team = config.page.paFootballTeam;
+                var comp = config.referenceOfType('paFootballCompetition'),
+                    team = config.referenceOfType('paFootballTeam');
 
                 if(comp) {
                     modules.showCompetitionData(comp);
@@ -130,6 +148,24 @@ define([
                 if(team) {
                     modules.showTeamData(team);
                 }
+                if(config.page.footballMatch){
+                    var match = config.page.footballMatch;
+
+                    modules.matchNav(config);
+
+                    if(match.isLive) {
+                        modules.initAutoUpdate(
+                            {
+                                "summary"   : qwery('.match-summary')[0],
+                                "stats"     : qwery('.match-stats')[0]
+                            },
+                            config.switches,
+                            true
+                        );
+                    }
+                }
+
+
 
                 break;
         }

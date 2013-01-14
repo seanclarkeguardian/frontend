@@ -6,6 +6,7 @@ define([
     //Modules
     "modules/expandable",
     "modules/trailblocktoggle",
+    "modules/trailblock-show-more",
     "modules/footballfixtures"
 ], function (
     common,
@@ -14,11 +15,12 @@ define([
 
     Expandable,
     TrailblockToggle,
+    TrailblockShowMore,
     FootballFixtures
 ) {
 
     var modules = {
-
+            
         showFrontExpanders: function () {
             var frontTrailblocks = common.$g('.js-front-trailblock'), i, l;
             for (i=0, l=frontTrailblocks.length; i<l; i++) {
@@ -28,11 +30,16 @@ define([
                 frontExpandable.init();
             }
         },
-
+        
         showTrailblockToggles: function (config) {
             var edition = config.page.edition;
             var tt = new TrailblockToggle();
             tt.go(edition);
+        },
+
+        showTrailblockShowMore: function () {
+            var trailblockShowMore = new TrailblockShowMore();
+            trailblockShowMore.init();
         },
 
         showFootballFixtures: function(path) {
@@ -47,11 +54,22 @@ define([
             switch(path) {
                 case "/" :
                     prependTo = qwery('ul > li', '.zone-sport')[1];
-                    table = new FootballFixtures({prependTo: prependTo, competitions: ['500', '510', '100'], expandable: true}).init();
+                    table = new FootballFixtures({
+                        prependTo: prependTo,
+                        competitions: ['500', '510', '100'],
+                        contextual: false,
+                        expandable: true,
+                        numVisible: 3
+                    }).init();
                     break;
                 case "/sport" :
                     prependTo = qwery('ul > li', '.trailblock')[1];
-                    table = new FootballFixtures({prependTo: prependTo, expandable: true}).init();
+                    table = new FootballFixtures({
+                        prependTo: prependTo,
+                        contextual: false,
+                        expandable: true,
+                        numVisible: 5
+                    }).init();
                     break;
             }
         }
@@ -59,8 +77,8 @@ define([
 
     // All methods placed inside here will exec after DOMReady
     var ready = function(req, config) {
-        modules.showFrontExpanders();
         modules.showTrailblockToggles(config);
+        modules.showTrailblockShowMore();
         if(config.page.edition === "UK") {
             modules.showFootballFixtures(req.url);
         }

@@ -51,6 +51,8 @@ trait LiveMatchAgent extends AkkaSupport with HasCompetition with Logging {
 
   def shutdownLiveMatches() { agent.close() }
 
+  def add(theMatch: MatchDay) { agent.send(old => old :+ theMatch) }
+
   def liveMatches = agent()
 }
 
@@ -70,6 +72,8 @@ trait FixtureAgent extends AkkaSupport with HasCompetition with Logging {
     }
   }
 
+  def add(theMatch: Fixture) { agent.send(old => old :+ theMatch) }
+
   def shutdownFixtures() { agent.close() }
 
   def awaitFixtures() { quietly(agent.await(Timeout(5000))) }
@@ -79,7 +83,7 @@ trait FixtureAgent extends AkkaSupport with HasCompetition with Logging {
   def fixturesOn(date: DateMidnight) = fixtures.filter(_.date.toDateMidnight == date)
 }
 
-trait ResultAgent extends AkkaSupport with HasCompetition with Logging with Implicits {
+trait ResultAgent extends AkkaSupport with HasCompetition with Logging with implicits.Collections {
 
   private val agent = play_akka.agent[Seq[FootballMatch]](Nil)
 
@@ -123,6 +127,8 @@ trait ResultAgent extends AkkaSupport with HasCompetition with Logging with Impl
     }
   }
 
+  def add(theMatch: Result) { agent.send(old => old :+ theMatch) }
+
   def shutdownResults() { agent.close() }
 
   def results = agent()
@@ -158,6 +164,17 @@ class CompetitionAgent(_competition: Competition) extends FixtureAgent with Resu
     awaitResults()
     awaitLeagueTable()
   }
+
+  //used for adding test data
+  def setMatches(matches: Seq[FootballMatch]) {
+    matches.foreach {
+      case fixture: Fixture => add(fixture)
+      case result: Result => add(result)
+      case live: MatchDay => add(live)
+    }
+    await()
+  }
+
 }
 
 object CompetitionAgent {

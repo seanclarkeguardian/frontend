@@ -21,12 +21,13 @@ define([
     }
 
     function getPageUrl(config) {
-            return 'm.guardian.co.uk/' + config.pageId + '/oas.html';
+            var id = (config.pageId === '') ? '' : config.pageId + '/';
+            return 'm.guardian.co.uk/' + id + 'oas.html';
     }
 
     function getKeywords(config) {
         return config.keywords.split(',').map(function(keyword){
-            return 'k=' + encodeURIComponent(keyword.toLowerCase());
+            return 'k=' + encodeURIComponent(keyword.replace(" ", "-").toLowerCase());
         }).join('&');
     }
 

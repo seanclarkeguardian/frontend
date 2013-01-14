@@ -23,8 +23,6 @@ define([
             showToggleLinks: function () {
 
                 var toggles = common.$g(options.toggleSelectorClass).each(function (toggle) {
-                    
-                    bonzo(toggle).removeClass('initially-off'); // show the nav links
 
                     bean.add(toggle, 'click', function (e) {
                         common.mediator.emit('modules:trailblockToggle:toggle', this);
@@ -33,14 +31,14 @@ define([
             },
 
             toggleTrailblock: function (trigger, manualTrigger) {
-                
+
                 var idPrefix = "front-trailblock-";
                 var classesToToggle = 'rolled-out rolled-up';
 
                 if (manualTrigger) {
                     trigger = document.getElementById('js-trigger-' + manualTrigger);
                 }
-                
+
                 // convert trigger to bonzo object
                 trigger = bonzo(trigger);
 
@@ -53,10 +51,12 @@ define([
                 trailblock = document.getElementById(trailblock);
                 bonzo(trailblock).toggleClass(classesToToggle);
 
-                var hideTrailblock = (trigger.text() === "Hide") ? "Show" : "Hide";
+                var text = trigger.text();
+                var hideTrailblock = (text === "Hide") ? "Show" : "Hide";
                 trigger.text(hideTrailblock);
-                trigger.attr('data-link-name', hideTrailblock);
-                
+                //This is backwards as executes before omniture call
+                trigger.attr('data-link-name', (text === "Hide") ? "Hide" : "Show");
+
                 if (!manualTrigger) { // don't add it to prefs since we're reading from them
                     var shouldHideSection = true;
                     if (hideTrailblock === "Hide") {
@@ -89,7 +89,7 @@ define([
 
                 if (window.localStorage) {
                     var existingPrefs = userPrefs.get(options.prefName);
-                    
+
                     if (existingPrefs) {
 
                         // see if it already exists
@@ -109,14 +109,14 @@ define([
 
                         var newPrefs = sectionArray.join(',');
                         userPrefs.set(options.prefName, newPrefs);
-                    
+
                     // need to create it instead
                     } else {
                         userPrefs.set(options.prefName, section);
                     }
 
                 }
-                
+
             }
 
         };

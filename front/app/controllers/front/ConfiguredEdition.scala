@@ -17,7 +17,7 @@ class ConfiguredEdition(edition: String, descriptions: Seq[TrailblockDescription
 
   override lazy val proxy = Proxy(Configuration)
 
-  val configUrl = Configuration.configUrl
+  val configUrl = Configuration.front.config
 
   val configAgent = play_akka.agent[Seq[TrailblockAgent]](Nil)
 
@@ -77,7 +77,8 @@ class ConfiguredEdition(edition: String, descriptions: Seq[TrailblockDescription
       TrailblockDescription(
         toId((block \ "id").as[String]),
         (block \ "title").as[String],
-        (block \ "numItems").as[Int]
+        (block \ "numItems").as[Int],
+        showMore = (block \ "showMore").asOpt[Boolean].getOrElse(false)
       )
     }
   }

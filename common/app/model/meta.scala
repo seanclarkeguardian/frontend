@@ -11,6 +11,7 @@ trait MetaData {
   def id: String
   def section: String
   def webTitle: String
+  def pageTitleTag: String
   def analyticsName: String
 
   // this is here so it can be included in analytics.
@@ -26,23 +27,11 @@ trait MetaData {
     "section" -> section,
     "web-title" -> webTitle,
     "build-number" -> buildNumber,
-    "analytics-name" -> analyticsName
+    "analytics-name" -> analyticsName,
+    "page-title-tag" -> pageTitleTag
   ) ++ canonicalUrl.map { url => Map("canonical-url" -> url) }.getOrElse(Map.empty)
 
   def cacheSeconds = 60
-
-  implicit def string2NonEmpties(str: Seq[String]) = new {
-    lazy val nonEmpties: Seq[String] = str filter { !_.isEmpty }
-  }
-
-  def buildTitleTag(useUrl: Boolean, parts: String*) = {
-    val lastPart = useUrl match {
-      case true => "guardian.co.uk"
-      case false => "The Guardian"
-    }
-
-    (parts :+ lastPart).nonEmpties.mkString(" | ")
-  }
 
 }
 
@@ -51,6 +40,7 @@ class Page(
   val id: String,
   val section: String,
   val webTitle: String,
+  val pageTitleTag: String,
   val analyticsName: String) extends MetaData
 
 object Page {
@@ -59,7 +49,8 @@ object Page {
     id: String,
     section: String,
     webTitle: String,
-    analyticsName: String) = new Page(canonicalUrl, id, section, webTitle, analyticsName)
+    pageTitleTag: String,
+    analyticsName: String) = new Page(canonicalUrl, id, section, webTitle, pageTitleTag, analyticsName)
 }
 
 trait Images {

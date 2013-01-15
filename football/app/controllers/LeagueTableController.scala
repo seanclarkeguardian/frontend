@@ -28,6 +28,7 @@ object LeagueTableController extends Controller with Logging with CompetitionTab
       "football/tables",
       "football",
       "All tables",
+      buildTitleTag(useUrl = false, "All tables", "Football"),
       "GFE:Football:automatic:tables"
     )
 
@@ -51,6 +52,7 @@ object LeagueTableController extends Controller with Logging with CompetitionTab
       "football/teams",
       "football",
       "All teams",
+      buildTitleTag(useUrl = false, "All teams", "Football"),
       "GFE:Football:automatic:teams"
     )
 
@@ -73,6 +75,7 @@ object LeagueTableController extends Controller with Logging with CompetitionTab
         "football/tables",
         "football",
         table.competition.fullName + " table",
+        buildTitleTag(useUrl = false, table.competition.fullName + " table", "Football"),
         "GFE:Football:automatic:competition tables"
       )
 

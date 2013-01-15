@@ -28,7 +28,8 @@ class Content(delegate: ApiContent) extends Trail with Tags with MetaData {
   lazy val shortUrl: String = delegate.safeFields("shortUrl")
   lazy val webUrl: String = delegate.webUrl
   lazy val headline: String = fields("headline")
-  lazy val webTitle: String = buildTitleTag(useUrl = true, delegate.webTitle, delegate.sectionName.getOrElse(""))
+  lazy val webTitle: String = delegate.webTitle
+  lazy val pageTitleTag: String = buildTitleTag(useUrl = true, delegate.webTitle, delegate.sectionName.getOrElse(""))
   lazy val wordCount: String = fields.get("wordcount").getOrElse("")
 
   lazy val standfirst: Option[String] = fields.get("standfirst")

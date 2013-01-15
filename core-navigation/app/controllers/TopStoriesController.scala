@@ -46,6 +46,7 @@ object TopStoriesController extends Controller with Logging with Paging with For
             "top-stories",
             "top-stories",
             "Top Stories",
+            "Top stories",
             "GFE:Top Stories"
           )
           Ok(Compressed(views.html.topStories(page, trails)))

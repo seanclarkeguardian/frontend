@@ -64,6 +64,7 @@ object FixturesController extends FixtureRenderer with Logging {
     "football/fixtures",
     "football",
     "All fixtures",
+    buildTitleTag(useUrl = false, "All fixtures", "Football"),
     "GFE:Football:automatic:fixtures"
   )
 
@@ -108,6 +109,7 @@ object CompetitionFixturesController extends FixtureRenderer with Logging {
       "football/fixtures",
       "football",
       competition.fullName + " fixtures",
+      buildTitleTag(useUrl = false, competition.fullName + " fixtures", "Football"),
       "GFE:Football:automatic:competition fixtures"
     )
 
@@ -141,6 +143,7 @@ object TeamFixturesController extends Controller with Logging with CompetitionFi
         "football/" + teamName + "/fixtures",
         "football",
         team.name + " fixtures",
+        buildTitleTag(useUrl = false, team.name + " fixtures", "Football"),
         "GFE:Football:automatic:team fixtures"
       )
 

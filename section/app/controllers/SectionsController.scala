@@ -6,7 +6,7 @@ import play.api.mvc.{ Controller, Action }
 
 object SectionsController extends Controller with Logging {
 
-  val page = Page(canonicalUrl = None, "sections", "sections", "All sections", "GFE:All sections")
+  val page = Page(canonicalUrl = None, "sections", "sections", "All sections", buildTitleTag(useUrl = false, "All sections"), "GFE:All sections")
 
   def render = Action { implicit request =>
     Cached(page) {

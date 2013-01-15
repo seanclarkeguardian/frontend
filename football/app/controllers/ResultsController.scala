@@ -65,6 +65,7 @@ object ResultsController extends ResultsRenderer with Logging {
     "football/results",
     "football",
     "All results",
+    buildTitleTag(useUrl = false, "All results", "Football"),
     "GFE:Football:automatic:results"
   )
 
@@ -109,6 +110,7 @@ object CompetitionResultsController extends ResultsRenderer with Logging {
       "football/results",
       "football",
       competition.fullName + " results",
+      buildTitleTag(useUrl = false, competition.fullName + " results", "Football"),
       "GFE:Football:automatic:competition results"
     )
     renderResults(
@@ -141,6 +143,7 @@ object TeamResultsController extends Controller with Logging with CompetitionRes
         "/football/" + teamName + "/results",
         "football",
         team.name + " results",
+        buildTitleTag(useUrl = false, team.name + " results", "Football"),
         "GFE:Football:automatic:team results"
       )
 

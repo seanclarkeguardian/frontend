@@ -11,7 +11,7 @@ import conf.Configuration
 object LiveMatchesController extends Controller with CompetitionLiveFilters with Logging {
 
   val page = new Page(Some("http://www.guardian.co.uk/football/matches"), "football/live", "football",
-    "Today's matches", "GFE:Football:automatic:live matches") {
+    "Today's matches", buildTitleTag(useUrl = false, "Today's matches", "Football"), "GFE:Football:automatic:live matches") {
     override val cacheSeconds = 10
   }
 

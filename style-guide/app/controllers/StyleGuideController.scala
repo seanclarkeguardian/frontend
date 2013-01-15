@@ -16,21 +16,21 @@ case class ZoneColour(className: String, selectors: List[String], zoneName: Stri
 object StyleGuideController extends Controller with Logging {
 
   def renderIndex = Action { implicit request =>
-    val page = Page(canonicalUrl = None, "style-guide", "style-guide", "Style guide: home", "GFE:Style-guide")
+    val page = Page(canonicalUrl = None, "style-guide", "style-guide", "Style guide: home", "Home", "GFE:Style-guide")
     Cached(60) {
       Ok(Compressed(views.html.styleGuide.index(page)))
     }
   }
 
   def renderTypography = Action { implicit request =>
-    val page = Page(canonicalUrl = None, "typography", "style-guide", "Typography", "GFE:Style-guide:typography")
+    val page = Page(canonicalUrl = None, "typography", "style-guide", "Typography", "Typography", "GFE:Style-guide:typography")
     Cached(60) {
       Ok(Compressed(views.html.styleGuide.typography(page)))
     }
   }
 
   def renderZones = Action { implicit request =>
-    val page = Page(canonicalUrl = None, "zones", "style-guide", "Zones", "GFE:Style-guide:zones")
+    val page = Page(canonicalUrl = None, "zones", "style-guide", "Zones", "Zones", "GFE:Style-guide:zones")
 
     val zoneList = Seq(
       ZoneColour("zone-news", List(".zone-news", ".zone-journalismcompetition", ".zone-global-development", ".zone-law", ".zone-theobserver", ".zone-science", ".zone-theguardian", ".zone-education", ".zone-technology", ".zone-society", ".zone-politics", ".zone-uk", ".zone-media", ".zone-world"), "News (default)", "#D61D00"),
@@ -50,7 +50,7 @@ object StyleGuideController extends Controller with Logging {
   }
 
   def renderSprites = Action { implicit request =>
-    val page = Page(canonicalUrl = None, "sprites", "style-guide", "CSS sprites", "GFE:Style-guide:sprites")
+    val page = Page(canonicalUrl = None, "sprites", "style-guide", "CSS sprites", "CSS Sprites", "GFE:Style-guide:sprites")
     Cached(60) {
       Ok(Compressed(views.html.styleGuide.sprites(page)))
     }
@@ -80,7 +80,7 @@ object StyleGuideController extends Controller with Logging {
   }
 
   private def renderModuleOutput(model: ArticlePage)(implicit request: RequestHeader) = {
-    val page = Page(canonicalUrl = None, "modules", "style-guide", "Modules", "GFE:Style-guide:modules")
+    val page = Page(canonicalUrl = None, "modules", "style-guide", "Modules", "Modules", "GFE:Style-guide:modules")
 
     Cached(60) {
       Ok(Compressed(views.html.styleGuide.modules(page, model.article, model.edition, model.storyPackage)))
@@ -88,14 +88,14 @@ object StyleGuideController extends Controller with Logging {
   }
 
   def cssHelpers = Action { implicit request =>
-    val page = Page(canonicalUrl = None, "css-helpers", "style-guide", "CSS helpers", "GFE:Style-guide:css-helpers")
+    val page = Page(canonicalUrl = None, "css-helpers", "style-guide", "CSS helpers", "CSS helpers", "GFE:Style-guide:css-helpers")
     Cached(60) {
       Ok(Compressed(views.html.styleGuide.csshelpers(page)))
     }
   }
 
   def codingStandards = Action { implicit request =>
-    val page = Page(canonicalUrl = None, "coding-standards", "style-guide", "Coding standards", "GFE:Style-guide:coding-standards")
+    val page = Page(canonicalUrl = None, "coding-standards", "style-guide", "Coding standards", "Coding standards", "GFE:Style-guide:coding-standards")
     Cached(60) {
       Ok(Compressed(views.html.styleGuide.codingstandards(page)))
     }

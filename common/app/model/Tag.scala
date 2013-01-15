@@ -11,6 +11,7 @@ case class Tag(private val delegate: ApiTag) extends MetaData {
   lazy val section: String = delegate.sectionId.getOrElse("")
   lazy val webUrl: String = delegate.webUrl
   lazy val webTitle: String = delegate.webTitle
+  lazy val pageTitleTag: String = buildTitleTag(useUrl = false, delegate.webTitle)
 
   lazy val canonicalUrl = Some(webUrl)
 

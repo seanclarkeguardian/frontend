@@ -45,4 +45,18 @@ object `package` {
   implicit def ISODateTimeStringNoMillis2DateTime(s: String) = new {
     lazy val parseISODateTimeNoMillis = ISODateTimeFormat.dateTimeNoMillis.parseDateTime(s)
   }
+
+  implicit def string2NonEmpties(str: Seq[String]) = new {
+    lazy val nonEmpties: Seq[String] = str filter { !_.isEmpty }
+  }
+
+  implicit def buildTitleTag(useUrl: Boolean, parts: String*) = {
+    val lastPart = useUrl match {
+      case true => "guardian.co.uk"
+      case false => "The Guardian"
+    }
+
+    (parts :+ lastPart).nonEmpties.mkString(" | ")
+  }
+
 }

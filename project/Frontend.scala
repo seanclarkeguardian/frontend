@@ -35,6 +35,7 @@ object Frontend extends Build with Prototypes with Testing {
             ("qwery"        -> "components/qwery/mobile/qwery-mobile") ~
             ("reqwest"      -> "components/reqwest/src/reqwest") ~
             ("domwrite"     -> "components/dom-write/dom-write") ~
+            ("swipeview"    -> "components/swipeview/swipeview") ~
             ("swipe"        -> "components/swipe/swipe")
           ) ~
           ("wrap" ->

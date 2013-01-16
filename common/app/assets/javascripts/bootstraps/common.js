@@ -22,7 +22,9 @@ define([
     'modules/analytics/clickstream',
     'modules/analytics/omniture',
     'modules/adverts/adverts',
-    'modules/cookies'
+    'modules/cookies',
+    // Swipe Libs
+    'modules/editionswipe'
 ], function (
     common,
     detect,
@@ -46,7 +48,9 @@ define([
     Clickstream,
     Omniture,
     Adverts,
-    Cookies
+    Cookies,
+
+    EditionSwipe
 ) {
 
     var modules = {
@@ -154,6 +158,35 @@ define([
 
         cleanupCookies: function() {
             Cookies.cleanUp(["mmcore.pd", "mmcore.srv", "mmid"]);
+        },
+
+        initEditionSwipe: function() {
+            var opts = {
+                el: '#swipeview-wrap',
+                edition: [
+                    '/society/2013/jan/13/private-firms-corporation-tax-nhs-profits',
+                    '/world/2013/jan/13/iran-lifesaving-drugs-international-sanctions',
+                    '/politics/2013/jan/13/david-cameron-europe-eric-pickles',
+                    '/world/2013/jan/13/indian-police-investigate-gang-rape',
+                    '/uk/2013/jan/13/imani-green-shot-dead-jamaica',
+                    '/world/2013/jan/13/mali-crisis-militants-killed-french-jets',
+                    '/world/2013/jan/13/costa-concordia-disaster-survivors-islanders-mark-anniversary',
+                    '/world/2013/jan/13/beijing-breathe-pollution',
+                    '/business/2013/jan/13/government-aerospace-firms-join-forces',
+                    '/world/2013/jan/13/egyptian-court-orders-hosni-mubarak-retrial'
+                ],
+                ajaxStrip: [
+                    [/^[\s\S]*<!-- start #container -->/, ''], 
+                    [/<!-- end #container -->s[\s\S]*$/, '']
+                ],
+                widthGuess: 1,
+                emulator: window.location.hash.match(/emulator/),
+                afterShow: function(){
+                    console.log('Now do tracking etc.');
+                }
+            };
+
+            var edapi = EditionSwipe(opts);
         }
     };
 
@@ -170,6 +203,8 @@ define([
         modules.transcludeMostPopular(config.page.coreNavigationUrl, config.page.section, config.page.edition);
 
         modules.showRelativeDates();
+
+        modules.initEditionSwipe();
     };
 
     // If you can wait for load event, do so.

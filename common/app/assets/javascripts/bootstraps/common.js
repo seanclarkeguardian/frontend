@@ -161,20 +161,20 @@ define([
         },
 
         initEditionSwipe: function() {
+
+            var edition = ['/']; // Instead, take the forst part of location.pathname, e.g. /sport/...etc
+            common.$g('li[data-link-name="trail"] a').each(function(el, index) {
+                var path = el.pathname; 
+                if (-1 === common.inArray(path, edition)) {
+                    edition.push(path);
+                }
+            });
+            console.log( edition );
+
             var opts = {
                 el: '#swipeview-wrap',
-                edition: [
-                    '/society/2013/jan/13/private-firms-corporation-tax-nhs-profits',
-                    '/world/2013/jan/13/iran-lifesaving-drugs-international-sanctions',
-                    '/politics/2013/jan/13/david-cameron-europe-eric-pickles',
-                    '/world/2013/jan/13/indian-police-investigate-gang-rape',
-                    '/uk/2013/jan/13/imani-green-shot-dead-jamaica',
-                    '/world/2013/jan/13/mali-crisis-militants-killed-french-jets',
-                    '/world/2013/jan/13/costa-concordia-disaster-survivors-islanders-mark-anniversary',
-                    '/world/2013/jan/13/beijing-breathe-pollution',
-                    '/business/2013/jan/13/government-aerospace-firms-join-forces',
-                    '/world/2013/jan/13/egyptian-court-orders-hosni-mubarak-retrial'
-                ],
+                linkSelector: 'a[none]',
+                edition: edition,
                 ajaxStrip: [
                     [/^[\s\S]*<!-- start #container -->/, ''], 
                     [/<!-- end #container -->s[\s\S]*$/, '']

@@ -46,6 +46,12 @@ define([
             }).init();
         },
 
+        initStoryPackage: function() {
+            var sp = new StoryPackage({
+                id: config.page.pageId
+            });
+        },
+
         logReading: function(config) {
             var wordCount = config.page.wordCount;
             if(wordCount !== "") {
@@ -62,6 +68,8 @@ define([
     };
 
     var ready = function(config) {
+
+        modules.initStoryPackage();
 
         if (config.page.isLive) {
             modules.initLiveBlogging(config.switches);

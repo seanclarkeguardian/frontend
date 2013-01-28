@@ -37,15 +37,12 @@
         </div>
     </article>
 
-    @fragments.storyPackage()
-
-    <!--
     @if(storyPackage.nonEmpty) {
-        @fragments.relatedTrails(storyPackage, heading = "Related content", visibleTrails = 5)
+        <section id="js-story-package" class="story-package"></section>
+        <!-- @fragments.relatedTrails(storyPackage, heading = "Related content", visibleTrails = 5) -->
     } else {
         <div id="js-related"></div>
     }
 
-    -->
     <div id="js-popular" class="cf"></div>
 }

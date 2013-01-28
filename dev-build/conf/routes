@@ -15,6 +15,7 @@ GET     /most-popular/*path                                 controllers.MostPopu
 GET     /top-stories                                        controllers.TopStoriesController.render(format = "html")
 GET     /top-stories.:format                                controllers.TopStoriesController.render(format)
 GET     /related/*path                                      controllers.RelatedController.render(path)
+GET    /story-package/:id                                   controllers.StoryPackageController.render(id)
 
 #Style-guide
 GET     /style-guide                controllers.StyleGuideController.renderIndex

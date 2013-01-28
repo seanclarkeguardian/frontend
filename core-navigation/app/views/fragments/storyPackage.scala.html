@@ -1,3 +1,3 @@
 @(event : Event)
 <h3 class="article-zone">More on @event.title</h3>
-@fragments.trailblocks.thumbnail(trails: Seq[Trail], numItemsVisible: Int = 5, related: Boolean = false, numThumbnails: Int = 5, headingLevel: Int = 2)
+@fragments.trailblocks.thumbnail(event.content)

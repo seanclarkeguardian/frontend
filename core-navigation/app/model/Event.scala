@@ -9,7 +9,7 @@ case class Event(
   content: Seq[StoryTrail])
 
 case class StoryTrail(
-  foo: String, 
+  foo: String,
   sectionName: String,
   webPublicationDate: DateTime,
   linkText: String, //webTitle
@@ -17,7 +17,7 @@ case class StoryTrail(
   trailText: Option[String],
   headline: String,
   isLive: Boolean,
-  thumbnail: Option[String] = None) extends Trail { }
+  thumbnail: Option[String] = None) extends Trail {}
 
 object Events {
   val australianOpen = Event(

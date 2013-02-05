@@ -4,13 +4,15 @@ define([
     "modules/expandable",
     "modules/autoupdate",
     "modules/matchnav",
-    "modules/analytics/reading"
+    "modules/analytics/reading",
+    "modules/accordion"
 ], function (
     common,
     Expandable,
     AutoUpdate,
     MatchNav,
-    Reading
+    Reading,
+    Accordion
 ) {
 
     var modules = {
@@ -59,6 +61,12 @@ define([
 
                 reader.init();
             }
+        },
+
+        initAccordion: function() {
+            if(document.querySelector('.accordion')) {
+                var a = new Accordion();
+            }
         }
     };
 
@@ -68,9 +76,11 @@ define([
             modules.initLiveBlogging(config.switches);
         }
 
-        if (config.page.showInRelated) {
-            modules.related(config);
-        }
+        // if (config.page.showInRelated) {
+        //     modules.related(config);
+        // }
+        
+        modules.initAccordion();
 
         if(config.page.section === "football") {
             modules.matchNav(config);

@@ -99,6 +99,14 @@ define([
           });
         },
 
+        transcludeStoryHack: function (config){
+          common.mediator.on("modules:storyhack:load", function(url){
+                var relatedExpandable = new Expandable({ id: 'related-trails', expanded: false });
+                common.mediator.on('modules:related:render', relatedExpandable.init);
+                new Related(document.getElementById('js-related'), config.switches).load(url[0]);
+          });
+        },
+
         transcludeMostPopular: function (host, section, edition) {
             var url = host + '/most-popular' + (section ? '/' + section : ''),
                 domContainer = document.getElementById('js-popular');
@@ -169,6 +177,8 @@ define([
         modules.transcludeTopStories(config);
 
         modules.transcludeRelated(config);
+        modules.transcludeStoryHack(config);
+
         modules.transcludeMostPopular(config.page.coreNavigationUrl, config.page.section, config.page.edition);
 
         modules.showRelativeDates();

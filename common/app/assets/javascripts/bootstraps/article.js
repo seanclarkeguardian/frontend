@@ -64,11 +64,21 @@ define([
 
     var ready = function(config) {
 
+        // Story hack vars
+        var storyHackTag = 'Politics',
+            storyHackUrl = 'http://example.com',
+            keywords = config.page.keywords ? config.page.keywords.split(',') || [],
+            doStoryHack = keywords.indexOf(storyHackTag) > -1;
+
+        console.log('loadStoryHack: ' + loadStoryHack);
+
         if (config.page.isLive) {
             modules.initLiveBlogging(config.switches);
         }
 
-        if (config.page.showInRelated) {
+        if (doStoryHack) {
+            common.mediator.emit("modules:storyhack:load", [storyHackUrl]);
+        } else if (config.page.showInRelated) {
             modules.related(config);
         }
 

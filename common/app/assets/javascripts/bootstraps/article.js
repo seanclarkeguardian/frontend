@@ -64,13 +64,14 @@ define([
 
     var ready = function(config) {
 
-        // Story hack vars
         var storyHackTag = 'Politics',
-            storyHackUrl = 'http://example.com',
-            keywords = config.page.keywords ? config.page.keywords.split(',') || [],
-            doStoryHack = keywords.indexOf(storyHackTag) > -1;
+            storyHackUrl = 'http://m.guardian.co.uk/top-stories.json',
+            keywords = (config.page && config.page.keywords) ? config.page.keywords.split(',') : [],
+            doStoryHack = false;
 
-        console.log('loadStoryHack: ' + loadStoryHack);
+        keywords.map(function(k){
+            if (k === storyHackTag) doStoryHack = true;
+        });
 
         if (config.page.isLive) {
             modules.initLiveBlogging(config.switches);

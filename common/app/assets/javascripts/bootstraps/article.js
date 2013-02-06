@@ -87,8 +87,8 @@ define([
         },
 
         initStoryHackInlines: function(config) {
-            var url1 = 'http://client.stephanfowler.com/gu/story-test/inline1.js',
-                url2 = 'http://client.stephanfowler.com/gu/story-test/inline2.js',
+            var url1 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js',
+                url2 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js',
                 paras = common.$g('.article-body > p:not(:empty)'),
                 r1, r2;
 

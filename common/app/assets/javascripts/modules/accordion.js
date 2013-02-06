@@ -8,7 +8,7 @@ define([
     bean
 ) {
 
-    Accordion = function() {
+    var Accordion = function() {
 
         var rootEl = bonzo(qwery('.accordion'));
 

@@ -1,7 +1,8 @@
 define(['common', 'reqwest'], function (common, reqwest) {
 
     function Related(attachTo, switches, renderEventName) {
-        
+        var self = this;
+
         renderEventName = renderEventName || 'modules:related:render';
 
         // View
@@ -15,7 +16,7 @@ define(['common', 'reqwest'], function (common, reqwest) {
 
         // Bindings
         common.mediator.on('modules:related:loaded', this.view.render);
-        
+
         // Model
         this.load = function (url) {
 
@@ -26,7 +27,7 @@ define(['common', 'reqwest'], function (common, reqwest) {
                     jsonpCallback: 'callback',
                     jsonpCallbackName: 'showRelated',
                     success: function (json) {
-                        common.mediator.emit('modules:related:loaded', [json.html]);
+                        self.view.render(json.html)
                     },
                     error: function () {
                         common.mediator('module:error', 'Failed to load related', 'related.js');

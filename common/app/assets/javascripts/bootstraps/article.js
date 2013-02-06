@@ -87,19 +87,19 @@ define([
         },
 
         initStoryHackInlines: function(config) {
-            var url1 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js',
-                url2 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js',
-                paras = common.$g('.article-body > p:not(:empty)'),
-                r1, r2;
+            var blocks = [
+                    {para:3, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js'},
+                    {para:5, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js'},
+                    {para:7, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-3.js'}
+                ],
+                paras = common.$g('.article-body > p:not(:empty)');
 
-            if (paras[4]) {
-                common.$g(paras[4]).after('<div id="js-inline-1" class="js-inline"></div>');
-                r1 = new Related(document.getElementById('js-inline-1'), config.switches, 'storyhack:inline-1:render').load(url1);
-            }
-            if (paras[7]) {
-                common.$g(paras[7]).after('<div id="js-inline-2" class="js-inline"></div>');
-                r2 = new Related(document.getElementById('js-inline-2'), config.switches, 'storyhack:inline-1:render').load(url2);
-            }
+            blocks.map(function(b,i){
+                if (paras[b.para]) {
+                    common.$g(paras[b.para]).after('<div id="js-inline-' + i + '" class="js-inline"></div>');
+                    b.loader = new Related(document.getElementById('js-inline-' + i), config.switches).load(b.url);
+                }
+            });
         },
 
         augmentGallery: function() {

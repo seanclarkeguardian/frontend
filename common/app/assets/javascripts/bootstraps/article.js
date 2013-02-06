@@ -87,24 +87,19 @@ define([
         },
 
         initStoryHackInlines: function(config) {
-            var url1 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js',
-                url2 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js',
-                url3 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-3.js',
-                paras = common.$g('.article-body > p:not(:empty)'),
-                r1, r2, r3;
+            var blocks = [
+                    {para:3, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js'},
+                    {para:5, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js'},
+                    {para:7, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-3.js'}
+                ],
+                paras = common.$g('.article-body > p:not(:empty)');
 
-            if (paras[3]) {
-                common.$g(paras[3]).after('<div id="js-inline-1" class="js-inline"></div>');
-                r1 = new Related(document.getElementById('js-inline-1'), config.switches).load(url1);
-            }
-            if (paras[5]) {
-                common.$g(paras[5]).after('<div id="js-inline-2" class="js-inline"></div>');
-                r2 = new Related(document.getElementById('js-inline-2'), config.switches).load(url2);
-            }
-            if (paras[7]) {
-                common.$g(paras[7]).after('<div id="js-inline-3" class="js-inline"></div>');
-                r3 = new Related(document.getElementById('js-inline-3'), config.switches).load(url3);
-            }
+            blocks.map(function(b,i){
+                if (paras[b.para]) {
+                    common.$g(paras[b.para]).after('<div id="js-inline-' + i + '" class="js-inline"></div>');
+                    b.loader = new Related(document.getElementById('js-inline-' + i), config.switches).load(b.url);
+                }
+            });
         },
 
         augmentGallery: function() {

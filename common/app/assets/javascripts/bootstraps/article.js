@@ -92,11 +92,11 @@ define([
                 paras = common.$g('.article-body > p:not(:empty)');
 
             if (paras[4]) {
-                common.$g(paras[4]).after('<div id="js-inline-1" class="js-inline">INLINE TEST 1</div>')
+                common.$g(paras[4]).after('<div id="js-inline-1" class="js-inline"></div>')
                 new Related(document.getElementById('js-inline-1'), config.switches, 'storyhack:inline-1:render').load(url1);
             }
             if (paras[7]) {
-                common.$g(paras[7]).after('<div id="js-inline-2" class="js-inline">INLINE TEST 2</div>')
+                common.$g(paras[7]).after('<div id="js-inline-2" class="js-inline"></div>')
                 new Related(document.getElementById('js-inline-2'), config.switches, 'storyhack:inline-1:render').load(url2);
             }
         },

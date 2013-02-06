@@ -1,6 +1,6 @@
 define([
     "common",
-
+    "modules/related",
     "modules/expandable",
     "modules/autoupdate",
     "modules/matchnav",
@@ -9,6 +9,7 @@ define([
     "modules/gallery"
 ], function (
     common,
+    Related,
     Expandable,
     AutoUpdate,
     MatchNav,
@@ -69,6 +70,35 @@ define([
             if(document.querySelector('.accordion')) {
                 var a = new Accordion();
             }
+        }, 
+
+        initStoryHack: function(config) {
+            var url = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack.js';
+
+            common.mediator.on('storyhack:render', function() {
+                modules.initAccordion();
+                modules.augmentGallery();
+            });
+
+            new Related(document.getElementById('js-storyhack'), config.switches, 'storyhack:render').load(url);
+
+            common.$g('#related-trails').remove();
+            common.$g('h3.type-2.article-zone').remove();
+        },
+
+        initStoryHackInlines: function(config) {
+            var url1 = 'http://client.stephanfowler.com/gu/story-test/inline1.js',
+                url2 = 'http://client.stephanfowler.com/gu/story-test/inline2.js',
+                paras = common.$g('.article-body > p:not(:empty)');
+
+            if (paras[4]) {
+                common.$g(paras[4]).after('<div id="js-inline-1" class="js-inline">INLINE TEST 1</div>')
+                new Related(document.getElementById('js-inline-1'), config.switches, 'storyhack:inline-1:render').load(url1);
+            }
+            if (paras[7]) {
+                common.$g(paras[7]).after('<div id="js-inline-2" class="js-inline">INLINE TEST 2</div>')
+                new Related(document.getElementById('js-inline-2'), config.switches, 'storyhack:inline-1:render').load(url2);
+            }
         },
 
         augmentGallery: function() {
@@ -79,12 +109,15 @@ define([
     var ready = function(config) {
 
         var storyHackTag = 'Mid Staffordshire NHS Trust',
-            storyHackUrl = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack.js',
+            storyHackId  = 'society/2013/feb/06/mid-staffordshire-report-sweeing-changes';
+
             keywords = (config.page && config.page.keywords) ? config.page.keywords.split(',') : [],
             doStoryHack = false;
 
         keywords.map(function(k){
-            if (k === storyHackTag) { doStoryHack = true; }
+            if (k === storyHackTag) {
+                doStoryHack = true;
+            }
         });
 
         if (config.page.isLive) {
@@ -92,11 +125,10 @@ define([
         }
 
         if (doStoryHack) {
-            common.mediator.on('modules:related:render', function() {
-                modules.initAccordion();
-                modules.augmentGallery();
-            });
-            common.mediator.emit("modules:storyhack:load", [storyHackUrl]);
+            modules.initStoryHack(config);
+            if (config.page.pageId === storyHackId) {
+                modules.initStoryHackInlines(config);
+            }
         } else if (config.page.showInRelated) {
             modules.related(config);
         }

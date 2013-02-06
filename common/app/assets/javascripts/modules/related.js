@@ -1,13 +1,15 @@
 define(['common', 'reqwest'], function (common, reqwest) {
 
-    function Related(attachTo, switches) {
+    function Related(attachTo, switches, renderEventName) {
         
+        renderEventName = renderEventName || 'modules:related:render';
+
         // View
         this.view = {
             attachTo: attachTo,
             render: function (html) {
                 attachTo.innerHTML = html;
-                common.mediator.emit('modules:related:render');
+                common.mediator.emit(renderEventName);
             }
         };
 

@@ -27,7 +27,7 @@ define(['common', 'reqwest'], function (common, reqwest) {
                     jsonpCallback: 'callback',
                     jsonpCallbackName: 'showRelated',
                     success: function (json) {
-                        self.view.render(json.html)
+                        self.view.render(json.html);
                     },
                     error: function () {
                         common.mediator('module:error', 'Failed to load related', 'related.js');

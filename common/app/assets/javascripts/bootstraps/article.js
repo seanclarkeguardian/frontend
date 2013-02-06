@@ -70,7 +70,7 @@ define([
             if(document.querySelector('.accordion')) {
                 var a = new Accordion();
             }
-        }, 
+        },
 
         initStoryHack: function(config) {
             var url = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack.js';
@@ -87,17 +87,18 @@ define([
         },
 
         initStoryHackInlines: function(config) {
-            var url1 = 'http://client.stephanfowler.com/gu/story-test/inline1.js',
-                url2 = 'http://client.stephanfowler.com/gu/story-test/inline2.js',
-                paras = common.$g('.article-body > p:not(:empty)');
+            var url1 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js',
+                url2 = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js',
+                paras = common.$g('.article-body > p:not(:empty)'),
+                r1, r2;
 
             if (paras[4]) {
-                common.$g(paras[4]).after('<div id="js-inline-1" class="js-inline"></div>')
-                new Related(document.getElementById('js-inline-1'), config.switches, 'storyhack:inline-1:render').load(url1);
+                common.$g(paras[4]).after('<div id="js-inline-1" class="js-inline"></div>');
+                r1 = new Related(document.getElementById('js-inline-1'), config.switches, 'storyhack:inline-1:render').load(url1);
             }
             if (paras[7]) {
-                common.$g(paras[7]).after('<div id="js-inline-2" class="js-inline"></div>')
-                new Related(document.getElementById('js-inline-2'), config.switches, 'storyhack:inline-1:render').load(url2);
+                common.$g(paras[7]).after('<div id="js-inline-2" class="js-inline"></div>');
+                r2 = new Related(document.getElementById('js-inline-2'), config.switches, 'storyhack:inline-1:render').load(url2);
             }
         },
 
@@ -109,8 +110,7 @@ define([
     var ready = function(config) {
 
         var storyHackTag = 'Mid Staffordshire NHS Trust',
-            storyHackId  = 'society/2013/feb/06/mid-staffordshire-report-sweeing-changes';
-
+            storyHackId  = 'society/2013/feb/06/mid-staffordshire-report-sweeing-changes',
             keywords = (config.page && config.page.keywords) ? config.page.keywords.split(',') : [],
             doStoryHack = false;
 

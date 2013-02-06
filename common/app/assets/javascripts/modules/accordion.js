@@ -12,7 +12,7 @@ define([
 
         var rootEl = bonzo(qwery('.accordion'));
 
-        bonzo(bonzo(qwery('.accordion > li:first-child a')).addClass('active').next()).addClass('is-open').show();
+        //bonzo(bonzo(qwery('.accordion > li:first-child a')).addClass('active').next()).addClass('is-open').show();
         
         bean.on(document.querySelector('.accordion'), 'click', 'li > a', function(e) {
                 var $this = bonzo(qwery(this));

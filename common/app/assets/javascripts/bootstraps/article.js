@@ -88,15 +88,15 @@ define([
 
         initStoryHackInlines: function(config) {
             var blocks = [
-                    {para:3, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js'},
-                    {para:5, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js'},
-                    {para:7, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-3.js'}
+                    {para:4, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-1.js'},
+                    {para:10, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-2.js'},
+                    {para:22, url:'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-inline-3.js'}
                 ],
                 paras = common.$g('.article-body > p:not(:empty)');
 
             blocks.map(function(b,i){
                 if (paras[b.para]) {
-                    common.$g(paras[b.para]).after('<div id="js-inline-' + i + '" class="js-inline"></div>');
+                    common.$g(paras[b.para]).after('<div id="js-inline-' + i + '" class="js-inline" style="margin: 20px 0;"></div>');
                     b.loader = new Related(document.getElementById('js-inline-' + i), config.switches).load(b.url);
                 }
             });

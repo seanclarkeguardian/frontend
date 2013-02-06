@@ -71,7 +71,7 @@ define([
             }
         },
 
-        augmentGallery: function () {
+        augmentGallery: function() {
             var g = new Gallery().init();
         }
     };
@@ -84,7 +84,7 @@ define([
             doStoryHack = false;
 
         keywords.map(function(k){
-            if (k === storyHackTag) doStoryHack = true;
+            if (k === storyHackTag) { doStoryHack = true; }
         });
 
         if (config.page.isLive) {

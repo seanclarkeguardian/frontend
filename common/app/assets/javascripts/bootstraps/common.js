@@ -99,6 +99,18 @@ define([
           });
         },
 
+        transcludeStoryHack: function (config){
+            common.mediator.on("modules:storyhack:load", function(url){
+                var relatedExpandable = new Expandable({ id: 'js-storyhack', expanded: false });
+                var redundant = document.getElementById('related-trails');
+                common.mediator.on('modules:related:render', relatedExpandable.init);
+                new Related(document.getElementById('js-storyhack'), config.switches).load(url[0]);
+                if (redundant) {
+                    redundant.innerHTML = '';
+                }
+            });
+        },
+
         transcludeMostPopular: function (host, section, edition) {
             var url = host + '/most-popular' + (section ? '/' + section : ''),
                 domContainer = document.getElementById('js-popular');

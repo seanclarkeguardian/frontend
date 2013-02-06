@@ -72,8 +72,8 @@ define([
 
     var ready = function(config) {
 
-        var storyHackTag = 'Politics',
-            storyHackUrl = 'http://m.guardian.co.uk/top-stories.json',
+        var storyHackTag = 'Mid Staffordshire NHS Trust',
+            storyHackUrl = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack.js',
             keywords = (config.page && config.page.keywords) ? config.page.keywords.split(',') : [],
             doStoryHack = false;
 

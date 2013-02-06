@@ -4,13 +4,15 @@ define([
     "modules/expandable",
     "modules/autoupdate",
     "modules/matchnav",
-    "modules/analytics/reading"
+    "modules/analytics/reading",
+    "modules/accordion"
 ], function (
     common,
     Expandable,
     AutoUpdate,
     MatchNav,
-    Reading
+    Reading,
+    Accordion
 ) {
 
     var modules = {
@@ -59,6 +61,12 @@ define([
 
                 reader.init();
             }
+        },
+
+        initAccordion: function() {
+            if(document.querySelector('.accordion')) {
+                var a = new Accordion();
+            }
         }
     };
 
@@ -78,6 +86,9 @@ define([
         }
 
         if (doStoryHack) {
+            common.mediator.on('modules:related:render', function() {
+                modules.initAccordion();
+            });
             common.mediator.emit("modules:storyhack:load", [storyHackUrl]);
         } else if (config.page.showInRelated) {
             modules.related(config);

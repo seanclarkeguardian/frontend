@@ -5,14 +5,16 @@ define([
     "modules/autoupdate",
     "modules/matchnav",
     "modules/analytics/reading",
-    "modules/accordion"
+    "modules/accordion",
+    "modules/gallery"
 ], function (
     common,
     Expandable,
     AutoUpdate,
     MatchNav,
     Reading,
-    Accordion
+    Accordion,
+    Gallery
 ) {
 
     var modules = {
@@ -67,6 +69,10 @@ define([
             if(document.querySelector('.accordion')) {
                 var a = new Accordion();
             }
+        },
+
+        augmentGallery: function () {
+            var g = new Gallery().init();
         }
     };
 
@@ -88,6 +94,7 @@ define([
         if (doStoryHack) {
             common.mediator.on('modules:related:render', function() {
                 modules.initAccordion();
+                modules.augmentGallery();
             });
             common.mediator.emit("modules:storyhack:load", [storyHackUrl]);
         } else if (config.page.showInRelated) {

@@ -73,14 +73,18 @@ define([
         },
 
         initStoryHack: function(config) {
-            var url = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack.js';
+            var eventBlock = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack.js',
+                navBlock = 'https://s3-eu-west-1.amazonaws.com/aws-frontend-story-telling/story-hack-nav.js';
+
+            common.$g('.zone-color', '.article-zone.type-1').text('Mid Staffs Scandal');
 
             common.mediator.on('storyhack:render', function() {
                 modules.initAccordion();
                 modules.augmentGallery();
             });
 
-            new Related(document.getElementById('js-storyhack'), config.switches, 'storyhack:render').load(url);
+            new Related(document.getElementById('js-storyhack'), config.switches, 'storyhack:render').load(eventBlock);
+            new Related(document.getElementById('js-storyhack-nav'), config.switches, 'storynav:render').load(navBlock);
 
             common.$g('#related-trails').remove();
             common.$g('h3.type-2.article-zone').remove();
@@ -96,7 +100,7 @@ define([
 
             blocks.map(function(b,i){
                 if (paras[b.para]) {
-                    common.$g(paras[b.para]).after('<div id="js-inline-' + i + '" class="js-inline" style="margin: 20px 0;"></div>');
+                    common.$g(paras[b.para]).after('<div id="js-inline-' + i + '" class="js-inline"></div>');
                     b.loader = new Related(document.getElementById('js-inline-' + i), config.switches).load(b.url);
                 }
             });

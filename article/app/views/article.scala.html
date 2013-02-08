@@ -33,8 +33,9 @@
 
         <div class="article-body from-content-api @if(article.isLive) {live-blog}" 
             itemprop="@if(article.isReview){reviewBody} else {articleBody}">
-		      @fragments.articleBody(article)
+                @fragments.articleBody(article)
         </div>
+        <div id="js-storyhack-nav"></div>
     </article>
 
     @if(storyPackage.nonEmpty) {

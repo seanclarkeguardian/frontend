@@ -23,7 +23,9 @@ define([
     'modules/analytics/clickstream',
     'modules/analytics/omniture',
     'modules/adverts/adverts',
-    'modules/cookies'
+    'modules/cookies',
+    // Swipe Libs
+    'modules/editionswipe'
 ], function (
     common,
     ajax,
@@ -48,7 +50,9 @@ define([
     Clickstream,
     Omniture,
     Adverts,
-    Cookies
+    Cookies,
+
+    EditionSwipe
 ) {
 
     var modules = {
@@ -165,6 +169,35 @@ define([
 
         cleanupCookies: function() {
             Cookies.cleanUp(["mmcore.pd", "mmcore.srv", "mmid"]);
+        },
+
+        initEditionSwipe: function() {
+
+            var edition = ['/']; // Instead, take the forst part of location.pathname, e.g. /sport/...etc
+            common.$g('li[data-link-name="trail"] a').each(function(el, index) {
+                var path = el.pathname; 
+                if (-1 === common.inArray(path, edition)) {
+                    edition.push(path);
+                }
+            });
+            console.log( edition );
+
+            var opts = {
+                el: '#swipeview-wrap',
+                linkSelector: 'a[none]',
+                edition: edition,
+                ajaxStrip: [
+                    [/^[\s\S]*<!-- start #container -->/, ''], 
+                    [/<!-- end #container -->s[\s\S]*$/, '']
+                ],
+                widthGuess: 1,
+                emulator: window.location.hash.match(/emulator/),
+                afterShow: function(){
+                    console.log('Now do tracking etc.');
+                }
+            };
+
+            var edapi = EditionSwipe(opts);
         }
     };
 
@@ -182,6 +215,8 @@ define([
         modules.transcludeMostPopular(config.page.coreNavigationUrl, config.page.section, config.page.edition);
 
         modules.showRelativeDates();
+
+        modules.initEditionSwipe();
     };
 
     // If you can wait for load event, do so.

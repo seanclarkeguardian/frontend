@@ -12,6 +12,12 @@
 </head>
 <body id="top" class="zone-@metaData.section" itemscope itemtype="http://schema.org/WebPage">
 
+<div id="swipeview-wrap">
+    <div id="swipeview-slider">
+        <div id="swipeview-masterpage-0"></div>
+        <div id="swipeview-masterpage-1">
+
+    <!-- start #container -->
     <div id="container">
         @fragments.adSlot(id="top-banner-ad", baseSlot="Top2", medianSlot="Top", extendedSlot="x54")
         @fragments.navigation(metaData, isFooter=false)
@@ -20,6 +26,12 @@
         @fragments.navigation(metaData, isFooter=true)
         @fragments.footer(metaData)
     </div>
+    <!-- end #container -->
+
+        </div>
+        <div id="swipeview-masterpage-2"></div>
+    </div>
+</div>
 
     @fragments.analytics(metaData)
 </body>

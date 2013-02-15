@@ -21,6 +21,13 @@ define(["EventEmitter", "bonzo", "qwery"], function (EventEmitter, bonzo, qwery)
                 destination[property] = source[property];
             }
             return destination;
-        }
+        },
+        inArray : function(needle, haystack) {
+            var length = haystack.length;
+            for(var i = 0; i < length; i++) {
+                if(haystack[i] == needle) return i;
+            }
+            return -1;
+        }        
     };
 });

@@ -173,10 +173,10 @@ define([
 
         initEditionSwipe: function() {
 
-            var edition = ['/']; // Instead, take the forst part of location.pathname, e.g. /sport/...etc
+            var edition = ['/']; // Instead, take the first part of location.pathname, e.g. /sport/...etc
             common.$g('li[data-link-name="trail"] a').each(function(el, index) {
                 var path = el.pathname; 
-                if (-1 === common.inArray(path, edition)) {
+                if (common.inArray(path, edition) === -1) {
                     edition.push(path);
                 }
             });

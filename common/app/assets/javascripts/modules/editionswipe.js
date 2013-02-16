@@ -773,15 +773,18 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                 paneHiddenMargin = Math.max( 0, $(window).scrollTop() - contentAreaTop );
                 if( paneHiddenMargin < paneVisibleMargin ) {
                     // We've scrolled up over the offset; reset all margins and jump to topmost scroll
-                    $(panes.masterPages).css('marginTop', 0 );
+                    $(panes.masterPages[(paneNow).mod(3)]).css(  'marginTop', 0);
+                    $(panes.masterPages[(paneNow+1).mod(3)]).css('marginTop', 0);
+                    $(panes.masterPages[(paneNow-1).mod(3)]).css('marginTop', 0);
+                    // And reset the scroll
                     $(window).scrollTop( contentAreaTop );
                     paneVisibleMargin = 0;
                     paneHiddenMargin = 0;
                 }
                 else {
                     // We've scrolled down; push L/R sidepanes down to level of current pane
-                    $(panes.masterPages[(paneNow+1).mod(3)]).css('marginTop', paneHiddenMargin );
-                    $(panes.masterPages[(paneNow-1).mod(3)]).css('marginTop', paneHiddenMargin );
+                    $(panes.masterPages[(paneNow+1).mod(3)]).css('marginTop', paneHiddenMargin);
+                    $(panes.masterPages[(paneNow-1).mod(3)]).css('marginTop', paneHiddenMargin);
                 }
             });
 

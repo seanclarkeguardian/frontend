@@ -52,7 +52,7 @@ define([
     Adverts,
     Cookies,
 
-    EditionSwipe
+    editionSwipe
 ) {
 
     var modules = {
@@ -173,31 +173,35 @@ define([
 
         initEditionSwipe: function() {
 
-            var edition = ['/']; // Instead, take the first part of location.pathname, e.g. /sport/...etc
-            common.$g('li[data-link-name="trail"] a').each(function(el, index) {
-                var path = el.pathname; 
-                if (common.inArray(path, edition) === -1) {
-                    edition.push(path);
-                }
-            });
-            console.log( edition );
-
             var opts = {
                 el: '#swipeview-wrap',
-                linkSelector: 'a[none]',
-                edition: edition,
                 ajaxStrip: [
-                    [/^[\s\S]*<!-- start #container -->/, ''], 
+                    [/^[\s\S]*<!-- start #container -->/, ''],
                     [/<!-- end #container -->s[\s\S]*$/, '']
                 ],
                 widthGuess: 1,
-                emulator: window.location.hash.match(/emulator/),
-                afterShow: function(){
-                    console.log('Now do tracking etc.');
+                afterShow: function(paneVisible, pageData, api) {
+                    var edition = [];
+                    if( pageData.clickType === 'initial' || pageData.clickType === 'link') {
+                        
+                        // First page in edition is the referrer
+                        edition.push(common.urlPath(pageData.referrer));
+
+                        // Second page in edition is the current page
+                        common.pushIfNew(window.location.pathname, edition);
+                        
+                        common.$g('li[data-link-name="trail"] a', paneVisible).each(function(el, index) {
+                            common.pushIfNew(el.pathname, edition);
+                        });
+                        if (edition.length >= 3) {
+                            api.setEdition(edition);
+                            window.console.log( edition );
+                        }
+                    }
                 }
             };
 
-            var edapi = EditionSwipe(opts);
+            var edapi = editionSwipe(opts);
         }
     };
 

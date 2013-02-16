@@ -17,15 +17,17 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
     function inArray(needle, haystack) {
         var length = haystack.length;
         for(var i = 0; i < length; i++) {
-            if(haystack[i] == needle) return i;
+            if(haystack[i] === needle) {
+                return i;
+            }
         }
         return -1;
     }
 
-    function isEmptyObj(obj) { 
-        for(var i in obj) { 
-            return false; 
-        } 
+    function isEmptyObj(obj) {
+        for(var i in obj) {
+            return false;
+        }
         return true;
     }
 
@@ -89,7 +91,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
 
                     // The server's guess of the device width. Set this to zero if you want
                     // the initial page content to be Ajax reloaded if the device width exceeds the
-                    // lowest value from the breakpoints option array. 
+                    // lowest value from the breakpoints option array.
                     widthGuess: 1024
                 },
                 useropts
@@ -205,7 +207,9 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                 ww = getWidth();
                 for(i = bl-1; i >= 0; i--){
                     b = bs[i];
-                    if( ww >= b ) return b;
+                    if( ww >= b ) {
+                        return b;
+                    }
                 }
                 return 0;
             };
@@ -241,11 +245,11 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                     el.dataset.waiting = '1';
                     reqwest({
                         url: url,
+                        method: 'get',
                         type: 'html',
                         data: data,
-                        type: 'GET',
-                        success: function (resp) {
-                            var html = resp.responseText;
+                        success: function (html) {
+                            var i;
 
                             // Do optional regex replaces
                             for (i in opts.ajaxStrip) {
@@ -265,9 +269,9 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                             else {
                                 html = '<div class="responsive-swipe-error">Oops. That went wrong. <a class="no-ajax" href="' + url + '">Try again.</a></div>';
                                 populate(el, html);
-                                if (console) {
-                                    console.log('WARNING! Ajax response didn\'t validate against regex: ' + opts.ajaxRegex );
-                                    console.log('WARNING! Enable XMLHttpRequest logging in your browser, then check the responses.');
+                                if (window.console) {
+                                    window.console.log('WARNING! Ajax response didn\'t validate against regex: ' + opts.ajaxRegex );
+                                    window.console.log('WARNING! Enable XMLHttpRequest logging in your browser, then check the responses.');
                                 }
                             }
                             el.dataset.waiting = '';
@@ -328,7 +332,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
 
         // Make the contentArea height equal to the paneVisible height. (We view the latter through the former.)
         var updateHeight = function(){
-            var height = $('*', paneVisible).offset().height; // NB paneVisible has height:100% set by swipeview, so we look within it 
+            var height = $('*', paneVisible).offset().height; // NB paneVisible has height:100% set by swipeview, so we look within it
             if (height) {
                 $(contentArea).css('height', height + paneVisibleMargin + 'px');
             }
@@ -389,7 +393,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             opts.afterShow(paneVisible, pageData, api);
 
             // Update our edition position.
-            // Note: the edition is either set in the initial config, or in opts.afterShow using the passed in api: 
+            // Note: the edition is either set in the initial config, or in opts.afterShow using the passed in api:
             // e.g. if you're passing editions via a page's pageData mechanism, do api.setEdition(pageData.edition)
             pos = posInEdition(normalizeUrl(url));
             if (pos > -1) {
@@ -401,7 +405,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             }
             // Initialize pjax and swipability, if supported
             // Once init'd, this fn sets up sidepanes after each page transition.
-            // The sidepanes are selected from the edition, 
+            // The sidepanes are selected from the edition,
             appSetup();
         };
 
@@ -433,7 +437,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
 
         var setEdition = function (arr) {
             var
-                checksum, 
+                checksum,
                 pos;
             // Load edition and reset editionPos, if passed-in edition differs with existing one, and contains three or more url items
             if (arr.length && arr.length >= 3) {
@@ -455,7 +459,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
         };
 
         var getAdjacentUrl = function (dir) {
-            // dir = 1 : right 
+            // dir = 1 : right
             // dir = -1 : left
 
             if (dir === 0) {
@@ -650,7 +654,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             });
 
             // Enhance for swipability
-            // 
+            //
             // If transitions aren't supported, or the edition has less than three pages, bail
             if (!supportsTransitions || editionLen < 3) {
                 return;
@@ -833,7 +837,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
         initialPageRaw = window.location.href;
         initialPage = normalizeUrl(initialPageRaw);
 
-        // Load the initial edition 
+        // Load the initial edition
         setEdition(opts.edition);
 
         // Decide if we do a content reload or not. In all cases, make sure afterShow eventually runs, which will in turn run appSetup.

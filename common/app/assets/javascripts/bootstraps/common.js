@@ -176,8 +176,8 @@ define([
             var opts = {
                 el: '#swipeview-wrap',
                 ajaxStrip: [
-                    [/^[\s\S]*<!-- start #container -->/, ''],
-                    [/<!-- end #container -->s[\s\S]*$/, '']
+                    [/^[\s\S]*<div frag>/, ''],
+                    [/<\/div frag>[\s\S]*$/, '']
                 ],
                 widthGuess: 1,
                 afterShow: function(paneVisible, pageData, api) {

@@ -36,7 +36,8 @@ function (
         generateMiddleSlot(config);
 
         var slotHolders = document.querySelectorAll('.swipeview-active .ad-slot'),
-            size = (window.innerWidth > 810) ? 'median' : 'base';
+            size = (window.innerWidth > 810) ? 'median' : 'base',
+            el;
 
         adsSwitchedOn = !userPrefs.isOff('adverts');
 
@@ -44,9 +45,10 @@ function (
         // Other ad types such as iframes and custom can be plugged in here later
         if (adsSwitchedOn) {
             for(var i = 0, j = slotHolders.length; i < j; ++i) {
-                if (slotHolders[i].querySelector('.ad-container').innerHTML === '') {
+                el = slotHolders[i].querySelector('.ad-container'); 
+                if (el && el.innerHTML === '') {
                     var name = slotHolders[i].getAttribute('data-' + size);
-                    var slot = new DocumentWriteSlot(name, slotHolders[i].querySelector('.ad-container'));
+                    var slot = new DocumentWriteSlot(name, el);
                     slot.setDimensions(dimensionMap[name]);
                     slots.push(slot);
                 }

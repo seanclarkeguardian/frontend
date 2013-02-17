@@ -35,7 +35,7 @@ function (
 
         generateMiddleSlot(config);
 
-        var slotHolders = document.querySelectorAll('.ad-slot'),
+        var slotHolders = document.querySelectorAll('.swipeview-active .ad-slot'),
             size = (window.innerWidth > 810) ? 'median' : 'base';
 
         adsSwitchedOn = !userPrefs.isOff('adverts');
@@ -44,10 +44,12 @@ function (
         // Other ad types such as iframes and custom can be plugged in here later
         if (adsSwitchedOn) {
             for(var i = 0, j = slotHolders.length; i < j; ++i) {
-                var name = slotHolders[i].getAttribute('data-' + size);
-                var slot = new DocumentWriteSlot(name, slotHolders[i].querySelector('.ad-container'));
-                slot.setDimensions(dimensionMap[name]);
-                slots.push(slot);
+                if (slotHolders[i].querySelector('.ad-container').innerHTML === '') {
+                    var name = slotHolders[i].getAttribute('data-' + size);
+                    var slot = new DocumentWriteSlot(name, slotHolders[i].querySelector('.ad-container'));
+                    slot.setDimensions(dimensionMap[name]);
+                    slots.push(slot);
+                }
             }
             if (config.switches.audienceScience) {
                 audienceScience.load(config.page);

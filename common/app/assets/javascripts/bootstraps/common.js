@@ -171,7 +171,7 @@ define([
             Cookies.cleanUp(["mmcore.pd", "mmcore.srv", "mmid"]);
         },
 
-        initEditionSwipe: function() {
+        initEditionSwipe: function(config) {
 
             var opts = {
                 el: '#swipeview-wrap',
@@ -198,6 +198,9 @@ define([
                             window.console.log( edition );
                         }
                     }
+                    if( pageData.clickType !== 'initial') {
+                        modules.loadAdverts(config);
+                    }
                 }
             };
 
@@ -220,7 +223,7 @@ define([
 
         modules.showRelativeDates();
 
-        modules.initEditionSwipe();
+        modules.initEditionSwipe(config);
     };
 
     // If you can wait for load event, do so.

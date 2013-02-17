@@ -45,7 +45,7 @@ function (
         // Other ad types such as iframes and custom can be plugged in here later
         if (adsSwitchedOn) {
             for(var i = 0, j = slotHolders.length; i < j; ++i) {
-                el = slotHolders[i].querySelector('.ad-container'); 
+                el = slotHolders[i].querySelector('.ad-container');
                 if (el && el.innerHTML === '') {
                     var name = slotHolders[i].getAttribute('data-' + size);
                     var slot = new DocumentWriteSlot(name, el);

@@ -3,9 +3,13 @@ GEM
   specs:
     haml (4.0.0)
       tilt
+    listen (0.7.2)
     rack (1.5.2)
     rack-protection (1.3.2)
       rack
+    rb-fsevent (0.9.3)
+    rerun (0.8.0)
+      listen
     sinatra (1.3.4)
       rack (~> 1.4)
       rack-protection (~> 1.3)
@@ -17,4 +21,6 @@ PLATFORMS
 
 DEPENDENCIES
   haml
+  rb-fsevent (~> 0.9.1)
+  rerun
   sinatra

@@ -1,0 +1,12 @@
+{
+  "name": "frontend-dashboard",
+  "version": "0.1.0 ",
+  "dependencies": {
+    "curl": "0.7",
+    "reqwest": "0.6",
+    "bean": "1.0",
+    "qwery": "3.4",
+    "eventEmitter": "4.0",
+    "bootstrap.css": "2.1"
+  }
+}

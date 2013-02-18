@@ -27,13 +27,35 @@ class FrontendDashboard < Sinatra::Base
     haml :occurrences, :locals => { :error_msgs => grouped_error_msgs }
   end
 
+  get '/user-agents' do
+    error_msgs = get_js_errors('yesterday')
+    # group by param
+    group_by = params[:'group-by'] || 'os'
+    grouped_error_msgs = error_msgs.group_by { |msg| 
+      msg[3].send(group_by).to_s 
+    }.map { |k, v| 
+      [k, v.length] 
+    }.sort { |a, b| 
+      b[1] - a[1] 
+    }
+      
+    if params[:dir] === 'asc'
+      grouped_error_msgs.reverse!
+    end
+    haml :user_agents, :locals => { :error_msgs => grouped_error_msgs }
+  end
+
+  ##########
+  ## HELPERS
+  ##########
+
   def get_js_errors(date)
     s3 = Fog::Storage.new(:provider => 'AWS')
     logs = []
     # get all the files for that date
     s3.get_bucket('aws-frontend-logs', {
           'prefix' => 'PROD/access.log/%s/frontend-diagnostics' % [Chronic.parse(date).strftime("%Y/%m/%d")],
-          'max-keys' => 100
+          'max-keys' => 1
       }).body['Contents'].each { |file|
         log_name = file['Key']
         # have we already got this log
@@ -49,7 +71,7 @@ class FrontendDashboard < Sinatra::Base
     error_msgs = []
     logs.each { |log|
       log.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)[^,]*,[^,]*,[^,]*,([^,]*),"([^"]*)"/) { |date, msg, url, ua| 
-        error_msgs << [DateTime.strptime(date, "%d/%b/%Y:%H:%M:%S %Z"), Base64.decode64(msg), url, ua] 
+        error_msgs << [DateTime.strptime(date, "%d/%b/%Y:%H:%M:%S %Z"), Base64.decode64(msg), url, UserAgentParser.parse(ua)] 
       }
     }
     error_msgs

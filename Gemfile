@@ -7,3 +7,4 @@ gem 'rb-fsevent', '~> 0.9.1'
 
 gem 'fog'
 gem 'chronic'
+gem 'user_agent_parser'

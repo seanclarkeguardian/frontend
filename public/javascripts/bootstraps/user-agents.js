@@ -71,7 +71,7 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
         var histogramLayout = d3.layout.histogram()
             .bins(15)
             .range(histogramRange)
-            .value(function(d) { return new Date(d.time).getTime(); })
+            .value(function(d) { return d.time; })
         // create histogram layouts
         uniqueTypes.forEach(function(b) {
             histograms.push(

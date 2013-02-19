@@ -56,47 +56,44 @@ class FrontendDashboard < Sinatra::Base
   ## HELPERS
   ##########
 
+  attr_accessor :s3
+  @@s3 = Fog::Storage.new(:provider => 'AWS')
+
   def get_js_errors(date)
-    s3 = Fog::Storage.new(:provider => 'AWS')
-    logs = []
-    # get all the files for that date
-    s3.get_bucket('aws-frontend-logs', {
+    errors = []
+    # get all the files for the data
+    @@s3.get_bucket('aws-frontend-logs', {
           'prefix' => 'PROD/access.log/%s/frontend-diagnostics' % [Chronic.parse(date).strftime("%Y/%m/%d")],
           'max-keys' => 1
       }).body['Contents'].each { |file|
         log_name = file['Key']
         # have we already got this log
         puts 'Retriving %s' % [log_name]
-        log = retireve(log_name)
-        if !log 
-          log = s3.directories.get('aws-frontend-logs').files.get(log_name).body
-          # store log locally
-          store(log_name, log)
-        end
-        logs << log
-    }
-    # pull out js errors (array of date and message)
-    error_msgs = []
-    logs.each { |log|
-      puts 'Scanning'
-      log.split('\n').each { |line| 
-        if (line.include? 'GET /px.gif?js/') 
-          line.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)[^,]*,[^,]*,[^,]*,([^,]*),"([^"]*)"/) { |date, msg, url, ua| 
-            error_msgs << [DateTime.strptime(date, "%d/%b/%Y:%H:%M:%S %Z"), Base64.decode64(msg), url, UserAgentParser.parse(ua)] 
+        file_name = retireve(log_name)
+        IO.foreach(file_name) { |line|
+          line.scan(/([^,]*),([^,]*),([^,]*),([^,]*)/) { |date, msg, url, ua| 
+            errors << [date, Base64.decode64(msg), url, UserAgentParser.parse(ua)] 
           }
-        end
-      }
+        }
     }
-    error_msgs
+    errors
   end
 
-  def retireve(name)
-    name = name.gsub('/', '-')
-    (File.exists? 'data/' + name) ? File.open('data/' + name, 'r').read : false
-  end
+  def retireve(log_name)
+    file_name = 'data/' + log_name.gsub('/', '-')
+    if (!File.exists? file_name)  
 
-  def store(name, data)
-    File.open('data/' + name.gsub('/', '-'), 'w') { |f| f.write(data) }
+      File.open(file_name, 'w') { |f| 
+        @@s3.directories.get('aws-frontend-logs').files.get(log_name).body.split('/n').each{ |line| 
+          if (line.include? 'GET /px.gif?js/') 
+            line.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)[^,]*,[^,]*,[^,]*,([^,]*),"([^"]*)"/) { |date, msg, url, ua| 
+              f.puts [DateTime.strptime(date, "%d/%b/%Y:%H:%M:%S %Z").to_time.to_f, msg, url, ua].join(', ')
+            }
+          end
+        }
+      }
+    end
+    file_name
   end
     
 end

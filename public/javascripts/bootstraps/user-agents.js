@@ -1,11 +1,11 @@
 require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
 
-    var width = 900,
+    var width = 940,
         height = 1000,
         color = d3.scale.category20(),
         margin = {
             top: 10,
-            right: 200,
+            right: 300,
             bottom: 500,
             left: 40
         },

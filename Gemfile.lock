@@ -17,6 +17,7 @@ GEM
     formatador (0.2.4)
     haml (4.0.0)
       tilt
+    json (1.5.4)
     listen (0.7.2)
     mime-types (1.19)
     multi_json (1.5.0)
@@ -45,6 +46,7 @@ DEPENDENCIES
   chronic
   fog
   haml
+  json
   rb-fsevent (~> 0.9.1)
   rerun
   sinatra

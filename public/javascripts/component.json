@@ -8,6 +8,7 @@
     "qwery": "3.4",
     "eventEmitter": "4.0",
     "bootstrap.css": "2.1",
-    "d3": "3.0"
+    "d3": "3.0",
+    "moment": "2.0"
   }
 }

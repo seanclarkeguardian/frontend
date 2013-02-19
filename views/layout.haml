@@ -5,6 +5,18 @@
     %link{:rel => 'stylesheet', :href => '/javascripts/components/bootstrap.css/css/bootstrap.css'}
     %link{:rel => 'stylesheet', :href => '/stylesheets/styles.css'}
   %body
+    :javascript
+      curl = {
+        baseUrl: "/javascripts",
+        apiName: "require",
+        paths:
+          {
+            reqwest: "components/reqwest/reqwest.js",
+            moment: "components/moment/moment.js",
+            d3: "components/d3/d3.js"
+          }
+        }
+    %script{:type => 'text/javascript', :src => '/javascripts/components/curl/dist/curl-kitchen-sink/curl.js'}
     %div.container
       =yield
     %script{:type => 'text/javascript', :src => 'http://code.jquery.com/jquery.js'}

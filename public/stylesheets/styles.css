@@ -2,3 +2,9 @@
     font-size:1.5em;
     color:#0088cc;
 }
+
+.axis path{
+    stroke:black;
+    fill:none;
+    shape-rendering:crispEdges;
+}

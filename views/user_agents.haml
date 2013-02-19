@@ -12,10 +12,15 @@
           %li
             %a{:href => '/user-agents?group-by=device'} Device
 
-%ul.unstyled
-  - error_msgs.each do |ua, count,| 
-    %li <strong class="occurrence-count">#{count}:</strong> #{ua}
-
 %svg#chart
-
+%script
+  var errors = [
+  - errors.each do |error|
+    {time: '#{error[0]}', os: '#{error[3].os.to_s}', browser: '#{error[3].name.to_s}', device: '#{error[3].device.to_s}' }
+    ,
+  ];
 %script{:src => '/javascripts/bootstraps/user-agents.js'}
+
+%ul.unstyled
+  - errors.each do |ua, count,| 
+    %li <strong class="occurrence-count">#{count}:</strong> #{ua}

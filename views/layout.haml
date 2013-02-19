@@ -13,11 +13,25 @@
           {
             reqwest: "components/reqwest/reqwest.js",
             moment: "components/moment/moment.js",
+            bonzo: "components/bonzo/bonzo.js",
+            qwery: "components/qwery/qwery.js",
             d3: "components/d3/d3.js"
           }
         }
     %script{:type => 'text/javascript', :src => '/javascripts/components/curl/dist/curl-kitchen-sink/curl.js'}
     %div.container
+      %div.navbar
+        %div.navbar-inner
+          %a.brand{:href => '/'} JS Errors
+          %ul.nav
+            %li
+              %a{:href => '/yesterday'} Yesterday
+            %li
+              %a{:href => '/occurrences'} Occurences
+            %li
+              %a{:href => '/user-agents'} User Agents
+            %li.active
+              %a{:href => '/graphs'} Graphs
       =yield
     %script{:type => 'text/javascript', :src => 'http://code.jquery.com/jquery.js'}
     %script{:type => 'text/javascript', :src => '/javascripts/components/bootstrap.css/js/bootstrap.js'}

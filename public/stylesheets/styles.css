@@ -8,3 +8,13 @@
     fill:none;
     shape-rendering:crispEdges;
 }
+
+.layer {
+    opacity:1;
+    -webkit-transition:opacity 0.5s;
+}
+
+#key rect{
+    stroke-width:2px;
+    stroke:black;
+}

@@ -1,0 +1,17 @@
+%form.form-inline#controls
+  %legend Controls
+  %label.radio
+    %input{:type => 'radio', :name => 'show', :value => 'browser', :checked => 'checked'} Browsers
+  %label.radio
+    %input{:type => 'radio', :name => 'show', :value => 'os'} OSes
+  %label.radio
+    %input{:type => 'radio', :name => 'show', :value => 'device'} Devices
+
+%svg#chart
+%script
+  var errors = [
+  - errors.each do |error|
+    {time: '#{error[0]}', os: '#{error[3].os.to_s}', browser: '#{error[3].name.to_s}', device: '#{error[3].device.to_s}' }
+    ,
+  ];
+%script{:src => '/javascripts/bootstraps/user-agents.js'}

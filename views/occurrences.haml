@@ -1,15 +1,3 @@
-%div.navbar
-  %div.navbar-inner
-    %a.brand{:href => '/occurrences'} Occurrences
-    %ul.nav
-      %li.dropdown
-        %a.dropdown-toggle{:'data-toggle' => 'dropdown', :href => '#', :role => 'button'} Direction
-        %ul.dropdown-menu{:role => 'menu'}
-          %li 
-            %a{:href => '/occurrences?dir=asc'} Ascending
-          %li 
-            %a{:href => '/occurrences?dir=dsc'} Descending
-
 %ul.unstyled
   - error_msgs.each do |msg, count,| 
     %li <strong class="occurrence-count">#{count}:</strong> #{msg}

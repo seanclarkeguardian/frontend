@@ -24,13 +24,13 @@
         %div.navbar-inner
           %a.brand{:href => '/'} JS Errors
           %ul.nav
-            %li
+            %li{:class => ('active' if type === 'yesterday')} 
               %a{:href => '/yesterday'} Yesterday
-            %li
-              %a{:href => '/occurrences'} Occurences
-            %li
+            %li{:class => ('active' if type === 'occurrences')} 
+              %a{:href => '/occurrences'} Occurrences
+            %li{:class => ('active' if type === 'user-agents')} 
               %a{:href => '/user-agents'} User Agents
-            %li.active
+            %li{:class => ('active' if type === 'graphs')} 
               %a{:href => '/graphs'} Graphs
       =yield
     %script{:type => 'text/javascript', :src => 'http://code.jquery.com/jquery.js'}

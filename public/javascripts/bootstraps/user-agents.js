@@ -10,7 +10,9 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
             left: 40
         },
         chart,
-        legend;
+        legend,
+        currentType,
+        count;
 
     init();
     update('browser');
@@ -26,21 +28,22 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
         legend = chart.append('g')
             .attr('id', 'key')
             .attr('transform', 'translate(' + (width - margin.right) + ', 0)');
-
-        // xAxis = 
     }
 
-    function update(type) {
-        var config = createHistograms(type)
+    function update(type, count) {
+        currentType = type;
+        currencCount = count;
+        var config = createHistograms(type, count)
         updateStacks(d3.layout.stack()(config.histograms));
         addKey(config.uniqueTypes);
         addEvents();
     }
 
-    function createHistograms(type) {
+    function createHistograms(type, count) {
         var histogramRange = [null, null];
         // pull out types
-        var types = errors.map(function(e) { 
+        var types = {};
+        errors.forEach(function(e) { 
             // create histogram range while here
             var time = moment(e.time).valueOf();
             if (time < histogramRange[0] || histogramRange[0] === null) {
@@ -49,12 +52,20 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
             if (time > histogramRange[1] || histogramRange[1] === null) {
                 histogramRange[1] = time;
             }
-            return e[type]; 
+            var prop = e[type];
+            (types[prop]) ? types[prop]++ : types[prop] = 1;
         });
-        // pull out unique types
-        var uniqueTypes = types.filter(function(d, i) { 
-            return this.indexOf(d) === i; 
-        }, types);
+
+        var uniqueTypes = d3.keys(types);
+
+        // order by top count
+        uniqueTypes.sort(function(a, b) {
+            return types[b] - types[a];
+        });
+
+        if (count) {
+            uniqueTypes = uniqueTypes.slice(0, count)
+        }
 
         var histograms = [];
         var histogramLayout = d3.layout.histogram()
@@ -71,40 +82,48 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
     }
 
     function addEvents() {
-        var that = this;
-        d3.selectAll('#controls input')
+        d3.selectAll('#controls input[name="show"]')
             .on('change', function(d, i) {
-                update(this.value);
+                update(this.value, currencCount);
+            });
+        d3.selectAll('#controls input[name="top-five"]')
+            .on('change', function(d, i) {
+                update(currentType, (this.checked) ? 5 : null);
             });
     }
 
     function updateStacks(stacks) {
 
-        var yStackMax = d3.max(stacks, function(stack) { return d3.max(stack, function(d) { return d.y0 + d.y; }); });
-
         var x = d3.scale.ordinal()
             .domain(stacks[0].map(function(d) { return d.x; }))
             .rangeRoundBands([0, width - margin.left - margin.right], 0.3);
+
+        var yStackMax = d3.max(stacks, function(stack) { return d3.max(stack, function(d) { return d.y0 + d.y; }); });
 
         var y = d3.scale.linear()
             .domain([0, yStackMax])
             .range([height - margin.top - margin.bottom, 0]);
 
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .tickSize(0)
-            .tickPadding(6)
-            .orient("bottom")
-            .tickFormat(function(d) { return moment(d).format('HH:mm'); });
+        if (d3.select('.axis.x').empty()) {
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .tickSize(5)
+                .tickPadding(6)
+                .orient("bottom")
+                .tickFormat(function(d) { return moment(d).format('HH:mm'); });
 
-        chart.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + (height - margin.top - margin.bottom) + ")")
-            .call(xAxis);
+            chart.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (height - margin.top - margin.bottom) + ")")
+                .call(xAxis);
+        }
 
+        // update y axis
+        d3.select('.axis.y')
+            .remove();
         var yAxis = d3.svg.axis()
             .scale(y)
-            .tickSize(0)
+            .tickSize(5)
             .tickPadding(6)
             .orient("left");
 
@@ -120,7 +139,15 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
         layer.enter()
             .append("g")
             .attr("class", "layer")
-            .style("fill", function(d, i) { return color(i); });
+            .style("fill", function(d, i) { return color(i); })
+            .on('mouseover', function(d, i) {
+                fadeOut(i);
+            })
+            .on('mouseout', function(d, i) {
+                fadeIn(i);
+            })
+            .transition()
+                .style('opacity', 1);
 
         // EXIT
         layer.exit()
@@ -144,9 +171,6 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
             .attr("width", x.rangeBand())
             .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); });
 
-        // UPDATE & ENTER
-
-
         // EXIT
         rect.exit()
             .remove();
@@ -161,22 +185,21 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
         var keyEnter = key.enter()
             .append('g')
             .classed('key', true)
-            .attr('transform', function(d, i) { return 'translate(0, ' + (i * 20) + ')'; });
+            .attr('transform', function(d, i) { return 'translate(0, ' + (i * 20) + ')'; })
+            .on('mouseover', function(d, i) {
+                fadeOut(i)
+            })
+            .on('mouseout', function(d, i) {
+                fadeIn(i);
+            });
+
+        keyEnter.transition()
+            .style('opacity', 1);
 
         keyEnter.append('rect')
             .attr('width', 10)
             .attr('height', 10)
-            .style('fill', function(d, i) { return color(i); })
-            .on('mouseover', function(d, i) {
-                // fade out other layers
-                d3.selectAll('.layer').filter(function(e, j) { return i !== j; })
-                    .style('opacity', 0.1);
-            })
-            .on('mouseout', function(d, i) {
-                // fade in layers
-                d3.selectAll('.layer')
-                    .style('opacity', 1);
-            });
+            .style('fill', function(d, i) { return color(i); });
 
         keyEnter.append('text')
             .text(function(d) { return d; })
@@ -191,6 +214,20 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
         key.exit()
             .remove();
 
+    }
+
+    function fadeOut(i) {
+        d3.selectAll('.layer').filter(function(e, j) { return i !== j; })
+            .style('opacity', 0.1);
+        d3.selectAll('.key').filter(function(e, j) { return i !== j; })
+            .style('opacity', 0.1);
+    }
+
+    function fadeIn(i) {
+        d3.selectAll('.layer')
+            .style('opacity', 1);
+        d3.selectAll('.key')
+            .style('opacity', 1);
     }
 
 });

@@ -14,7 +14,7 @@ class FrontendDashboard < Sinatra::Base
     if params[:dir] === 'asc'
       error_msgs.reverse!
     end
-    haml :yesterday, :locals => { :error_msgs => error_msgs }
+    haml :yesterday, :locals => { :error_msgs => error_msgs, :type => 'yesterday' }
   end
 
   get '/occurrences' do
@@ -24,7 +24,7 @@ class FrontendDashboard < Sinatra::Base
     if params[:dir] === 'asc'
       grouped_error_msgs.reverse!
     end
-    haml :occurrences, :locals => { :error_msgs => grouped_error_msgs }
+    haml :occurrences, :locals => { :error_msgs => grouped_error_msgs, :type => 'occurrences' }
   end
 
   get '/user-agents' do
@@ -43,12 +43,12 @@ class FrontendDashboard < Sinatra::Base
       grouped_errors.reverse!
     end
 
-    haml :user_agents, :locals => { :errors => grouped_errors }
+    haml :user_agents, :locals => { :errors => grouped_errors, :type => 'user-agents' }
   end
 
   get '/graphs' do
     errors = get_js_errors('yesterday')
-    haml :graphs, :locals => { :errors => errors }, :cdata => true
+    haml :graphs, :locals => { :errors => errors, :type => 'graphs'}, :cdata => true
   end
 
 
@@ -66,6 +66,7 @@ class FrontendDashboard < Sinatra::Base
       }).body['Contents'].each { |file|
         log_name = file['Key']
         # have we already got this log
+        puts 'Retriving %s' % [log_name]
         log = retireve(log_name)
         if !log 
           log = s3.directories.get('aws-frontend-logs').files.get(log_name).body
@@ -77,8 +78,13 @@ class FrontendDashboard < Sinatra::Base
     # pull out js errors (array of date and message)
     error_msgs = []
     logs.each { |log|
-      log.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)[^,]*,[^,]*,[^,]*,([^,]*),"([^"]*)"/) { |date, msg, url, ua| 
-        error_msgs << [DateTime.strptime(date, "%d/%b/%Y:%H:%M:%S %Z"), Base64.decode64(msg), url, UserAgentParser.parse(ua)] 
+      puts 'Scanning'
+      log.split('\n').each { |line| 
+        if (line.include? 'GET /px.gif?js/') 
+          line.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)[^,]*,[^,]*,[^,]*,([^,]*),"([^"]*)"/) { |date, msg, url, ua| 
+            error_msgs << [DateTime.strptime(date, "%d/%b/%Y:%H:%M:%S %Z"), Base64.decode64(msg), url, UserAgentParser.parse(ua)] 
+          }
+        end
       }
     }
     error_msgs

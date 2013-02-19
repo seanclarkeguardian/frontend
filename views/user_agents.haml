@@ -1,17 +1,3 @@
-%div.navbar
-  %div.navbar-inner
-    %a.brand{:href => '/user-agents'} Agents
-    %ul.nav
-      %li.dropdown
-        %a.dropdown-toggle{:'data-toggle' => 'dropdown', :href => '#', :role => 'button'} Group by
-        %ul.dropdown-menu{:role => 'menu'}
-          %li 
-            %a{:href => '/user-agents?group-by=name'} Browser name
-          %li 
-            %a{:href => '/user-agents?group-by=os'} OS
-          %li
-            %a{:href => '/user-agents?group-by=device'} Device
-
 %ul.unstyled
   - errors.each do |ua, count,| 
     %li <strong class="occurrence-count">#{count}:</strong> #{ua}

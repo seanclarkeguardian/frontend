@@ -7,7 +7,7 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
             top: 10,
             right: 300,
             bottom: 500,
-            left: 40
+            left: 50
         },
         chart,
         legend,

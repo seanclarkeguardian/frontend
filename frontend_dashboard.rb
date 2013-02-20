@@ -61,7 +61,7 @@ class FrontendDashboard < Sinatra::Base
     # get all the files for the data
    @@s3.get_bucket('aws-frontend-logs', {
          'prefix' => 'PROD/access.log/%s/frontend-diagnostics' % [Chronic.parse(date).strftime("%Y/%m/%d")],
-         'max-keys' => 1
+         'max-keys' => 100
       }).body['Contents'].each { |file|
         log_name = file['Key']
         puts 'Retriving %s' % [log_name]

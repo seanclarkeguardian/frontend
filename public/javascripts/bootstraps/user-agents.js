@@ -119,17 +119,21 @@ require(['moment', 'bonzo', 'qwery', 'js!d3'], function(moment, bonzo, qwery) {
         }
 
         // update y axis
-        d3.select('.axis.y')
-            .remove();
         var yAxis = d3.svg.axis()
             .scale(y)
             .tickSize(5)
             .tickPadding(6)
             .orient("left");
 
-        chart.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
+        if (d3.select('.axis.y').empty()) {
+            chart.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+        } else {
+            d3.select(".axis.y")
+                .transition()
+                .call(yAxis);
+        }
 
         // UPDATE
         var layer = chart.selectAll(".layer")

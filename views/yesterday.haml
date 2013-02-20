@@ -1,3 +1,3 @@
 %ul
-  - error_msgs.each do |time, msg, url, ua| 
-    %li <strong>#{time.strftime('%H:%M:%S')}:</strong> #{msg}
+  - errors.each do |time, msg, url, ua| 
+    %li <strong>#{DateTime.strptime(time[0..-4],'%s').rfc2822()}:</strong> #{Base64.decode64(msg)}

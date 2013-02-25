@@ -1,4 +1,4 @@
-@(article: Article, storyPackage: List[Trail], edition: String)(implicit request: RequestHeader)
+@(article: model.Content, storyPackage: List[Trail], edition: String)(implicit request: RequestHeader)
 
 @main(article, Switches.all){ }{
 
@@ -33,7 +33,7 @@
         }
 
         <div class="article-body from-content-api @if(article.isLive) {live-blog}"
-            itemprop="@if(article.isReview){reviewBody} else {articleBody}">
+            itemprop="articleBody">
 		      @fragments.articleBody(article)
         </div>
         

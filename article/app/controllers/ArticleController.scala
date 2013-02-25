@@ -8,7 +8,7 @@ import play.api.mvc.{ Content => _, _ }
 import play.api.libs.concurrent.Execution.Implicits._
 import concurrent.Future
 
-case class ArticlePage(article: Article, storyPackage: List[Trail], edition: String)
+case class ArticlePage(content: Content, storyPackage: List[Trail], edition: String)
 
 object ArticleController extends Controller with Logging {
 
@@ -16,7 +16,7 @@ object ArticleController extends Controller with Logging {
     val promiseOfArticle = Future(lookup(path))
     Async {
       promiseOfArticle.map {
-        case Left(model) if model.article.isExpired => Gone(Compressed(views.html.expired(model.article)))
+        case Left(model) if model.content.isExpired => Gone(Compressed(views.html.expired(model.content)))
         case Left(model) => renderArticle(model)
         case Right(notFound) => notFound
       }
@@ -30,9 +30,12 @@ object ArticleController extends Controller with Logging {
       .showExpired(true)
       .showTags("all")
       .showFields("all")
+      .tag("type/interactive")
       .response
 
-    val articleOption = response.content.filter { _.isArticle } map { new Article(_) }
+    log.info(response.toString)
+
+    val articleOption = response.content.map { new Content(_) }
     val storyPackage = response.storyPackage map { new Content(_) }
 
     val model = articleOption.map { article => ArticlePage(article, storyPackage.filterNot(_.id == article.id), edition) }
@@ -41,10 +44,10 @@ object ArticleController extends Controller with Logging {
 
   private def renderArticle(model: ArticlePage)(implicit request: RequestHeader): Result =
     request.getQueryString("callback").map { callback =>
-      JsonComponent(views.html.fragments.articleBody(model.article))
+      JsonComponent(views.html.fragments.articleBody(model.content))
     } getOrElse {
-      Cached(model.article)(
-        Ok(Compressed(views.html.article(model.article, model.storyPackage, model.edition)))
+      Cached(model.content)(
+        Ok(Compressed(views.html.article(model.content, model.storyPackage, model.edition)))
       )
     }
 }

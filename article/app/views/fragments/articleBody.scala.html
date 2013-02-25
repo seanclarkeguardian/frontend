@@ -1,8 +1,8 @@
-@(article: Article)(implicit request: RequestHeader)
+@(article: model.Content)(implicit request: RequestHeader)
 
 @* <!-- ordering of cleaners is important --> *@
 
-@withJsoup(BulletCleaner(article.body))(
+@withJsoup(BulletCleaner(""))(
     PictureCleaner(article),
     InBodyLinkCleaner("in body link"),
     BlockNumberCleaner,

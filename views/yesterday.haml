@@ -1,3 +1,3 @@
 %ul
   - errors.each do |time, msg, url, ua| 
-    %li <strong>#{DateTime.strptime(time[0..-4],'%s').rfc2822()}:</strong> #{Base64.decode64(msg)}
+    %li <strong>#{DateTime.strptime(time[0..-4],'%s').rfc2822()}:</strong> #{URI.unescape(msg)}

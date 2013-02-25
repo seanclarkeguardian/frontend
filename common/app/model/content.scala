@@ -22,6 +22,8 @@ class Content(
     .filter(_.safeFields.isDefinedAt("stillImageUrl"))
     .map { videoAsset => Image(videoAsset.copy(file = videoAsset.safeFields.get("stillImageUrl"))) }
 
+  lazy val interactives: Seq[Interactive] = delegate.mediaAssets.filter { _.`type` == "interactive" } map { Interactive(_) }
+
   lazy val id: String = delegate.id
   lazy val sectionName: String = delegate.sectionName.getOrElse("")
   lazy val section: String = delegate.sectionId.getOrElse("")

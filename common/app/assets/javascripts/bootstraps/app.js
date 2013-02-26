@@ -8,6 +8,7 @@ define('bootstraps/app', [
     "bootstraps/video",
     "bootstraps/gallery",
     "bootstraps/story",
+    "bootstraps/interactive",
     "modules/pageconfig"
 ], function (
     domReady,
@@ -19,6 +20,7 @@ define('bootstraps/app', [
     Video,
     Gallery,
     Story,
+    Interactive,
     pageConfig
 ) {
 
@@ -42,6 +44,8 @@ define('bootstraps/app', [
             r.get('/football/:action/:year/:month/:day', function(req) { Football.init(req, config); });
             r.get('/football/:tag/:action', function(req) { Football.init(req, config); });
             r.get('/football/:tag/:action/:year/:month/:day', function(req) { Football.init(req, config); });
+
+            r.get('/:base/interactive/:year/:month/:day/:slug', function(req) {Interactive.init(req, config) })
 
             //Articles
             if(config.page.contentType === "Article") {

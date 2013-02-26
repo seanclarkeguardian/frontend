@@ -35,6 +35,14 @@
         <div class="article-body from-content-api @if(article.isLive) {live-blog}"
             itemprop="articleBody">
 		      @fragments.articleBody(article)
+              @article.interactives.map { inter =>
+                <div class="from-api-interactive" 
+                    data-interactive-width="@inter.width"
+                    data-interactive-height="@inter.height"
+                    data-interactive-src="@inter.url.map { url => @url }">
+                    <p><a href="@inter.url.map { url => @url }">Launch the interactive</a></p>
+                </div>
+              }
         </div>
         
     </article>

@@ -31,3 +31,38 @@
     width: auto;
     max-width: @inArticleInlineImgWidth;
 }
+
+#swipepages {
+    position: relative;
+}
+
+#swipepages-inner {
+    position: relative;
+    top: 0px;
+    height: 100%;
+    width: 100%; 
+    -webkit-transition: 0ms ease-out;
+    -webkit-transform: translateZ(0px); 
+}
+
+#swipepage-0,
+#swipepage-1,
+#swipepage-2 {
+    -webkit-transform: translateZ(0px);
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+#swipepage-0 {
+    left: -100%; 
+}
+
+#swipepage-1 {
+    left: 0%; 
+}
+
+#swipepage-2 {
+    left: 100%; 
+}

@@ -118,7 +118,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             ajaxTimeTotal = 0,
             ajaxCount = 0,
             noHistoryPush,
-            paneVisible = $('#swipeview-slider > #swipeview-masterpage-1', opts.el)[0],
+            paneVisible = $('#swipepages-inner > #swipepage-1', opts.el)[0],
             pageData,
             panes,
             paneNow = 1,

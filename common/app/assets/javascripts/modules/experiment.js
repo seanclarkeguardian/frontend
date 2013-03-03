@@ -6,21 +6,40 @@ define([
     ajax
 ) {
 
-    function Experiment(config, experimentName) {
+    function Experiment() {
 
         var that = this;
 
-        this.init = function () {
-            this.load('/experiment/' + experimentName + '/' + config.page.pageId);
+        this.init = function (config) {
+            var experimentName = localStorage.getItem('gu.experiment') || '',
+                experiment;
+
+            if (!experimentName) {
+                for (var key in config.switches) {
+                    if (config.switches[key] && key.match(/^experiment(\w+)/)) {
+                        experimentName = key.match(/^experiment(\w+)/)[1];
+                        break;
+                    }
+                }
+            }
+
+            experimentName = experimentName.toLowerCase();
+
+            if (experimentName) {
+                this.load('/stories/' + experimentName + '/' + config.page.pageId);
+            } else {
+                common.mediator.emit("modules:related:load");
+            }
         };
 
         // View
         this.view = {
             render: function (html) {
+                common.$g('#related-trails, h3.type-2.article-zone').remove();
                 document.getElementById('js-related').innerHTML = html;
                 common.mediator.emit('modules:experiment:render');
                 // Remove the existing story package and its title
-                common.$g('#related-trails, h3.type-2.article-zone').remove();
+
             },
             fallback: function () {
                 common.mediator.emit("modules:related:load");
@@ -40,7 +59,7 @@ define([
                 jsonpCallback: 'callback',
                 jsonpCallbackName: 'showExperiment',
                 success: function (json) {
-                    if (json.html) {
+                    if (json && json.html) {
                         that.view.render(json.html);
                     } else {
                         that.view.fallback();

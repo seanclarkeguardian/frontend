@@ -10,6 +10,7 @@ define(function() {
                 iframe.width = width;
                 iframe.height = inter.getAttribute('data-interactive-height');
                 iframe.src = inter.getAttribute('data-interactive-src');
+                // TODO: Do this in one paint.
                 inter.innerHTML = "";
                 inter.appendChild(iframe);
             }

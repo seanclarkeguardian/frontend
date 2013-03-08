@@ -1,3 +1,3 @@
 %ul.unstyled
   - errors.each do |msg, count,| 
-    %li <strong class="occurrence-count">#{count}:</strong> #{Base64.decode64(msg)}
+    %li <strong class="occurrence-count">#{count}:</strong> #{URI.unescape(msg)}

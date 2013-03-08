@@ -7,15 +7,15 @@
   %body
     :javascript
       curl = {
-        baseUrl: "/javascripts",
-        apiName: "require",
+        baseUrl: '/javascripts',
+        apiName: 'require',
         paths:
           {
-            reqwest: "components/reqwest/reqwest.js",
-            moment: "components/moment/moment.js",
-            bonzo: "components/bonzo/bonzo.js",
-            qwery: "components/qwery/qwery.js",
-            d3: "components/d3/d3.js"
+            reqwest: 'components/reqwest/reqwest.js',
+            moment: 'components/moment/moment.js',
+            bonzo: 'components/bonzo/bonzo.js',
+            qwery: 'components/qwery/qwery.js',
+            d3: 'components/d3/d3.js'
           }
         }
     %script{:type => 'text/javascript', :src => '/javascripts/components/curl/dist/curl-kitchen-sink/curl.js'}
@@ -26,12 +26,15 @@
           %ul.nav
             %li{:class => ('active' if type === 'yesterday')} 
               %a{:href => '/yesterday'} Yesterday
-            %li{:class => ('active' if type === 'occurrences')} 
-              %a{:href => '/occurrences'} Occurrences
+            %li.dropdown{:class => ('active' if type === 'occurrences')} 
+              %a.dropdown-toggle{:href => '/occurrences', :'data-toggle' => 'dropdown'} Occurrences
+              %ul.dropdown-menu
+                %li{:class => ('active' if params[:by] === 'message')}
+                  %a{:href => '/occurrences?by=message'} Message
+                %li{:class => ('active' if params[:by] === 'file')}
+                  %a{:href => '/occurrences?by=file'} File
             %li{:class => ('active' if type === 'user-agents')} 
               %a{:href => '/user-agents'} User Agents
-            %li{:class => ('active' if type === 'graphs')} 
-              %a{:href => '/graphs'} Graphs
       =yield
     %script{:type => 'text/javascript', :src => 'http://code.jquery.com/jquery.js'}
     %script{:type => 'text/javascript', :src => '/javascripts/components/bootstrap.css/js/bootstrap.js'}

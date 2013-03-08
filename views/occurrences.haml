@@ -1,3 +1,6 @@
 %ul.unstyled
-  - errors.each do |msg, count,| 
-    %li <strong class="occurrence-count">#{count}:</strong> #{URI.unescape(msg)}
+  - errors.each do |msg, count|
+    #{next if msg.nil? || msg.empty?}
+    %li 
+      %strong.occurrence-count #{count}:
+      %a{:href => '?' + ((!params[:file].nil? || params[:by] === 'message') ? 'message' : 'file') + '=' + msg}= msg

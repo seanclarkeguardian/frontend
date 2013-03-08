@@ -4,10 +4,6 @@ class FrontendDashboard < Sinatra::Base
     haml :index, :locals => { :type => '' }
   end
 
-  get '/js-errors' do
-    haml :js_errors
-  end
-
   get '/yesterday' do
     errors = get_js_errors('yesterday')
     errors.sort! { |a, b| b[0] <=> a[0] }
@@ -19,8 +15,29 @@ class FrontendDashboard < Sinatra::Base
 
   get '/occurrences' do
     errors = get_js_errors('yesterday')
+
+    if !params[:file].nil? || !params[:message].nil?
+      filter = params[:file] || params[:message]
+      errors.select! { |error|
+        msg = URI.unescape(error[1]).split(',')
+        if !params[:message].nil?
+          msg[0] === params[:message]
+        else 
+          msg[1] === params[:file]
+        end
+      }
+    end 
+
     # group by
-    grouped_errors = errors.group_by { |error| error[1] }.map { |k, v| [k, v.length] }.sort { |a, b| b[1] - a[1] }
+    grouped_errors = errors.group_by { |error| 
+      msg = URI.unescape(error[1])
+      if params[:by] === 'message' || params[:file]
+        msg = msg.split(',')[0]
+      elsif params[:by] === 'file' || params[:message]
+        msg = msg.split(',')[1]
+      end
+      msg
+    }.map { |k, v| [k, v.length] }.sort { |a, b| b[1] - a[1] }
     if params[:dir] === 'asc'
       grouped_errors.reverse!
     end
@@ -29,23 +46,7 @@ class FrontendDashboard < Sinatra::Base
 
   get '/user-agents' do
     errors = get_js_errors('yesterday')
-    grouped_errors = errors.group_by { |error| 
-      error[3]
-    }.map { |k, v| 
-      [k, v.length] 
-    }.sort { |a, b| 
-      b[1] - a[1] 
-    }
-    if params[:dir] === 'asc'
-      grouped_errors.reverse!
-    end
-
-    haml :user_agents, :locals => { :errors => grouped_errors, :type => 'user-agents' }
-  end
-
-  get '/graphs' do
-    errors = get_js_errors('yesterday')
-    haml :graphs, :locals => { :errors => errors, :type => 'graphs'}, :cdata => true
+    haml :'user_agents', :locals => { :errors => errors, :type => 'user-agents'}, :cdata => true
   end
 
 

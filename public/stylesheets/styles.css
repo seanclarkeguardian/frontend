@@ -14,9 +14,14 @@
 .key {
     opacity:0;
     -webkit-transition:opacity 0.5s;
+    cursor: pointer;
 }
 
 #key rect{
     stroke-width:2px;
     stroke:black;
+}
+
+a {
+    color: #333333;
 }

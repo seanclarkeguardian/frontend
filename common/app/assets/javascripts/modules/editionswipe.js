@@ -99,11 +99,12 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
 
             // Private vars
             androidVersion,
+            ajaxCount = 0,
             ajaxRegex = new RegExp(opts.ajaxRegex,'g'),
             throttle,
             cache = {},
             canonicalLink = $('link[rel=canonical]'),
-            clickType = 'initial',
+            initiatedBy = 'initial',
             contentArea = $(opts.el)[0],
             contentAreaTop = $(opts.el).offset().top,
             editionPos = -1,
@@ -115,16 +116,14 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             inEdition = false,
             initialPage,
             initialPageRaw,
-            ajaxTimeTotal = 0,
-            ajaxCount = 0,
             noHistoryPush,
-            paneVisible = $('#swipepages-inner > #swipepage-1', opts.el)[0],
+            visiblePane = $('#swipepages-inner > #swipepage-1', opts.el)[0],
             pageData,
             panes,
             paneNow = 1,
             paneThen = 1,
-            paneVisibleMargin = 0,
-            paneHiddenMargin = 0,
+            visiblePaneMargin = 0,
+            hiddenPaneMargin = 0,
             referrer = document.referrer;
 
         // Detect capabilities
@@ -150,7 +149,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
 
         var getPageData = function () {
             try {
-                var obj = $(paneVisible).find(opts.pageDataSelector).eq(0).data('pagedata');
+                var obj = $(visiblePane).find(opts.pageDataSelector).eq(0).data('pagedata');
                 return obj && typeof obj === 'object' ? obj : {};
             }
             catch(e) {
@@ -223,7 +222,6 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                 callback = o.callback || noop,
                 data = {},
                 html,
-                loadTime,
                 rx,
                 i;
             if (url && el) {
@@ -236,12 +234,10 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                 // Is cached ?
                 if (html) {
                     populate(el, html);
-                    el.dataset.loadTime = 0;
                     callback();
                 }
                 else {
                     data[opts.queryParam] = getBreakpoint();
-                    loadTime =(new Date()).getTime();
                     el.dataset.waiting = '1';
                     reqwest({
                         url: url,
@@ -275,15 +271,10 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                                 }
                             }
                             el.dataset.waiting = '';
-                            // Do timing stats
-                            loadTime = (new Date()).getTime() - loadTime;
-                            el.dataset.loadTime = loadTime;
-                            ajaxTimeTotal += loadTime;
                             ajaxCount += 1;
                             // Maybe flush cache
                             if (ajaxCount > 50) {
                                 ajaxCount = 0;
-                                ajaxTimeTotal = 0;
                                 cache = {};
                             }
                         },
@@ -306,14 +297,14 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
         var reloadContent = function (callback) {
             load({
                 url: normalizeUrl(window.location.href),
-                container: paneVisible,
+                container: visiblePane,
                 callback: callback
             });
         };
 
         // Gets redefined progressively
         var repaintContent = function () {
-            opts.afterLoad(paneVisible);
+            opts.afterLoad(visiblePane);
         };
 
         bean.on(window, 'resize', function () {
@@ -330,11 +321,11 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             }
         });
 
-        // Make the contentArea height equal to the paneVisible height. (We view the latter through the former.)
+        // Make the contentArea height equal to the visiblePane height. (We view the latter through the former.)
         var updateHeight = function(){
-            var height = $('*', paneVisible).offset().height; // NB paneVisible has height:100% set by swipeview, so we look within it
+            var height = $('*', visiblePane).offset().height; // NB visiblePane has height:100% set by swipeview, so we look within it
             if (height) {
-                $(contentArea).css('height', height + paneVisibleMargin + 'px');
+                $(contentArea).css('height', height + visiblePaneMargin + 'px');
             }
         };
 
@@ -348,7 +339,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             if (initialPage) {
                 // Cache the initial page content, if we're doing pjax
                 if (supportsHistory) {
-                    cache[initialPage] = $(paneVisible).html();
+                    cache[initialPage] = $(visiblePane).html();
                 }
                 // Set the url for pushState
                 url = initialPageRaw;
@@ -356,7 +347,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             }
             else {
                 // Set the url for pushState
-                url = paneVisible.dataset.url;
+                url = visiblePane.dataset.url;
                 referrer = window.location.href; // this works because we havent yet push'd the new URL
             }
 
@@ -382,15 +373,14 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             canonicalLink.attr('href', window.location.href);
 
             // Add some stats to pageData
-            pageData.clickType = clickType;
-            pageData.referrer = referrer;
-            if (paneVisible.dataset && paneVisible.dataset.loadTime) {
-                pageData.loadTime = Math.round(paneVisible.dataset.loadTime)/1000;
-                pageData.loadTimeAverage = Math.round(ajaxTimeTotal/ajaxCount)/1000;
-            }
 
             // Fire the main aftershow callback
-            opts.afterShow(paneVisible, pageData, api);
+            opts.afterShow({
+                initiatedBy:   initiatedBy,
+                referrer:    referrer,
+                visiblePane: visiblePane,
+                api:         api
+            });
 
             // Update our edition position.
             // Note: the edition is either set in the initial config, or in opts.afterShow using the passed in api:
@@ -499,7 +489,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
         };
 
         bean.on(document, 'keydown', function (e) {
-            clickType = 'keyboard_arrow';
+            initiatedBy = 'keyboard_arrow';
             switch(e.keyCode) {
                 case 37: throttledSlideIn(-1);
                     break;
@@ -562,22 +552,22 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             },
 
             gotoEditionPage: function(pos, type){
-                clickType = type ? type.toString() : 'position';
+                initiatedBy = type ? type.toString() : 'position';
                 gotoEditionPage(pos, type);
             },
 
             gotoUrl: function(url, type){
-                clickType = type ? type.toString() : 'link';
+                initiatedBy = type ? type.toString() : 'link';
                 gotoUrl(url);
             },
 
             gotoNext: function(type){
-                clickType = type ? type.toString() : 'screen_arrow';
+                initiatedBy = type ? type.toString() : 'screen_arrow';
                 throttledSlideIn( 1);
             },
 
             gotoPrev: function(type){
-                clickType = type ? type.toString() : 'screen_arrow';
+                initiatedBy = type ? type.toString() : 'screen_arrow';
                 throttledSlideIn(-1);
             }
         };
@@ -608,7 +598,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                 doFirst();
                 load({
                     url: url,
-                    container: paneVisible,
+                    container: visiblePane,
                     showSpinner: true,
                     callback: function () {
                         doAfterShow();
@@ -624,7 +614,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                     dir;
                 // Ignore inital popstate that some browsers fire on page load
                 if (!state) { return; }
-                clickType = 'browser_history';
+                initiatedBy = 'browser_history';
                 popId = state.id ? state.id : -1;
                 // Deduce the bac/fwd pop direction
                 dir = popId < uid.get() ? -1 : 1;
@@ -648,7 +638,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                     window.location.reload(true);
                 }
                 else {
-                    clickType = 'link';
+                    initiatedBy = 'link';
                     gotoUrl(url);
                 }
             });
@@ -725,8 +715,8 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                         container: el,
                         showSpinner: doSlideIn,
                         callback: function () {
-                            // el might have become paneVisible since request was made, e.g. due to rapid swiping. If so, no need to slideInPane
-                            if (el === paneVisible) {
+                            // el might have become visiblePane since request was made, e.g. due to rapid swiping. If so, no need to slideInPane
+                            if (el === visiblePane) {
                                 doAfterShow();
                             }
                             // before slideInPane, confirm that this pane hasn't had its url changed since the request was made
@@ -774,21 +764,21 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
 
             // Fix pane margins, so sidepanes come in at their top
             bean.on(window, 'scroll', function () {
-                paneHiddenMargin = Math.max( 0, $(window).scrollTop() - contentAreaTop );
-                if( paneHiddenMargin < paneVisibleMargin ) {
+                hiddenPaneMargin = Math.max( 0, $(window).scrollTop() - contentAreaTop );
+                if( hiddenPaneMargin < visiblePaneMargin ) {
                     // We've scrolled up over the offset; reset all margins and jump to topmost scroll
                     $(panes.masterPages[(paneNow).mod(3)]).css(  'marginTop', 0);
                     $(panes.masterPages[(paneNow+1).mod(3)]).css('marginTop', 0);
                     $(panes.masterPages[(paneNow-1).mod(3)]).css('marginTop', 0);
                     // And reset the scroll
                     $(window).scrollTop( contentAreaTop );
-                    paneVisibleMargin = 0;
-                    paneHiddenMargin = 0;
+                    visiblePaneMargin = 0;
+                    hiddenPaneMargin = 0;
                 }
                 else {
                     // We've scrolled down; push L/R sidepanes down to level of current pane
-                    $(panes.masterPages[(paneNow+1).mod(3)]).css('marginTop', paneHiddenMargin);
-                    $(panes.masterPages[(paneNow-1).mod(3)]).css('marginTop', paneHiddenMargin);
+                    $(panes.masterPages[(paneNow+1).mod(3)]).css('marginTop', hiddenPaneMargin);
+                    $(panes.masterPages[(paneNow-1).mod(3)]).css('marginTop', hiddenPaneMargin);
                 }
             });
 
@@ -799,13 +789,13 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
                 paneNow = (panes.pageIndex+1).mod(3);
                 if (paneThen !== paneNow) {
                     // shuffle down the pane we've just left
-                    $(panes.masterPages[paneThen]).css('marginTop', paneHiddenMargin);
-                    paneVisibleMargin = paneHiddenMargin;
+                    $(panes.masterPages[paneThen]).css('marginTop', hiddenPaneMargin);
+                    visiblePaneMargin = hiddenPaneMargin;
 
                     paneThen = paneNow;
-                    paneVisible = panes.masterPages[paneNow];
+                    visiblePane = panes.masterPages[paneNow];
 
-                    if (paneVisible.dataset && paneVisible.dataset.waiting === '1') {
+                    if (visiblePane.dataset && visiblePane.dataset.waiting === '1') {
                         spinner.show();
                     }
                     doAfterShow();
@@ -813,12 +803,12 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
             });
             panes.onMoveOut(function () {
                 doFirst();
-                clickType = 'swipe';
+                initiatedBy = 'swipe';
             });
 
             // Identify and decorate the initially visible pane
-            paneVisible = panes.masterPages[1];
-            paneVisible.dataset.url = normalizeUrl(window.location.href);
+            visiblePane = panes.masterPages[1];
+            visiblePane.dataset.url = normalizeUrl(window.location.href);
 
             // Load the sidepanes
             loadSidePanes();
@@ -831,7 +821,7 @@ define(['swipeview', 'bean', 'bonzo', 'qwery', 'reqwest'], function(SwipeView, b
         };
 
         // MAIN: Render the initial content
-        opts.afterLoad(paneVisible);
+        opts.afterLoad(visiblePane);
 
         // Setup some context
         initialPageRaw = window.location.href;

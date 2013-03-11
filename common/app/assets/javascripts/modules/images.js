@@ -8,7 +8,7 @@ define(['common', 'modules/detect', 'bonzo'], function (common, detect, bonzo) {
         // View
 
         this.view = {
-            upgrade: function () {
+            upgrade: function (config) {
 
                 // upgrade svg images
                 if (detect.hasSvgSupport()) {
@@ -16,7 +16,7 @@ define(['common', 'modules/detect', 'bonzo'], function (common, detect, bonzo) {
                 }
 
                 //upgrade other images;
-                common.$g('img').each(function(image, index) {
+                common.$g('img', config.swipe.visiblePane).each(function(image, index) {
                     image = bonzo(image);
                     if (!image.attr('data-fullsrc')) {
                         return;
@@ -35,15 +35,11 @@ define(['common', 'modules/detect', 'bonzo'], function (common, detect, bonzo) {
             }
         };
 
-        // Bindings
-        
-        common.mediator.on('modules:images:upgrade', this.view.upgrade);
-   
         // Model
         
-        this.upgrade = function () {
+        this.upgrade = function (config) {
             if (connectionSpeed !== 'low') {
-                common.mediator.emit('modules:images:upgrade');
+                this.view.upgrade(config);
             }
         };
     }

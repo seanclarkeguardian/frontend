@@ -35,7 +35,7 @@ function (
 
         generateMiddleSlot(config);
 
-        var slotHolders = document.querySelectorAll('.swipeview-active .ad-slot'),
+        var slotHolders = config.swipe.visiblePane.querySelectorAll('.ad-slot'),
             size = (window.innerWidth > 810) ? 'median' : 'base',
             el;
 

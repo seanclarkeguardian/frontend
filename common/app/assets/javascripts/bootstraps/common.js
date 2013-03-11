@@ -67,8 +67,8 @@ define([
             common.mediator.on("module:error", e.log);
         },
 
-        upgradeImages: function () {
-            new Images().upgrade();
+        upgradeImages: function (config) {
+            new Images().upgrade(config);
         },
 
         initialiseNavigation: function (config) {
@@ -170,7 +170,6 @@ define([
         },
 
         initEditionSwipe: function(config) {
-
             var opts = {
                 el: '#swipepages',
                 ajaxStrip: [
@@ -178,38 +177,39 @@ define([
                     [/<\/div swipepage-1>[\s\S]*$/, '']
                 ],
                 widthGuess: 1,
-                afterShow: function(paneVisible, pageData, api) {
-                    var edition = [];
-                    if( pageData.clickType === 'initial' || pageData.clickType === 'link') {
-                        
-                        // First page in edition is the referrer
-                        edition.push(common.urlPath(pageData.referrer));
-
-                        // Second page in edition is the current page
-                        common.pushIfNew(window.location.pathname, edition);
-                        
-                        common.$g('li[data-link-name="trail"] a', paneVisible).each(function(el, index) {
-                            common.pushIfNew(el.pathname, edition);
-                        });
-                        if (edition.length >= 3) {
-                            api.setEdition(edition);
-                        }
-                    }
-                    if( pageData.clickType !== 'initial') {
-                        modules.loadAdverts(config);
-                    }
+                afterShow: function(configSwipe) {
+                    config.swipe = configSwipe;
+                    onPaneVisible(config);
                 }
             };
+            editionSwipe(opts);
+        }
+    };
 
-            var edapi = editionSwipe(opts);
+    var onPaneVisible = function(config) {
+        var edition;
+
+        ready(config, userPrefs);
+        defer(config);
+
+        if( config.swipe.initiatedBy === 'initial' || config.swipe.initiatedBy === 'link') {
+            edition = [];
+            // First page in edition is the referrer
+            edition.push(common.urlPath(config.swipe.referrer));
+            // Second page in edition is the current page
+            common.pushIfNew(window.location.pathname, edition);
+            // Remaining pages are scraped from trails
+            common.$g('li[data-link-name="trail"] a', config.swipe.visiblePane).each(function(el, index) {
+                common.pushIfNew(el.pathname, edition);
+            });
+            if (edition.length >= 3) {
+                config.swipe.api.setEdition(edition);
+            }
         }
     };
 
     var ready = function(config) {
-        modules.initialiseAjax(config);
-        modules.attachGlobalErrorHandler();
-        modules.loadFonts(config, navigator.userAgent, userPrefs);
-        modules.upgradeImages();
+        modules.upgradeImages(config); // Swipe: working
         modules.showTabs();
 
         modules.initialiseNavigation(config);
@@ -219,8 +219,6 @@ define([
         modules.transcludeMostPopular(config.page.section, config.page.edition);
 
         modules.showRelativeDates();
-
-        modules.initEditionSwipe(config);
     };
 
     // If you can wait for load event, do so.
@@ -234,8 +232,10 @@ define([
     };
 
     var init = function (config) {
-        ready(config, userPrefs);
-        defer(config);
+        modules.initialiseAjax(config);
+        modules.attachGlobalErrorHandler();
+        modules.loadFonts(config, navigator.userAgent, userPrefs);
+        modules.initEditionSwipe(config);
     };
 
     return {

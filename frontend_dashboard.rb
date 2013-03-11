@@ -79,8 +79,11 @@ class FrontendDashboard < Sinatra::Base
   end
 
   def retireve(log_name)
-    file_name = 'data/' + log_name.gsub('/', '-')
+    data_dir_name = 'data'
+    file_name = data_dir_name + '/' + log_name.gsub('/', '-')
     if (!File.exists? file_name)  
+      # create direcotry if it doesn't exist
+      Dir.mkdir(data_dir_name) unless Dir.exists?(data_dir_name)
       File.open(file_name, 'w') { |f| 
         @@s3.directories.get('aws-frontend-logs').files.get(log_name).body.split('/n').each{ |line| 
           if (line.include? 'GET /px.gif?js/') 

@@ -1,3 +1,6 @@
+- if !params[:file].nil? || !params[:message].nil?
+  %h2= ((!params[:file].nil?) ? 'File' : 'Message') + ': ' + (params[:file] || params[:message])
+
 %ul.unstyled
   - errors.each do |msg, count|
     #{next if msg.nil? || msg.empty?}

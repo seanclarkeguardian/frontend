@@ -25,14 +25,14 @@
           %a.brand{:href => '/'} JS Errors
           %ul.nav
             %li{:class => ('active' if type === 'yesterday')} 
-              %a{:href => '/yesterday'} Yesterday
+              %a{:href => '/yesterday'} Yesterday's Log
             %li.dropdown{:class => ('active' if type === 'occurrences')} 
               %a.dropdown-toggle{:href => '/occurrences', :'data-toggle' => 'dropdown'} Occurrences
               %ul.dropdown-menu
                 %li{:class => ('active' if params[:by] === 'message' || !params[:file].nil?)}
-                  %a{:href => '/occurrences?by=message'} Message
+                  %a{:href => '/occurrences?by=message'} By Message
                 %li{:class => ('active' if params[:by] === 'file' || !params[:message].nil?)}
-                  %a{:href => '/occurrences?by=file'} File
+                  %a{:href => '/occurrences?by=file'} By File
             %li{:class => ('active' if type === 'user-agents')} 
               %a{:href => '/user-agents'} User Agents
       =yield

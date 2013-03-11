@@ -1,9 +1,8 @@
 - if !params[:file].nil? || !params[:message].nil?
-  %h2= ((!params[:file].nil?) ? 'File' : 'Message') + ': ' + (params[:file] || params[:message])
+  %h2= params[:file] || params[:message]
 
 %ul.unstyled
-  - errors.each do |msg, count|
-    #{next if msg.nil? || msg.empty?}
+  - errors.each do |error|
     %li 
-      %strong.occurrence-count #{count}:
-      %a{:href => '?' + ((!params[:file].nil? || params[:by] === 'message') ? 'message' : 'file') + '=' + msg}= msg
+      %strong.occurrence-count= error['occurrences'] + ':'
+      %a{:href => '?' + ((params[:by] === 'file' || !params[:message].nil?) ? 'file' : 'message') + '=' + error['by']}= error['by']

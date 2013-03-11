@@ -12,3 +12,5 @@ gem 'chronic'
 gem 'user_agent_parser'
 gem 'json'
 gem 'apachelogregex'
+
+gem 'pg'

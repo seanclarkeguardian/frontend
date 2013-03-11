@@ -13,7 +13,6 @@
 %script
   var errors = [
   - errors.each do |error|
-    {time: #{error[0]}, os: '#{error[3]}', browser: '#{error[4]}', device: '#{error[5]}' }
-    ,
+    {time: '#{error['timestamp']}', os: '#{error['ua_os']}', browser: '#{error['ua_name']}', device: '#{error['ua_device']}' },
   ];
 %script{:src => '/javascripts/bootstraps/user-agents.js'}

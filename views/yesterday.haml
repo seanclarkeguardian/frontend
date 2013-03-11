@@ -1,3 +1,11 @@
 %ul
-  - errors.each do |time, msg, url, ua| 
-    %li <strong>#{DateTime.strptime(time,'%Q').strftime('%a %-d, %H:%M:%S')}:</strong> #{URI.unescape(msg)}
+  - errors.each do |error|
+    %li 
+      %h3= DateTime.strptime(error['timestamp'], '%F %T').strftime('%a %-d, %T')
+      %dl
+        %dt Message: 
+        %dd
+          %a{:href => '/occurrences?message=' + error['message']}= error['message']
+        %dt File: 
+        %dd
+          %a{:href => '/occurrences?file=' + error['file']}= error['file']

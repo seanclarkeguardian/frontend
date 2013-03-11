@@ -55,7 +55,11 @@ class FrontendDashboard < Sinatra::Base
   ##########
 
   attr_accessor :s3
-  @@s3 = Fog::Storage.new(:provider => 'AWS')
+  @@s3 = Fog::Storage.new(
+    :provider => 'AWS',
+    :aws_access_key_id  => ENV['AWSAccessKeyId'],
+    :aws_secret_access_key  => ENV['AWSSecretKey']
+  )
 
   def get_js_errors(date)
     errors = []

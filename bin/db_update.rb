@@ -23,7 +23,6 @@ s3.get_bucket('aws-frontend-logs', {
     s3.directories.get('aws-frontend-logs').files.get(file['Key']).body.force_encoding('utf-8').split(/\n/).each{ |line| 
       if (line.include? 'GET /px.gif?js/') 
         # pull out data
-        puts line
         line.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)(?:[^,]*,){3}\s([^,]*),"([^"]*)"/) { |timestamp, msg, url, ua| 
           # assume message doesn't have a comma
           msg_parts = /([^,]*),(.*),(\d)*/.match(URI.decode(msg))

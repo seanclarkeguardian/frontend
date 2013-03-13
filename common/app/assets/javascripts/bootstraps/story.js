@@ -5,7 +5,8 @@ define([
 
     "modules/accordion",
     "modules/expandable",
-    "modules/story/storytype"
+    "modules/story/storytype",
+    "modules/story/nav"
 ], function(
     common,
     bean,
@@ -13,7 +14,8 @@ define([
 
     Accordion,
     Expandable,
-    StoryType
+    StoryType,
+    Navigation
 ) {
 
     var modules = {
@@ -95,6 +97,11 @@ define([
                     type: pageType
                 }).init();
             }
+        },
+        
+        initNavigation: function() {
+            var n = new Navigation();
+            n.init();
         }
     };
 
@@ -106,6 +113,8 @@ define([
         modules.initExpandables();
         modules.loadMoreStories(storyId);
         modules.loadPageType(storyId, config);
+        modules.initNavigation();
+
     };
 
     return {

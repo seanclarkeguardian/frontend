@@ -73,8 +73,6 @@ object StoryController extends Controller with Logging {
       val promiseOfStory = Future(Story.mongo.byId(id))
       val version = conf.CommonSwitches.StoryVersionBSwitch.isSwitchedOn
 
-      println("------------------------------------------------------------------------------")
-      println(version)
 
       Async {
         promiseOfStory.map { storyOption =>

@@ -24,9 +24,5 @@ class FrontendDashboard < Sinatra::Base
   get '/user-agents' do
     haml :'user_agents', :locals => { :errors => JsError.all, :type => 'user-agents'}, :cdata => true
   end
-
-
-  attr_accessor :s3, :pg
-  @@pg = PG.connect(dbname: 'frontend_dashboard')
     
 end

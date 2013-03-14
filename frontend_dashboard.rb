@@ -22,7 +22,7 @@ class FrontendDashboard < Sinatra::Base
   end
 
   get '/user-agents' do
-    haml :'user_agents', :locals => { :errors => JsError.all(:order => 'timestamp DESC'), :type => 'user-agents'}, :cdata => true
+    haml :'user_agents', :locals => { :errors => JsError.all, :type => 'user-agents'}, :cdata => true
   end
 
 

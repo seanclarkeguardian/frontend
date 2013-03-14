@@ -21,6 +21,10 @@ Make sure `Postgres` is running and has a database called `frontend_dashboard`. 
 
 (will need `ENV` variables `AWSAccessKeyId` and `AWSSecretKey` to seed)
 
+To rollback migration, i.e. drop table
+
+    $ bundle exec rake db:rollback
+
 Running
 ---------
 

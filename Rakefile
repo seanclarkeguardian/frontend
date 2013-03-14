@@ -8,7 +8,7 @@ require './frontend_dashboard'
 
 desc 'Load the seed data from db/seeds.rb'
 namespace :db do
-  task :reset do
+  task :rollback do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
     ActiveRecord::Migration.verbose = true
     ActiveRecord::Migrator.down('db/migrate')

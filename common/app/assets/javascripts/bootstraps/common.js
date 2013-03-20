@@ -212,7 +212,9 @@ define([
         },
         
         showSharedWisdomToolbar: function() {
-        	sharedWisdomToolbar.show();
+        	sharedWisdomToolbar.init(function() {
+        		sharedWisdomToolbar.show();
+        	});
         }
     };
 

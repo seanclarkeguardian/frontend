@@ -2,10 +2,7 @@
 
 @import CommonSwitches.FontSwitch
 
-<script id="gu">
-    // we want this to happen ASAP to avoid FOUC
-    document.documentElement.className = document.documentElement.className.replace(/\bjs-off\b/g, '') + ' js-on ';
-
+<script id="gu" async>
     var guardian = {
             isModernBrowser: ('querySelector' in document && 'addEventListener' in window && 'localStorage' in window)
             }, 
@@ -15,8 +12,8 @@
                 paths: {
                     omniture: '@Static("javascripts/vendor/omniture.js")',
                     homescreen: '@Static("javascripts/vendor/add2home.js")' // Mofified version. Do not upgrade.
-                }
-            };
+            }
+    };
 
     (function loadFontsFromStorage(prefs, key) {
 
@@ -54,36 +51,24 @@
         }
     })();
 
-    (function(isModern) {
+    guardian.config = {
+        @item match {
+            case content: model.Content => {'webPublicationDate' : new Date(@content.webPublicationDate.getMillis),}
+            case other => {@None}
+        }
+        page: {
+            @{Html(item.metaData.map{ data => MetadataJson(data) }.mkString(","))},
 
-        if (!isModern) { return false; }
-
-        guardian.config = {
-            @item match {
-                case content: model.Content => {'webPublicationDate' : new Date(@content.webPublicationDate.getMillis),}
-                case other => {@None}
-            }
-            page: {
-                @{Html(item.metaData.map{ data => MetadataJson(data) }.mkString(","))},
-
-                @{Html((Configuration.javascript.config ++ Configuration.javascript.pageData).map{ case (key, value) =>
-                    s"'${JavaScriptVariableName(key.split('.').last)}':'${value}'"}.mkString(",")
-                )},
-                'edition': '@Site(request).edition',
-                'ajaxUrl': 'http://@Site(request).ajaxHost'
-            },
-            switches : { @{Html(switches.map{ switch =>
-                    s"'${JavaScriptVariableName(switch.name)}':${switch.isSwitchedOn}"
-                }.mkString(","))}
-            }
-        };
-
-        var script = document.createElement('script');
-        script.async = 'async';
-        script.src = '@Static("javascripts/bootstraps/app.js")';
-
-        document.getElementsByTagName("head")[0].appendChild(script); 
-    
-    })(guardian.isModernBrowser);
-
+            @{Html((Configuration.javascript.config ++ Configuration.javascript.pageData).map{ case (key, value) =>
+                s"'${JavaScriptVariableName(key.split('.').last)}':'${value}'"}.mkString(",")
+            )},
+            'edition': '@Site(request).edition',
+            'ajaxUrl': 'http://@Site(request).ajaxHost'
+        },
+        switches : { @{Html(switches.map{ switch =>
+                s"'${JavaScriptVariableName(switch.name)}':${switch.isSwitchedOn}"
+            }.mkString(","))}
+        }
+    };
 </script>
+<script async src='@Static("javascripts/bootstraps/app.js")'></script>

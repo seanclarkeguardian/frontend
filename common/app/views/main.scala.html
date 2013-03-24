@@ -5,7 +5,17 @@
     <title>@metaData.webTitle</title>
     @fragments.metaData(metaData)
     @fragments.commonCssSetup()
-    @fragments.commonJavaScriptSetup(metaData, "app", switches)
+    <script>
+            // we want this to happen ASAP to avoid FOUC
+            document.documentElement.className = document.documentElement.className.replace(/\bjs-off\b/g, '') + ' js-on ';
+            function hasSvgSupport() {
+                var ns = {'svg': 'http://www.w3.org/2000/svg'};
+                return !!document.createElementNS && !!document.createElementNS(ns.svg, 'svg').createSVGRect;
+            }
+            if(hasSvgSupport()) {
+                document.documentElement.className += " svg";
+            }
+    </script>
 
     @head
 
@@ -20,7 +30,7 @@
         @fragments.navigation(metaData, isFooter=true)
         @fragments.footer(metaData)
     </div>
-
+    @fragments.commonJavaScriptSetup(metaData, "app", switches)
     @fragments.analytics(metaData)
 </body>
 </html>

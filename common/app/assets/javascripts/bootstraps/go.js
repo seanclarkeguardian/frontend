@@ -1,4 +1,6 @@
 /*global guardian:true */
 require(['bootstraps/app'], function(bootstrap) {
-    bootstrap.go(guardian.config);
+    if(guardian.isModernBrowser) {
+        bootstrap.go(guardian.config);
+    }
 });

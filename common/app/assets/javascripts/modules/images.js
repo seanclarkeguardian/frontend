@@ -11,9 +11,9 @@ define(['common', 'modules/detect', 'bonzo'], function (common, detect, bonzo) {
             upgrade: function () {
 
                 // upgrade svg images
-                if (detect.hasSvgSupport()) {
-                    common.$g('body').addClass('svg');
-                }
+//                if (detect.hasSvgSupport()) {
+//                    common.$g('body').addClass('svg');
+//                }
 
                 //upgrade other images;
                 common.$g('img').each(function(image, index) {

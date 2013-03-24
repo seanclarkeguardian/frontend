@@ -26,6 +26,14 @@ define('bootstraps/app', [
         var config = pageConfig(rawConfig);
 
         domReady(function() {
+            var css = document.createElement("link")
+            css.setAttribute("rel", "stylesheet")
+            css.setAttribute("type", "text/css")
+            css.setAttribute("href", guardian.css.main)
+            document.getElementsByTagName("head")[0].appendChild(css)
+        })
+    
+        domReady(function() {
             var r = new Router();
 
             //Init all common modules first

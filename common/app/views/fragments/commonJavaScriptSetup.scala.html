@@ -7,8 +7,9 @@
     document.documentElement.className = document.documentElement.className.replace(/\bjs-off\b/g, '') + ' js-on ';
 
     var guardian = {
-            isModernBrowser: ('querySelector' in document && 'addEventListener' in window && 'localStorage' in window)
-            }, 
+            isModernBrowser: ('querySelector' in document && 'addEventListener' in window && 'localStorage' in window),
+            css: { main: '@Static("stylesheets/main.min.css")' }
+            },
             curl = {
                 baseUrl: '@{Configuration.static.path}javascripts',
                 apiName: 'require',

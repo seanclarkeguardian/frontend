@@ -82,6 +82,23 @@ function (
             }
         }
 
+        // can we determine what the ads are?
+        var ads = {};
+        qwery('.ad-slot').forEach(function(adSlot) {
+        	// position of ad
+        	var pos = 'adslot_' + bonzo(adSlot).attr('data-base');
+        	// get ad id (from the link, if it exists)
+        	// TODO: only ever one direct descendant link?
+        	// TODO: need to wait for advert to appear - HOW??!?!?
+        	var a = common.$g('.ad-container  > a', adSlot);
+        	if (a.length !== 0) {
+        		// pull out the
+        		ads[pos] = /(oas.guardian.co.uk|247realmedia.com).*\/Guardian\/([^/]+)\//.exec(a.attr('href')); 
+        	} else {
+        		ads[pos] = '__unkown__';
+        	}
+        });
+
         //This is a horrible hack to hide slot if no creative is returned from oas
         //Check existence of empty tracking pixel
         if(config.page.pageId === "") {

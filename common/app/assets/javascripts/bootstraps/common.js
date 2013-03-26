@@ -132,20 +132,12 @@ define([
             var t = new Tabs().init();
         },
 
-        loadFonts: function(config, ua, prefs) {
-            var showFonts = false;
+        loadFonts: function(config, ua) {
             if(config.switches.webFonts) {
-                showFonts = true;
-            }
-
-            var fileFormat = detect.getFontFormatSupport(ua),
-                fontStyleNodes = document.querySelectorAll('[data-cache-name].initial');
-
-            var f = new Fonts(fontStyleNodes, fileFormat);
-            if (showFonts) {
+                var fileFormat = detect.getFontFormatSupport(ua),
+                    fontStyleNodes = document.querySelectorAll('[data-cache-name].initial');
+                var f = new Fonts(fontStyleNodes, fileFormat);
                 f.loadFromServerAndApply();
-            } else {
-                f.clearAllFontsFromStorage();
             }
         },
 
@@ -177,9 +169,11 @@ define([
         },
 
         loadAdverts: function (config) {
-            Adverts.init(config);
-
-            common.mediator.on('modules:adverts:docwrite:loaded', Adverts.loadAds);
+           
+            if (config.switches.adverts) {
+                Adverts.init(config);
+                common.mediator.on('modules:adverts:docwrite:loaded', Adverts.loadAds);
+            }
         },
 
         cleanupCookies: function() {

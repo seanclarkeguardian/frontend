@@ -13,7 +13,8 @@
                 baseUrl: '@{Configuration.static.path}javascripts',
                 apiName: 'require',
                 paths: {
-                    omniture: '@Static("javascripts/vendor/omniture.js")'
+                    omniture: '@Static("javascripts/vendor/omniture.js")',
+                    homescreen: '@Static("javascripts/vendor/add2home.js")' // Mofified version. Do not upgrade.
                 }
             };
 
@@ -69,7 +70,8 @@
                     s"'${JavaScriptVariableName(key.split('.').last)}':'${value}'"}.mkString(",")
                 )},
                 'edition': '@Site(request).edition',
-                'ajaxUrl': 'http://@Site(request).ajaxHost'
+                'ajaxUrl': 'http://@Site(request).ajaxHost',
+                isDev: @play.Play.isDev()
             },
             switches : { @{Html(switches.map{ switch =>
                     s"'${JavaScriptVariableName(switch.name)}':${switch.isSwitchedOn}"

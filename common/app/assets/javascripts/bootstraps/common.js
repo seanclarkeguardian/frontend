@@ -24,8 +24,9 @@ define([
     'modules/analytics/omniture',
     'modules/adverts/adverts',
     'modules/cookies',
-    // Swipe Libs
-    'modules/editionswipe'
+    'modules/editionswipe',
+    'modules/search',
+    'modules/analytics/omnitureMedia'
 ], function (
     common,
     ajax,
@@ -51,8 +52,9 @@ define([
     Omniture,
     Adverts,
     Cookies,
-
-    editionSwipe
+    editionSwipe,
+    Search,
+    Video
 ) {
 
     var modules = {
@@ -61,9 +63,12 @@ define([
             ajax.init(config.page.ajaxUrl);
         },
 
-        attachGlobalErrorHandler: function () {
-            var e = new Errors(window);
-                e.init();
+        attachGlobalErrorHandler: function (config) {
+            var e = new Errors({
+                window: window,
+                isDev: config.page.isDev
+            });
+            e.init();
             common.mediator.on("module:error", e.log);
         },
 
@@ -140,7 +145,7 @@ define([
             if (showFonts) {
                 f.loadFromServerAndApply();
             } else {
-                f.clearFontsFromStorage();
+                f.clearAllFontsFromStorage();
             }
         },
 
@@ -149,6 +154,18 @@ define([
         },
 
         loadOmnitureAnalytics: function (config) {
+            common.mediator.on('module:omniture:loaded', function() {
+                var videos = document.getElementsByTagName("video");
+                if(videos) {
+                    for(var i = 0, l = videos.length; i < l; i++) {
+                        var v = new Video({
+                            el: videos[i],
+                            config: config
+                        }).init();
+                    }
+                }
+            });
+
             var cs = new Clickstream({ filter: ["a", "span", "button"] }),
                 o = new Omniture(null, config).init();
         },
@@ -183,6 +200,13 @@ define([
                 }
             };
             editionSwipe(opts);
+        },
+
+        initialiseSearch: function(config) {
+            var s = new Search(config);
+            common.mediator.on('modules:control:change:sections-control-header:true', function(args) {
+                s.init();
+            });
         }
     };
 
@@ -218,6 +242,8 @@ define([
         modules.transcludeRelated(config);
         modules.transcludeMostPopular(config.page.section, config.page.edition);
 
+        modules.initialiseSearch(config);
+
         modules.showRelativeDates();
     };
 
@@ -233,7 +259,7 @@ define([
 
     var init = function (config) {
         modules.initialiseAjax(config);
-        modules.attachGlobalErrorHandler();
+        modules.attachGlobalErrorHandler(config);
         modules.loadFonts(config, navigator.userAgent, userPrefs);
         modules.initEditionSwipe(config);
     };

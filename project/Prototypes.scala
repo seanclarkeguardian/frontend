@@ -58,12 +58,14 @@ trait Prototypes extends Testing {
 
       //effectively disables built in Play javascript compiler
       javascriptEntryPoints <<= (sourceDirectory in Compile) { base => (base / "assets" ** "*.none") },
+      lessEntryPoints <<= (sourceDirectory in Compile) { base => (base / "assets" ** "*.none") },
       
       assetsToHash <<= (sourceDirectory in Compile) { sourceDirectory =>
         Seq(
           // don't copy across svg files (they're inline)
           (sourceDirectory / "assets" / "images") ** "*.png",
           (sourceDirectory / "assets" / "javascripts" / "bootstraps") ** "app.js",
+          (sourceDirectory / "assets" / "stylesheets") ** "*.min.css",
           (sourceDirectory / "public") ** "*"
         )
       },
@@ -85,7 +87,7 @@ trait Prototypes extends Testing {
     libraryDependencies ++= Seq(
         "com.gu" %% "management-play" % "5.26",
       "com.gu" %% "configuration" % "3.9",
-      "com.gu.openplatform" %% "content-api-client" % "1.21",
+      "com.gu.openplatform" %% "content-api-client" % "1.22",
 
       "com.typesafe.akka" %% "akka-agent" % "2.1.0",
       "commons-io" % "commons-io" % "2.4",

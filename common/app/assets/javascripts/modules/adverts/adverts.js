@@ -9,7 +9,8 @@ define([
     'modules/adverts/document-write',
     'modules/adverts/documentwriteslot',
     'modules/adverts/dimensionMap',
-    'modules/adverts/audience-science'
+    'modules/adverts/audience-science',
+    'modules/adverts/quantcast'
 ],
 function (
     common,
@@ -22,7 +23,8 @@ function (
     documentWrite,
     DocumentWriteSlot,
     dimensionMap,
-    audienceScience
+    audienceScience,
+    quantcast
 ) {
     
     var config,
@@ -44,6 +46,7 @@ function (
         // Run through slots and create documentWrite for each.
         // Other ad types such as iframes and custom can be plugged in here later
         if (adsSwitchedOn) {
+            
             for(var i = 0, j = slotHolders.length; i < j; ++i) {
                 el = slotHolders[i].querySelector('.ad-container');
                 if (el && el.innerHTML === '') {
@@ -53,9 +56,15 @@ function (
                     slots.push(slot);
                 }
             }
+            
             if (config.switches.audienceScience) {
                 audienceScience.load(config.page);
             }
+
+            if (config.switches.quantcast) {
+                quantcast.load();
+            }
+        
         }
 
         //Make the request to ad server

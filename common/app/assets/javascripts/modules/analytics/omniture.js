@@ -116,6 +116,9 @@ define(['common', 'modules/detect'], function(common, detect) {
                 s.prop30 = 'non-content';
             }
 
+            if (window.location.hash === '#popup:homescreen') {
+                s.eVar38 = 'popup:homescreen';
+            }
         };
 
         this.init = function() {
@@ -132,12 +135,14 @@ define(['common', 'modules/detect'], function(common, detect) {
                 that.populatePageProperties();
                 that.logView();
                 common.mediator.on('module:clickstream:click', that.logTag );
+                common.mediator.emit('module:omniture:loaded');
             } else {
                 require(['js!omniture'], function(placeholder){
                     s = window.s;
                     that.populatePageProperties();
                     that.logView();
                     common.mediator.on('module:clickstream:click', that.logTag );
+                    common.mediator.emit('module:omniture:loaded');
                 });
             }
 

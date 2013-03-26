@@ -2,7 +2,7 @@
   - errors.each do |error|
     %li 
       %h3= error.timestamp.strftime('%a %-d, %T')
-      %dl
+      %dl.dl-horizontal
         %dt Message: 
         %dd
           %a{:href => '/occurrences?message=' + URI.encode(error.message)}= error.message

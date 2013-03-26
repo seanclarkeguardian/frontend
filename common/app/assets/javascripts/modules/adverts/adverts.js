@@ -91,7 +91,7 @@ function (
         if(config.page.pageId === "") {
             var middleSlot = document.getElementById('ad-slot-middle-banner-ad');
 
-            if(middleSlot.innerHTML.indexOf("x55/default/empty.gif")  !== -1) {
+            if(middleSlot && middleSlot.innerHTML.indexOf("x55/default/empty.gif") !== -1) {
                 bonzo(middleSlot).hide();
             }
         }

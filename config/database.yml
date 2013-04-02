@@ -1,4 +1,4 @@
 development:
-    adapter: postgresql
-    database: frontend_dashboard
+    adapter: MongoDB
     host: localhost
+    database: frontend-dashboard

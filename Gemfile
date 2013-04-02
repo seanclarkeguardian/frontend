@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
-ruby "1.9.3"
+ruby '1.9.3'
 
 gem 'sinatra'
-gem 'activerecord', '~> 3.2.12', :require => 'active_record'
+#gem 'activerecord', '~> 3.2.12', :require => 'active_record'
 gem 'sinatra-activerecord'
 gem 'haml'
 gem 'rerun'
@@ -16,4 +16,8 @@ gem 'json'
 gem 'apachelogregex'
 
 gem 'pg'
+gem 'mongo'
+gem 'mongo_mapper'
+gem 'bson_ext'
+
 gem 'rake'

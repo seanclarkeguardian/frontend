@@ -1,14 +1,7 @@
-#The environment variable DATABASE_URL should be in the following format:
-# => postgres://{user}:{password}@{host}:{port}/path
-configure :production, :development do
-  db = URI.parse(ENV['DATABASE_URL'] || 'postgres://localhost/frontend_dashboard')
- 
-  ActiveRecord::Base.establish_connection(
-      :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
-      :host     => db.host,
-      :username => db.user,
-      :password => db.password,
-      :database => db.path[1..-1],
-      :encoding => 'utf8'
-  )
+# load YAML and connect
+database_yaml = YAML::load(File.read('./config/database.yml'))
+puts 'Initializing mongodb'
+if database_yaml[settings.environment.to_s] && database_yaml[settings.environment.to_s]['adapter'] == 'MongoDB'
+  mongo_database = database_yaml[settings.environment.to_s]
+  MongoMapper.setup({'production' => {'uri' => "mongodb://#{mongo_database['host']}/#{mongo_database['database']}"}}, 'production')
 end

@@ -5,24 +5,22 @@ s3 = Fog::Storage.new(
 )
 
 s3.get_bucket('aws-frontend-logs', {
-  'prefix' => 'PROD/access.log/%s/frontend-diagnostics' % [Chronic.parse('yesterday').strftime('%Y/%m/%d')],
-  'max-keys' => 100
+  'prefix' => 'PROD/access.log/%s/frontend-diagnostics' % [Chronic.parse('yesterday').strftime('%Y/%m/%d')]
 }).body['Contents'].each { |file|
+    puts "Reading file #{file['Key']}"
     s3.directories.get('aws-frontend-logs').files.get(file['Key']).body.force_encoding('utf-8').split(/\n/).each{ |line| 
       if (line.include? 'GET /px.gif?js/') 
         # pull out data
         line.scan(/- \[([^\]]*).*px\.gif\?js\/([^\s]*)(?:[^,]*,){3}\s([^,]*),"([^"]*)"/) { |timestamp, msg, url, ua| 
-          # assume message doesn't have a comma 
-          msg_parts = /([^,]*),(.*),(\d)*/.match(URI.decode(msg))
-          next if msg_parts.nil?
+          msg_parts = CGI::parse(msg)
+          next unless msg_parts.has_key?('message')
           ua = UserAgentParser.parse(ua)
-          puts timestamp
           JsError.create(
             :timestamp => DateTime.strptime(timestamp, '%d/%b/%Y:%H:%M:%S %z').iso8601,
             :url => url,
-            :message => msg_parts[1],
-            :file => msg_parts[2],
-            :line_no => msg_parts[3],
+            :message => URI.decode(msg_parts['message'][0]),
+            :file => URI.decode(msg_parts['filename'][0]),
+            :line_no => URI.decode(msg_parts['lineno'][0]),
             :ua_name => ua.name.to_s,
             :ua_device => ua.device.to_s,
             :ua_os => ua.os.to_s

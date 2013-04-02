@@ -8,17 +8,23 @@ class FrontendDashboard < Sinatra::Base
   end
 
   get '/yesterday' do
-    haml :yesterday, :locals => { :errors => JsError.all(:order => 'timestamp DESC'), :type => 'yesterday' }
+    current_page = params[:page] ? params[:page].to_i : 1
+    haml :yesterday, :locals => { :errors => JsError.paginate({ :order => :timestamp.desc, :per_page => params[:'per-page'] || 50, :page => current_page }), :type => 'yesterday', :current_page => current_page }
   end
 
   get '/occurrences' do 
     if (params[:file] || params[:message])
-      groupBy = (params[:file]) ? 'message' : 'file';
-      errors = JsError.select("#{groupBy} as by, count(#{groupBy}) as occurrences").where((groupBy === 'file' ? 'message' : 'file') + '=?', params[:file] || params[:message]).group(groupBy).order('occurrences DESC')
+      where_param = (params[:file]) ? 'file' : 'message'
+      where_value = params[:file] || params[:message]
+      group_by = (params[:file]) ? 'message' : 'file' 
+      errors = JsError.group_occurrences(group_by, :query => { where_param => where_value })
+    elsif (params[:by])
+      errors = JsError.group_occurrences(params[:by])
     else
-      errors = JsError.select("#{params[:by]} as by, count(#{params[:by]}) as occurrences").group(params[:by]).order('occurrences DESC')
+      # default to 'by message'
+      errors = JsError.group_occurrences('message')
     end
-    haml :occurrences, :locals => { :errors => errors, :type => 'occurrences' }
+    haml :occurrences, :locals => { :errors => errors, :type => 'occurrences', :where_param => where_param, :where_value => where_value }
   end
 
   get '/user-agents' do

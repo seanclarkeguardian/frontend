@@ -1,4 +1,8 @@
 development:
     adapter: MongoDB
-    host: localhost
-    database: frontend-dashboard
+    url: localhost
+    name: frontend_dashboard
+
+production:
+    adapter: MongoDB
+    name: frontend_dashboard

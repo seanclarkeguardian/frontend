@@ -7,10 +7,15 @@ require './frontend_dashboard'
 
 namespace :db do
 
-  desc 'load seed data from db/seeds.rb'
-  task :seed do
-    seed_file = './db/seeds.rb'
-    load(seed_file) if File.exist?(seed_file)
+  desc 'remove errors from database'
+  task :delete_errors do
+    JsError.destroy_all
+  end
+
+  desc 'import yesterday\'s js errors into database'
+  task :import_errors => :delete_errors do
+    import_file = './db/import_logs.rb'
+    load(import_file) if File.exist?(import_file)
   end
 
 end

@@ -21,7 +21,7 @@ class JsError
       return total;
     })
     
-    occurrences = collection.map_reduce(map_function, reduce_function, options.merge({ :out => 'grouped_results'})).find
+    occurrences = collection.map_reduce(map_function, reduce_function, options.merge({:out => 'grouped_results'})).find
     Hash[occurrences.map { |group| [group['value'].to_i, group['_id']] }].sort_by { |k, v| -k }
   end
 end

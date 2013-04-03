@@ -16,7 +16,7 @@ s3.get_bucket('aws-frontend-logs', {
           next unless msg_parts.has_key?('message')
           ua = UserAgentParser.parse(ua)
           JsError.create(
-            :timestamp => DateTime.strptime(timestamp, '%d/%b/%Y:%H:%M:%S %z').iso8601,
+            :timestamp => DateTime.strptime(timestamp, '%d/%b/%Y:%H:%M:%S %z'),
             :url => url,
             :message => URI.decode(msg_parts['message'][0]),
             :file => URI.decode(msg_parts['filename'][0]),

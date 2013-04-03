@@ -1,4 +1,4 @@
-require './config/environments'
+require './config/initialisers'
 require './models/js_error'
 
 class FrontendDashboard < Sinatra::Base
@@ -13,15 +13,32 @@ class FrontendDashboard < Sinatra::Base
   end
 
   get '/occurrences' do 
+    puts Chronic.parse('yesterday midnight')
+    puts Chronic.parse('2 days ago midnight')
     if (params[:file] || params[:message])
       where_param = (params[:file]) ? 'file' : 'message'
       where_value = params[:file] || params[:message]
-      errors = JsError.group_occurrences((params[:file]) ? 'message' : 'file' , :query => { where_param => where_value })
+      errors = JsError.group_occurrences(
+        (params[:file]) ? 'message' : 'file', {
+          :query => {
+            where_param => where_value,
+            :timestamp => { "$gte" => Chronic.parse('2 days ago midnight'), "$lt" => Chronic.parse('yesterday midnight')}
+          }
+        }
+      )
     elsif (params[:by])
-      errors = JsError.group_occurrences(params[:by])
+      errors = JsError.group_occurrences(
+        params[:by], {
+          :query => {:timestamp => { "$gte" => Chronic.parse('2 days ago midnight'), "$lt" => Chronic.parse('yesterday midnight')}}
+        }
+      )
     else
       # default to 'by message'
-      errors = JsError.group_occurrences('message')
+      errors = JsError.group_occurrences(
+        'message', {
+          :query => {:timestamp => { "$gte" => Chronic.parse('2 days ago midnight'), "$lt" => Chronic.parse('yesterday midnight')}}
+        }
+      )
     end
     haml :occurrences, :locals => { :errors => errors, :type => 'occurrences', :where_param => where_param, :where_value => where_value }
   end

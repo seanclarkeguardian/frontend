@@ -5,7 +5,7 @@ Requirements
 ------------
 
  * [Bundler](http://gembundler.com/)
- * [Postgres](http://www.postgresql.org/)
+ * [MongoDB](http://www.mongodb.org/)
 
 Setup
 -----
@@ -14,16 +14,11 @@ Install required gems
 
     $ bundle install
 
-Make sure `Postgres` is running and has a database called `frontend_dashboard`. To populate,
+Populate database with yesterday's js error logs
 
-    $ bundle exec rake db:migrate
-    $ bundle exec rake db:seed
+    $ bundle exec rake db:import-errors
 
-(will need `ENV` variables `AWSAccessKeyId` and `AWSSecretKey` to seed)
-
-To rollback migration, i.e. drop table
-
-    $ bundle exec rake db:rollback
+(will need environment variables `AWSAccessKeyId` and `AWSSecretKey`)
 
 Running
 ---------

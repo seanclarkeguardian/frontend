@@ -4,16 +4,9 @@ GEM
     activemodel (3.2.13)
       activesupport (= 3.2.13)
       builder (~> 3.0.0)
-    activerecord (3.2.13)
-      activemodel (= 3.2.13)
-      activesupport (= 3.2.13)
-      arel (~> 3.0.2)
-      tzinfo (~> 0.3.29)
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
-    apachelogregex (0.1.0)
-    arel (3.0.2)
     bson (1.8.4)
     bson_ext (1.8.4)
       bson (~> 1.8.4)
@@ -48,7 +41,6 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.6.6)
     nokogiri (1.5.9)
-    pg (0.15.0)
     plucky (0.5.2)
       mongo (~> 1.5)
     rack (1.5.2)
@@ -65,18 +57,13 @@ GEM
       rack (~> 1.5, >= 1.5.2)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
-    sinatra-activerecord (1.2.2)
-      activerecord (~> 3.0)
-      sinatra (~> 1.0)
     tilt (1.3.6)
-    tzinfo (0.3.37)
     user_agent_parser (2.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  apachelogregex
   bson_ext
   chronic
   fog
@@ -84,11 +71,9 @@ DEPENDENCIES
   json
   mongo
   mongo_mapper
-  pg
   rake
   rb-fsevent (~> 0.9.1)
   rerun
   shotgun
   sinatra
-  sinatra-activerecord
   user_agent_parser

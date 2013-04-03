@@ -13,7 +13,7 @@ namespace :db do
   end
 
   desc 'import yesterday\'s js errors into database'
-  task :import_errors => :delete_errors do
+  task :import_errors do
     import_file = './db/import_logs.rb'
     load(import_file) if File.exist?(import_file)
   end

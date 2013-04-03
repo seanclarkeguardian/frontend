@@ -1,5 +1,5 @@
 - if !where_param.nil?
-  %h2.occurrences-header= (where_param) + ': ' + (where_value)
+  %h2.occurrences-header= (where_param.capitalize) + ': <strong>' + (where_value) + '</strong>'
 
 %ul.unstyled
   - errors.each do |count, value|

@@ -16,8 +16,7 @@ class FrontendDashboard < Sinatra::Base
     if (params[:file] || params[:message])
       where_param = (params[:file]) ? 'file' : 'message'
       where_value = params[:file] || params[:message]
-      group_by = (params[:file]) ? 'message' : 'file' 
-      errors = JsError.group_occurrences(group_by, :query => { where_param => where_value })
+      errors = JsError.group_occurrences((params[:file]) ? 'message' : 'file' , :query => { where_param => where_value })
     elsif (params[:by])
       errors = JsError.group_occurrences(params[:by])
     else

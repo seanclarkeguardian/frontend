@@ -1,0 +1,40 @@
+!!!
+%html
+  %head
+    %title Frontend Dashboard
+    %link{:rel => 'stylesheet', :href => '/javascripts/components/bootstrap.css/css/bootstrap.css'}
+    %link{:rel => 'stylesheet', :href => '/stylesheets/styles.css'}
+  %body
+    :javascript
+      curl = {
+        baseUrl: '/javascripts',
+        apiName: 'require',
+        paths:
+          {
+            reqwest: 'components/reqwest/reqwest.js',
+            moment: 'components/moment/moment.js',
+            bonzo: 'components/bonzo/bonzo.js',
+            qwery: 'components/qwery/qwery.js',
+            d3: 'components/d3/d3.js'
+          }
+        }
+    %script{:type => 'text/javascript', :src => '/javascripts/components/curl/dist/curl-kitchen-sink/curl.js'}
+    %div.container
+      %div.navbar
+        %div.navbar-inner
+          %a.brand{:href => '/'} JS Errors
+          %ul.nav
+            %li{:class => ('active' if type === 'yesterday')} 
+              %a{:href => '/yesterday'} Yesterday's Log
+            %li.dropdown{:class => ('active' if type === 'occurrences')} 
+              %a.dropdown-toggle{:href => '/occurrences', :'data-toggle' => 'dropdown'} Occurrences
+              %ul.dropdown-menu
+                %li{:class => ('active' if params[:by] === 'message' || !params[:file].nil?)}
+                  %a{:href => '/occurrences?by=message'} By Message
+                %li{:class => ('active' if params[:by] === 'file' || !params[:message].nil?)}
+                  %a{:href => '/occurrences?by=file'} By File
+            %li{:class => ('active' if type === 'user-agents')} 
+              %a{:href => '/user-agents'} User Agents
+      =yield
+    %script{:type => 'text/javascript', :src => 'http://code.jquery.com/jquery.js'}
+    %script{:type => 'text/javascript', :src => '/javascripts/components/bootstrap.css/js/bootstrap.js'}

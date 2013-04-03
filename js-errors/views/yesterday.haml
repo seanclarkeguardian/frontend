@@ -1,0 +1,23 @@
+%ul.pager
+  %li.previous
+    %a{:href => '?page=%d' % (current_page + 1)} &larr; Older
+  %li.next{:class => ('disabled' if current_page == 1)}
+    %a{:href =>  '?page=%d' % (current_page - 1)} Newer &rarr;
+
+%ul
+  - errors.each do |error|
+    %li 
+      %h4{:id => (error.timestamp.to_i)}= error.timestamp.strftime('%a %-d, %T')
+      %dl.dl-horizontal
+        %dt Message: 
+        %dd
+          %a{:href => '/occurrences?message=' + URI.encode(error.message)}= error.message
+        %dt File: 
+        %dd
+          %a{:href => '/occurrences?file=' + URI.encode(error.file)}= error.file
+
+%ul.pager
+  %li.previous
+    %a{:href => '?page=%d' % (current_page + 1)} &larr; Older
+  %li.next{:class => ('disabled' if current_page == 1)}
+    %a{:href =>  '?page=%d' % (current_page - 1)} Newer &rarr;

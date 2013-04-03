@@ -1,0 +1,79 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (3.2.13)
+      activesupport (= 3.2.13)
+      builder (~> 3.0.0)
+    activesupport (3.2.13)
+      i18n (= 0.6.1)
+      multi_json (~> 1.0)
+    bson (1.8.4)
+    bson_ext (1.8.4)
+      bson (~> 1.8.4)
+    builder (3.0.4)
+    chronic (0.9.1)
+    excon (0.20.1)
+    fog (1.10.0)
+      builder
+      excon (~> 0.14)
+      formatador (~> 0.2.0)
+      mime-types
+      multi_json (~> 1.0)
+      net-scp (~> 1.1)
+      net-ssh (>= 2.1.3)
+      nokogiri (~> 1.5.0)
+      ruby-hmac
+    formatador (0.2.4)
+    haml (4.0.1)
+      tilt
+    i18n (0.6.1)
+    json (1.7.7)
+    listen (0.7.3)
+    mime-types (1.22)
+    mongo (1.8.4)
+      bson (~> 1.8.4)
+    mongo_mapper (0.12.0)
+      activemodel (~> 3.0)
+      activesupport (~> 3.0)
+      plucky (~> 0.5.2)
+    multi_json (1.7.2)
+    net-scp (1.1.0)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.6.6)
+    nokogiri (1.5.9)
+    plucky (0.5.2)
+      mongo (~> 1.5)
+    rack (1.5.2)
+    rack-protection (1.5.0)
+      rack
+    rake (10.0.4)
+    rb-fsevent (0.9.3)
+    rerun (0.8.0)
+      listen
+    ruby-hmac (0.4.0)
+    shotgun (0.9)
+      rack (>= 1.0)
+    sinatra (1.4.2)
+      rack (~> 1.5, >= 1.5.2)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    tilt (1.3.6)
+    user_agent_parser (2.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bson_ext
+  chronic
+  fog
+  haml
+  json
+  mongo
+  mongo_mapper
+  rake
+  rb-fsevent (~> 0.9.1)
+  rerun
+  shotgun
+  sinatra
+  user_agent_parser

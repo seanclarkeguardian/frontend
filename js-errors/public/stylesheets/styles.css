@@ -1,0 +1,25 @@
+.occurrences-header{
+    font-weight: normal;
+}
+.occurrence-count {
+    font-size:1.5em;
+}
+
+.axis path,
+.axis line{
+    stroke:black;
+    fill:none;
+    shape-rendering:crispEdges;
+}
+
+.layer,
+.key {
+    opacity:0;
+    -webkit-transition:opacity 0.5s;
+    cursor: pointer;
+}
+
+#key rect{
+    stroke-width:2px;
+    stroke:black;
+}

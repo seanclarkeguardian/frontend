@@ -1,0 +1,8 @@
+- if !where_param.nil?
+  %h2.occurrences-header= (where_param.capitalize) + ': <strong>' + (where_value) + '</strong>'
+
+%ul.unstyled
+  - errors.each do |count, value|
+    %li 
+      %strong.occurrence-count= count.to_s + ':'
+      %a{:href => '?' + ((params[:by] === 'file' || !params[:message].nil?) ? 'file' : 'message') + '=' + URI.encode(value)}= value

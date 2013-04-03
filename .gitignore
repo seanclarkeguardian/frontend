@@ -39,3 +39,5 @@ common/app/assets/stylesheets/main.min.css
 style-guide/app/assets/stylesheets/styleguide.min.css
 
 dev/gems
+
+js-errors/.env

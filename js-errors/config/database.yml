@@ -1,0 +1,4 @@
+development:
+    adapter: mongodb
+    database: frontend_dashboard
+    host: localhost

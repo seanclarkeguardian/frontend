@@ -13,8 +13,6 @@ class FrontendDashboard < Sinatra::Base
   end
 
   get '/occurrences' do 
-    puts Chronic.parse('yesterday midnight')
-    puts Chronic.parse('2 days ago midnight')
     if (params[:file] || params[:message])
       where_param = (params[:file]) ? 'file' : 'message'
       where_value = params[:file] || params[:message]

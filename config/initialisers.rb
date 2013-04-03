@@ -1,8 +1,6 @@
 # load YAML and connect
-database_yaml = YAML::load(File.read('./config/database.yml'))
-puts 'Initializing mongodb'
-if database_yaml[settings.environment.to_s] && database_yaml[settings.environment.to_s]['adapter'] == 'MongoDB'
-  mongo_database = database_yaml[settings.environment.to_s]
-  mongo_database_url = ENV['MONGO_DATABASE_URL'] || mongo_database['url']
-  MongoMapper.setup({'production' => {'uri' => "mongodb://#{mongo_database_url}/#{mongo_database['name']}"}}, 'production')
+dbconfig = YAML.load(ERB.new(File.read('config/database.yml')).result)
+if dbconfig[settings.environment.to_s] && dbconfig[settings.environment.to_s]['adapter'] == 'mongodb'
+  puts 'Initializing mongodb'
+  MongoMapper.setup(dbconfig, settings.environment.to_s)
 end

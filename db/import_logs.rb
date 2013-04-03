@@ -20,7 +20,7 @@ s3.get_bucket('aws-frontend-logs', {
             :url => url,
             :message => URI.decode(msg_parts['message'][0]),
             :file => URI.decode(msg_parts['filename'][0]),
-            :line_no => URI.decode(msg_parts['lineno'][0]),
+            :line_no => msg_parts['lineno'][0],
             :ua_name => ua.name.to_s,
             :ua_device => ua.device.to_s,
             :ua_os => ua.os.to_s

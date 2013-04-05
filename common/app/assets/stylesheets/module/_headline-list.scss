@@ -9,7 +9,6 @@
 
 .headline-list li {
 	display: block;
-	overflow: auto;
     border-bottom: 1px solid #DDDDDD;
     padding: $baseline*2 0;
 }
@@ -19,7 +18,6 @@
 }
 
 .headline-list p {
-    float: left;
     width: 90%;
     padding-left: $baseline*2;
 }

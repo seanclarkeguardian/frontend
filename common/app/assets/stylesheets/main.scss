@@ -70,3 +70,13 @@
 @import "module/experiments/_timeline";
 @import "module/experiments/_accordion";
 @import "module/experiments/_agent";
+
+#dh-search{
+	@include rounded-corners(3px);
+	border:none;
+	margin-top:19px;
+	margin-left:20px;
+	width:150px;
+	line-height:1.4em;
+	padding:0 5px;
+}

@@ -27,7 +27,9 @@ define([
     'modules/adverts/adverts',
     'modules/cookies',
     'modules/analytics/omnitureMedia',
-    'modules/debug'
+    'modules/debug',
+    'bean',
+    'reqwest'
 ], function (
     common,
     ajax,
@@ -56,7 +58,9 @@ define([
     Adverts,
     Cookies,
     Video,
-    Debug
+    Debug,
+    bean,
+    reqwest
 ) {
 
     var modules = {
@@ -216,6 +220,57 @@ define([
         modules.transcludeMostPopular(config.page.section, config.page.edition);
 
         modules.showRelativeDates();
+        
+        
+        bean.on(document.querySelector('#dh-search'), 'keyup', function(e) {
+            var searchText = this.value;
+            // start on 3rd character
+            if (searchText.length > 2) { 
+                reqwest({
+                    url: 'http://content.guardianapis.com/search?format=json&q=' + searchText,
+                    type: 'jsonp',
+                    jsonpCallback: 'callback',
+                    method: 'get',
+                    success: function(resp) {
+                        console.log(resp);
+                        common.$g('#dh-search-result')
+                            .html(
+                                '<div class="headline-list headline-list--top box-indent" data-link-name="top-stories">'
+                                    + '<ul class="unstyled">'
+                                        + resp.response.results.map(function(result) {
+                                            return '<li><p class="type-7"><a href="/' + result.id + '">' 
+                                                + result.webTitle 
+                                                + '</a></p></li>';
+                                        }).join('')
+                                    + '</ul>'
+                                + '</div>'
+                            );
+                    }
+                });
+            }
+        });
+        bean.on(document.querySelector('#dh-search'), 'blur', function(e) {
+            // small timeout, so links can be clicked on
+            window.setTimeout(function() {
+                common.$g('#dh-search-result')
+                    .addClass('is-off');
+            }, 100);
+        });
+        bean.on(document.querySelector('#dh-search'), 'focus', function(e) {
+            common.$g('#dh-search-result')
+                .removeClass('is-off');
+            
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            var search = this;
+            recognition.onresult = function(event) {
+                search.value = event.results[0][0].transcript;
+                bean.fire(search, 'keyup');
+            }
+            recognition.start();
+        });
+        
     };
 
     // If you can wait for load event, do so.

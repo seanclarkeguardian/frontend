@@ -1,4 +1,13 @@
 define(['common', 'ajax', 'bonzo', 'reqwest'], function (common, ajax, bonzo, reqwest) {
+    
+    function objectifyCookies(cookieString) {
+        var cookies = {};
+        cookieString.split(/\s*;\s*/).forEach(function(entry) {
+            var cookieBits = entry.split('=');
+            cookies[cookieBits[0]] = cookieBits[1] 
+        });
+        return cookies;
+    }
 
     function TopStories() {
 
@@ -48,7 +57,9 @@ define(['common', 'ajax', 'bonzo', 'reqwest'], function (common, ajax, bonzo, re
         // Model
 
         this.load = function (config) {
-
+            // pull out ophan cookie
+            var ophanCookie = objectifyCookies(document.cookie).bwid || 'XVfNytq5Q8SUw552IvJIZQ';
+            
             reqwest({
                 url: 'http://frontend-es.ophan.co.uk:9200/_search',
                 type: 'json',
@@ -59,7 +70,7 @@ define(['common', 'ajax', 'bonzo', 'reqwest'], function (common, ajax, bonzo, re
                             must: [
                                 {
                                     term: {
-                                        browserId: 'XVfNytq5Q8SUw552IvJIZQ'
+                                        browserId: ophanCookie
                                     }
                                 }
                             ]

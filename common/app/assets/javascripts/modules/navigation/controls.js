@@ -30,7 +30,7 @@ define(['common', 'bean', 'bonzo'], function (common, bean, bonzo) {
 
             deactivate: function () {
                 dom.removeClass(activeClass);
-                if(id === "sections-control-header") {
+                if(id === "sections-control-header" && false) {
                     document.querySelector('.control__more').innerHTML = 'More <i class="i i-more-arrow"></i>';
                 }
             },
@@ -41,7 +41,7 @@ define(['common', 'bean', 'bonzo'], function (common, bean, bonzo) {
 
             activate: function () {
                 dom.addClass(activeClass);
-                if(id === "sections-control-header") {
+                if(id === "sections-control-header" && false) {
                     document.querySelector('.control__more').innerHTML = 'Less <i class="i i-more-arrow"></i>';
                 }
             },

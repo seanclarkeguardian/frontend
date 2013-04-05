@@ -1,4 +1,4 @@
-define(['common', 'ajax', 'bonzo'], function (common, ajax, bonzo) {
+define(['common', 'ajax', 'bonzo', 'reqwest'], function (common, ajax, bonzo, reqwest) {
 
     function TopStories() {
 
@@ -6,14 +6,21 @@ define(['common', 'ajax', 'bonzo'], function (common, ajax, bonzo) {
 
         this.view = {
 
-            render: function (html) {
+            render: function (facets) {
 
                 var topstoriesHeader = document.getElementById('topstories-header'),
                     $topstoriesHeader = bonzo(topstoriesHeader),
                     className = "is-off";
 
                 topstoriesHeader.innerHTML = '<div class="headline-list headline-list--top box-indent" data-link-name="top-stories">'
-                    + html
+                    + '<ul class="unstyled">'
+                    + facets.map(function(facet) {
+                        var section = facet.term;
+                        return '<li class="zone-' + section + '"><p class="type-7"><a href="/' + section + '" class="zone-color">' 
+                            + section.substring(0, 1).toUpperCase() + section.substring(1) 
+                            + '</a></p></li>';
+                    }).join('')
+                    + '</ul>'
                     + '</div>';
 
                 common.mediator.emit('modules:topstories:render');
@@ -42,21 +49,42 @@ define(['common', 'ajax', 'bonzo'], function (common, ajax, bonzo) {
 
         this.load = function (config) {
 
-            var url = '/top-stories.json?page-size=10&view=link';
-
-            if (config.pathPrefix) {
-                url = config.pathPrefix + url;
-            }
-
-            return ajax({
-                    url: url,
-                    type: 'jsonp',
-                    jsonpCallback: 'callback',
-                    jsonpCallbackName: 'navigation',
-                    success: function (json) {
-                        common.mediator.emit('modules:topstories:loaded', [json.html]);
-                    }
-                });
+            reqwest({
+                url: 'http://frontend-es.ophan.co.uk:9200/_search',
+                type: 'json',
+                method: 'post',
+                data: JSON.stringify({
+                    query: {
+                        bool:{
+                            must: [
+                                {
+                                    term: {
+                                        browserId: 'XVfNytq5Q8SUw552IvJIZQ'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    facets: {
+                        sections: {
+                            terms: {
+                                field : 'section'
+                            }
+                        }
+                    },
+                    stats: ['frontend-dashboard'],
+                    size: 0
+                })
+            })
+            .then(
+                function(resp) {
+                    console.log(resp);
+                    common.mediator.emit('modules:topstories:loaded', resp.facets.sections.terms);
+                }, 
+                function(err) {
+                    console.log(err);
+                }
+            );
         };
 
     }

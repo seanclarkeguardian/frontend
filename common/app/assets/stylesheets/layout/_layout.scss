@@ -5,14 +5,18 @@
 #container {
   position: relative;
   clear: both;
-  max-width: 80em;
-  max-width: 125rem;
 
   @media (min-width: 40.0625em) {
         padding-bottom: 10%;
         width: 90%;
-        margin: 0 auto;
   }
+}
+
+#container,
+.sticky.stuck {
+  max-width: 80em;
+  max-width: 125rem;
+  margin: 0 auto;
 }
 
 /* ==========================================================================

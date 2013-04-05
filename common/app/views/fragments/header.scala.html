@@ -18,13 +18,18 @@
         <li class="nav__item"><a class="nav__link" href="http://jobs.guardian.co.uk/" target="_blank" data-link-name="Jobs">Jobs</a>
     </ul>
 
-    <ul class="nav nav--global" data-link-name="Global navigation">
-        @Navigation(page, request).map{ nav =>
-            <li class="nav__item @if(nav.currentFor(page)){is-active}">
-                <a href="@nav.name.href" class="nav__link" data-link-name="@nav.name.linkName">@nav.name.title</a>
-            </li>
-        }
-    </ul>
+    <div class="nav--global sticky-container">
+        <div class="sticky">
+            <ul class="nav" data-link-name="Global navigation">
+                @Navigation(page, request).map{ nav =>
+                    <li class="nav__item @if(nav.currentFor(page)){is-active}">
+                        <a href="@nav.name.href" class="nav__link" data-link-name="@nav.name.linkName">@nav.name.title</a>
+                    </li>
+                }
+            </ul>
+            <div class="control"><a href="javascript:void(0)">&raquo;</a></div>
+        </div>
+    </div>
 
     <a href="#footer-nav" data-is-ajax="1" data-link-name="Sections" id="sections-control-header"
     class="control control--sections">

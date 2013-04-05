@@ -13,7 +13,7 @@
 .nav {
     list-style: none;
     margin: 0;
-    padding: $baseline *2 0 4px 0;
+    padding: 0;
 }
 
   .nav > li,
@@ -117,12 +117,40 @@
   float:left;
   clear:left;
   width: 100%;
-  height: 54px;
+  height: 36px;
   overflow: hidden;
   padding: 0 90px 0 0;
   background-color: #F5F2F0;
   @media only screen and (min-width: $tablet) { display: block; }
 }
+
+  .nav--global .sticky {
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: #F5F2F0;
+    height: 38px;
+    overflow: hidden;
+  }
+
+  .nav--global .sticky .control {
+    position: absolute;
+    right: 0;
+    width: 0px;
+    height: 24px;
+    padding: 6px 24px 6px 10px;
+    font-size: 28px;
+    background-color: #F5F2F0;
+    @include box-shadow(-8px 0 6px -6px #999);
+  }
+
+
+  .nav--global .sticky.stuck {
+    @media (min-width: 40.0625em) {
+      width: 90%;
+    }
+  }
 
   .nav--global .nav__item {
     float:left;
@@ -134,13 +162,12 @@
   .nav--global .nav__link:hover,
   .nav--global .nav__link:visited {
     display: block;
-    margin: $baseline*2 0 0 0;
-    padding: 0px $gutter $baseline*4 $gutter;
+    margin: $baseline*2 0;
+    padding: 0 0 0 $gutter;
     font-family: $serif !important;
     font-size: 14px;
     text-decoration: none;
     color: #444444;
-    border-right: 1px solid #444444;
   }
 
     .nav--global .nav__item:last-child .nav__link { border-right: none; }

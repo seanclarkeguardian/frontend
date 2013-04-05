@@ -2,12 +2,14 @@ define([
     'common',
     'bonzo',
     'bean',
-    'modules/detect'
+    'modules/detect',
+    'modules/sticky'
 ], function (
     common,
     bonzo,
     bean,
-    detect
+    detect,
+    Sticky
 ) {
 
     function Sections() {
@@ -49,6 +51,24 @@ define([
                 }, 200));
             },
 
+            initShuffler : function() {
+
+                // This is just a hack day hack. Needs to be some kinda animated slider thing.
+
+                var shuffle = function () {
+                    var items = document.querySelectorAll('.nav--global .nav__item'),
+                        item  = bonzo(items[0]).detach();
+
+                    bonzo(items[items.length - 1]).after(item);
+                };
+
+                bean.on(document.querySelector('.nav--global .control'), 'click', function(){
+                    for( var i = 0; i < 4; i += 1) {
+                        shuffle();
+                    }
+                });
+            },
+
             showColumns : function() {
                 common.$g('.nav__item', sectionsHeader).removeClass('h');
                 common.$g('.nav', sectionsHeader).removeClass('nav--stacked').addClass('nav--columns');
@@ -78,6 +98,8 @@ define([
 
             if(layoutMode !== 'mobile') {
                 this.view.hideColumns();
+                this.view.initShuffler();
+                var s = new Sticky();
             }
         };
      }

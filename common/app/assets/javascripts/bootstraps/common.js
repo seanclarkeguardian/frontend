@@ -221,8 +221,20 @@ define([
 
         modules.showRelativeDates();
         
+
+        function debounce(fn, delay) {
+            var timer = null;
+            return function () {
+                var context = this, 
+                    args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    fn.apply(context, args);
+                }, delay);
+            };
+        }
         
-        bean.on(document.querySelector('#dh-search'), 'keyup', function(e) {
+        bean.on(document.querySelector('#dh-search'), 'keyup', debounce(function(e) {
             var searchText = this.value;
             // start on 3rd character
             if (searchText.length > 2) { 
@@ -248,7 +260,7 @@ define([
                     }
                 });
             }
-        });
+        }, 300));
         bean.on(document.querySelector('#dh-search'), 'blur', function(e) {
             // small timeout, so links can be clicked on
             window.setTimeout(function() {

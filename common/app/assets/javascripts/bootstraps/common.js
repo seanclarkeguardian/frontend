@@ -27,7 +27,8 @@ define([
     'modules/adverts/adverts',
     'modules/cookies',
     'modules/analytics/omnitureMedia',
-    'modules/debug'
+    'modules/debug',
+    'modules/navigation/rhythm'
 ], function (
     common,
     ajax,
@@ -56,7 +57,8 @@ define([
     Adverts,
     Cookies,
     Video,
-    Debug
+    Debug,
+    Rhythm
 ) {
 
     var modules = {
@@ -87,15 +89,18 @@ define([
             // the section panel
             new Sections().init();
             new Search(config).init();
+            new Rhythm().init();
 
             // the toolbar
             var t = new Control({id: 'topstories-control-header'}),
                 s = new Control({id: 'search-control-header'}),
                 n = new Control({id: 'sections-control-header'});
+                x = new Control({id: 'sections-control-rhythm'});
 
             t.init();
             s.init();
             n.init();
+            x.init();
 
             common.mediator.on('modules:topstories:render', function(args) {
                 t.show();

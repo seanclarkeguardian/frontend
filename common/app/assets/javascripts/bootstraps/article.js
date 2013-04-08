@@ -1,6 +1,5 @@
 define([
     "common",
-
     "modules/expandable",
     "modules/autoupdate",
     "modules/matchnav",

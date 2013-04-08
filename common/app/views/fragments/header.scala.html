@@ -25,6 +25,12 @@
             </li>
         }
     </ul>
+    
+    <a href="#rl"
+        id="sections-control-rhythm"
+        class="control control--topstories">
+        ♥
+    </a>
 
     <a href="#footer-nav" data-is-ajax="1" data-link-name="Sections" id="sections-control-header"
     class="control control--sections">
@@ -48,6 +54,162 @@
 </header>
 
 <div id="topstories-header" class="nav-popup is-off"></div>
+
+<div id="rhythm-header" class="nav-popup box-indent">
+
+    <span class="click type-11" onclick="slider.prev();return false;">yesterday</span>
+    <span class="click type-11"> | </span>
+    <span class="click type-11" onclick="slider.next();return false;">next</span>
+    <span class="click type-11"> | </span>
+    <span class="click type-11" onclick="slider.slide(new Date().getDay(), 100);return false;">today</span>
+    
+    <div id="swipable">
+        <ul>
+          <li>
+                <h2 class="type-1">Sunday</h2>
+                <p>
+                    <p class="person">David Mitchell
+                    <p class="person">Victoria Coren
+                    <p class="person">Nick Cohen
+                    <p class="person">Catherine Bennett
+                </p>
+          </li>
+          <li>
+                <h2 class="type-1">Monday</h2>
+                <p>
+                    <p class="person">Tanya Gold
+                    <p class="person">Charlie Brooker
+                    <p class="person">Pamela Stephenson Connolly <b class="type-9">Sexual Healing</b>
+                    <p class="person">John Harris
+                    <p class="person">Chris Elliott <b class="type-9">Open Door</b>
+                    <p class="person">Sean Ingle
+                    <p class="feature">Five football weekend talking points
+                    <p class="feature">Weekend’s TV
+                    <p class="feature">The week ahead
+                </p>
+          </li>
+          <li>
+                <h2 class="type-1">Tuesday</h2>
+                <p>
+                    <p class="person">Polly Toynbee
+                    <p class="person">George Monbiot
+                    <p class="feature">PMQs
+                </p>
+          </li>
+          <li>
+                <h2 class="type-1">Wednesday</h2>
+                <p>
+                    <p class="person">Seumas Milne
+                    <p class="person">Simon Jenkins
+                    <p class="feature">Champions League
+                </p>
+          </li>
+          <li>
+                <h2 class="type-1">Thursday</h2>
+                <p>
+                    <p class="person">Zoe Williams
+                    <p class="person">Martin Kettle
+                </p>
+          </li>
+          <li>
+                <h2 class="type-1">Friday</h2>
+                <p>
+                    <p class="person">Polly Toynbee <span class="text">George Osborne is fighting back, aware that tax cuts for the rich and benefit cuts for the frail
+                        shock even natural conservatives. But this is just the start.</span>
+                    <p class="person">Simon Jenkins <span class="text">What we should fear is not the North Korean's bellicosity but how it's being
+                        used to subvert domestic politics in the west.</span>
+                    <p class="feature">Film reviews
+                    <p class="feature">Squad sheets
+                </p>
+          </li>
+          <li>
+                <h2 class="type-1">Saturday</h2>
+                <p>
+                   <p class="person">Marina Hyde
+                   <p class="person">Jonathan Freedland
+                   <p class="feature">Premier league clock watch
+                </p>
+          </li>
+       </ul>
+    </div>
+
+</div>
+
+<style>
+    .xfriday {
+        background-image: url('http://static.guim.co.uk/sys-images/Arts/Arts_/Pictures/2013/4/4/1365087779735/The-Odd-Life-of-Timothy-G-007.jpg');
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+    b.type-9 {
+        color: #333;
+    }
+
+    .feature {
+        color: red;
+    }
+    
+    .text {
+        color: #999;
+    }
+    
+    .person {
+        color: purple;
+    }
+
+    .friday p { padding-left: 5px; }
+    
+    h3 {
+        text-shadow: 1px 1px white;
+    }
+
+    h3 a {
+        color: black;
+    }
+
+    .click {
+        margin-bottom: 12px;
+        display: inline-block;
+    }
+
+    .click:hover { 
+        cursor: pointer;
+    }
+
+    #rhythm-header {
+        padding: 12px 16px 16px 16px;
+    }
+
+    #sections-control-rhythm {
+        position: absolute;
+        margin-right: 143px;
+        right: 0;
+        padding: 22px 0px 8px 0;
+        width: 50px;
+        text-align: center;
+    }
+
+    #sections-control-rhythm.is-active {
+    }
+
+    .yesterday {
+        margin-left: -8px;
+        margin-bottom: 7px;
+        display: inline-block;
+    }
+
+    #swipable ul, #swipable li {
+        margin: 0;
+        list-style: none;
+    }
+
+    .blah {
+        font-size: 11px;
+        display: block;
+    }
+
+</style>
 
 <div id="search-header" class="nav-popup is-off">
     <div class="search-box" role="search">

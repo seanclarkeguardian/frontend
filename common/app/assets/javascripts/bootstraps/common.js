@@ -191,7 +191,7 @@ define([
         },
 
         loadAdverts: function (config) {
-           
+
             if (config.switches.adverts) {
                 Adverts.init(config);
                 common.mediator.on('modules:adverts:docwrite:loaded', Adverts.loadAds);
@@ -208,11 +208,11 @@ define([
                 s.init();
             });
         },
-        
-        showSharedWisdomToolbar: function() {
-        	sharedWisdomToolbar.init(function() {
-        		sharedWisdomToolbar.show();
-        	});
+
+        showSharedWisdomToolbar: function(config) {
+            sharedWisdomToolbar.init(function() {
+                sharedWisdomToolbar.show();
+            }, config.modules.sharedWisdomToolbar);
         }
     };
 
@@ -231,8 +231,8 @@ define([
         modules.transcludeMostPopular(config.page.section, config.page.edition);
 
         modules.showRelativeDates();
-        
-        modules.showSharedWisdomToolbar();
+
+        modules.showSharedWisdomToolbar(config);
     };
 
     // If you can wait for load event, do so.
